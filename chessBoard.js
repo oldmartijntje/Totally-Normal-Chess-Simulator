@@ -38,6 +38,10 @@ class Chessboard {
                 square.classList.add('square');
                 square.classList.add((i + j) % 2 === 0 ? 'white' : 'black');
                 square.addEventListener('click', () => this.handleSquareClick(square));
+                square.addEventListener('touchend', (event) => {
+                    event.preventDefault(); // Prevents the click event from also firing
+                    this.handleSquareClick(square);
+                });
 
                 square.id = `${i},${j}`;
                 if (this.selectedPiece && this.selectedPiece.id == square.id) {
