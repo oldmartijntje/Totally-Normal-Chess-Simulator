@@ -1,5 +1,6 @@
 const BOARDSIZE = 8;
 const INFINITE = BOARDSIZE * BOARDSIZE
+const friendlyFire = false;
 
 const pieces = {
     'rook': {
@@ -22,7 +23,7 @@ const pieces = {
     },
     'knight': {
         patterns: {
-            movement: {
+            movement: [{
                 area: [
                     [null, 1, null, 1, null],
                     [1, null, null, null, 1],
@@ -30,16 +31,19 @@ const pieces = {
                     [1, null, null, null, 1],
                     [null, 1, null, 1, null],
                 ]
-            },
-            capture: {
+            }],
+            capture: [{
                 area: [
                     [null, 1, null, 1, null],
                     [1, null, null, null, 1],
                     [null, null, 0, null, null],
                     [1, null, null, null, 1],
                     [null, 1, null, 1, null],
-                ]
+                ],
+
             },
+            { everywhere: true, exclude: true, type: ['pawn'] },
+            ],
         },
         display: {
             white: '♘',
@@ -104,27 +108,32 @@ const pieces = {
     'pawn': {
         patterns: {
             movement: [
+                { direction: 'vertical', distance: 2, jump: false },
                 {
                     area: [
                         [null, 1, null],
-                        [null, 0, null],
                         [null, null, null],
+                        [null, 0, null],
+                        [null, 1, null],
+                        [null, 1, null],
                     ],
                     unmoved: [
-                        [null, 1, null],
-                        [null, 1, null],
                         [null, 0, null],
-                        [null, null, null],
+                        [null, 1, null],
+                        [null, 1, null],
                     ],
+                    exclude: true,
+                    flipForBlack: true,
                 }
             ],
             capture: [
                 {
                     area: [
-                        [null, 1, null],
+                        [1, null, 1],
                         [null, 0, null],
                         [null, null, null],
                     ],
+                    flipForBlack: true,
                 }
             ],
         },

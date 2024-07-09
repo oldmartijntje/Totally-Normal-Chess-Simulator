@@ -24,3 +24,20 @@
 .black {
     background-color: #b58863;
 }
+
+.legal-move {
+    position: relative;
+}
+
+.legal-move::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(189, 76, 76, 0.5);
+    /* Adjust the opacity here (0.5 is 50% opacity) */
+    pointer-events: none;
+    /* Ensure the overlay does not interfere with mouse events */
+}
