@@ -1,4 +1,4 @@
 window.onload = () => {
     console.log(setupData)
-    const chessboard = new Chessboard('chessboard');
+    const chessboard = new Chessboard();
 };
