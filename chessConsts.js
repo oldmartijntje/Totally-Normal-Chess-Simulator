@@ -1,6 +1,15 @@
 const BOARDSIZE = 8;
 const INFINITE = BOARDSIZE * BOARDSIZE
 const friendlyFire = false;
+const UNLOCK_MOVEMENT = false;
+const INVERTED_LOGIC = false;
+
+const winConditions = {
+    slainTroops: {
+        'king': 1,
+        // 'pawn': 8 // funy
+    }
+}
 
 const pieces = {
     'rook': {
@@ -42,7 +51,8 @@ const pieces = {
                 ],
 
             },
-            { everywhere: true, exclude: true, type: ['pawn'] },
+                // { everywhere: true, exclude: true }, // funny
+                // { everywhere: true, type: ['pawn'] },
             ],
         },
         display: {
@@ -76,7 +86,12 @@ const pieces = {
                 { direction: 'diagonal/', distance: INFINITE, jump: false },
                 { direction: 'diagonal\\', distance: INFINITE, jump: false },
             ],
-            capture: null,
+            capture: [
+                { direction: 'vertical', distance: INFINITE, jump: false },
+                { direction: 'horizontal', distance: INFINITE, jump: false },
+                { direction: 'diagonal/', distance: INFINITE, jump: false },
+                { direction: 'diagonal\\', distance: INFINITE, jump: false },
+            ],
         },
         display: {
             white: '♕',
@@ -142,5 +157,10 @@ const pieces = {
             black: '♟',
         },
         notationType: '',
+        convertion: {
+            rows: [0],
+            collumns: [0, 1, 2, 3, 4, 5, 6, 7],
+            convertsTo: 'queen',
+        }
     },
 }

@@ -14,6 +14,10 @@ class Chessboard {
             boardData: null,
             location: null
         }
+        this.lostPieces = {
+            black: [],
+            white: []
+        }
 
         this.createBoard();
     }
@@ -28,7 +32,6 @@ class Chessboard {
     render() {
         this.board.innerHTML = '';
         let squareCount = 0;
-        // console.log(this.boardState)
         for (let i = 0; i < this.boardState.length; i++) {
             for (let j = 0; j < this.boardState[i].length; j++) {
                 const square = document.createElement('div');
@@ -40,7 +43,7 @@ class Chessboard {
                 if (this.selectedPiece && this.selectedPiece.id == square.id) {
                     square.style.backgroundColor = 'yellow';
                 }
-                if (this.isLegalMove(i, j)) {
+                if (this.isThisALegalMove(i, j)) {
                     square.classList.add('legal-move');
                 }
 
@@ -56,6 +59,11 @@ class Chessboard {
         }
     }
 
+    isThisALegalMove(x, y) {
+        const legal = this.isLegalMove(x, y);
+        return INVERTED_LOGIC != legal;
+    }
+
     isLegalMove(x, y) {
         if (this.selectedPiece == null) {
             return false;
@@ -67,7 +75,9 @@ class Chessboard {
             return false;
         }
         let patterns = this.boardState[x][y] ? this.cachedPieceData.pieceData.patterns.capture : this.cachedPieceData.pieceData.patterns.movement;
-
+        if (!patterns) {
+            return false;
+        }
         let piece = null
         if (this.boardState[x][y]) {
             piece = this.boardState[x][y].type
@@ -92,11 +102,28 @@ class Chessboard {
                         } else {
                             legalMove = true;
                         }
-                        console.log(coordinates)
                     }
                 }
             } else if (patterns[i].direction) {
-                const locations = grabAllLocationsOnALine(x, y, patterns[i].direction, patterns[i].distance, patterns[i].jump);
+                const locations = grabAllLocationsOnALine(this, x, y, patterns[i].direction, patterns[i].distance, patterns[i].jump);
+                for (let j = 0; j < locations.length; j++) {
+                    if (locations[j][0] == this.selectedPiece.id.split(',')[0] && locations[j][1] == this.selectedPiece.id.split(',')[1]) {
+                        if (patterns[i].exclude) {
+                            legalMove = false;
+                        } else {
+                            legalMove = true;
+                        }
+                    }
+                }
+            } else if (patterns[i].everywhere) {
+                if (patterns[i].type && !patterns[i].type.includes(piece)) {
+                    continue;
+                }
+                if (patterns[i].exclude) {
+                    legalMove = false;
+                } else {
+                    legalMove = true;
+                }
             }
         }
 
@@ -117,13 +144,42 @@ class Chessboard {
 
     handleSquareClick(square) {
         if (this.selectedPiece && this.selectedPiece.id !== square.id) {
-            let capture;
-            if (square.innerHTML) {
-                capture = true;
+            if (!this.isThisALegalMove(parseInt(square.id.split(',')[0]), parseInt(square.id.split(',')[1])) && !UNLOCK_MOVEMENT) {
+                return;
             }
+            let capture;
             square.dataset.selected = false;
-            this.boardState[square.id.split(',')[0]][square.id.split(',')[1]] = this.boardState[this.cachedPieceData.location[0]][this.cachedPieceData.location[1]];
-            this.boardState[square.id.split(',')[0]][square.id.split(',')[1]].moved = true;
+            let location = square.id.split(',');
+            location = location.map(x => parseInt(x));
+
+            if (this.boardState[location[0]][location[1]]) {
+                capture = true;
+                this.lostPieces[this.boardState[location[0]][location[1]].color].push(this.boardState[location[0]][location[1]].type);
+                for (let i = 0; i < Object.keys(winConditions['slainTroops']).length; i++) {
+                    if (this.lostPieces[this.boardState[location[0]][location[1]].color].filter(x => x == Object.keys(winConditions['slainTroops'])[i]).length >= winConditions['slainTroops'][Object.keys(winConditions['slainTroops'])[i]]) {
+                        this.render();
+                        let loser = this.boardState[location[0]][location[1]].color;
+                        setTimeout(() => {
+                            alert(`${loser} has been slain!`);
+                        }, 1);
+                    }
+                }
+            }
+            this.boardState[location[0]][location[1]] = this.boardState[this.cachedPieceData.location[0]][this.cachedPieceData.location[1]];
+            this.boardState[location[0]][location[1]].moved = true;
+
+            if (this.cachedPieceData.pieceData.convertion) {
+                let y = location[0];
+                if (this.cachedPieceData.boardData.color == 'black') {
+                    y = 7 - y;
+                }
+                if (this.cachedPieceData.pieceData.convertion.collumns.includes(location[1])) {
+                    if (this.cachedPieceData.pieceData.convertion.rows.includes(y)) {
+                        this.boardState[location[0]][location[1]].type = this.cachedPieceData.pieceData.convertion.convertsTo;
+                    }
+                }
+            }
+
             this.boardState[this.cachedPieceData.location[0]][this.cachedPieceData.location[1]] = null;
             this.selectedPiece = null;
             this.cachedPieceData = {
@@ -131,6 +187,8 @@ class Chessboard {
                 boardData: null,
                 location: null
             }
+
+
 
             // Should re-add the notation logging.
             // console.log(`${this.characterCodes[square.innerHTML] ? this.characterCodes[square.innerHTML].color + ': ' : ''}${this.characterCodes[square.innerHTML] ? this.characterCodes[square.innerHTML].type : ''}${capture ? 'x' : ''}${square.id}`);
@@ -155,9 +213,35 @@ class Chessboard {
     }
 }
 
-function grabAllLocationsOnALine(x, y, direction, distance, jump = false) {
+function grabAllLocationsOnALine(self, x, y, direction, distance, jump = false) {
+    const locations = [];
+    const directions = {
+        'vertical': [[-1, 0], [1, 0]],
+        'horizontal': [[0, -1], [0, 1]],
+        'diagonal/': [[-1, -1], [1, 1]],
+        'diagonal\\': [[-1, 1], [1, -1]]
+    };
 
+    for (const [dx, dy] of directions[direction]) {
+        for (let i = 1; i <= distance; i++) {
+            const newX = x + i * dx;
+            const newY = y + i * dy;
+
+            if (newX < 0 || newX >= BOARDSIZE || newY < 0 || newY >= BOARDSIZE || (self.boardState[newX][newY] && !jump)) {
+                locations.push([newX, newY]);
+                break; // Out of bounds
+            }
+            if (self.boardState[newX][newY] != null) {
+                locations.push([newX, newY]);
+                break; // Obstacle found
+            }
+
+            locations.push([newX, newY]);
+        }
+    }
+    return locations;
 }
+
 
 function findCoordinates(matrix, extraCondition = null) {
     const coordinatesToFind = [1]
