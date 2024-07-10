@@ -306,7 +306,6 @@
             amountOfShopping = 0;
             cartItems.innerHTML = '';
             Object.entries(cart).forEach(([item, details]) => {
-                console.log(details, item);
                 let amount = parseInt(item.split(' ')[0]) * details.quantity;
                 amountOfShopping += amount;
 
@@ -335,7 +334,6 @@
                     mailError.style.display = 'none';
                 }
             } else if (fullname[0].length < 2 || fullname[1].length < 2) {
-                console.log(fullname);
                 checkoutButton.disabled = true;
                 nameError.style.display = 'block';
             } else {
