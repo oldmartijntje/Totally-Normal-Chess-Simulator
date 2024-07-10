@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shop - Chess Simulator 256</title>
+    <meta name="keywords" content="chess, simulator, chess simulator, chess game, game">
+    <meta name="author" content="OldMartijntje">
+    <meta property="og:title" content="Chess Simulator 256">
+    <meta property="og:description" content="A very normal chess simulator website.">
+    <meta property="og:image" content="https://i.imgur.com/Aznlxui.png">
+    <meta property="og:url" content="https://oldmartijntje.github.io/SocialSelect/">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Chess Simulator 256">
+
+    <link rel="icon" href="https://i.imgur.com/Aznlxui.png" type="image/x-icon">
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen-Sans, Ubuntu, Cantarell, 'Helvetica Neue', sans-serif;
+            background-color: #f0f4f8;
+            color: #333;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        header {
+            background-color: #fff;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            padding: 1rem 0;
+        }
+
+        h1,
+        h2 {
+            font-weight: 600;
+            color: #2c3e50;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin: 0;
+        }
+
+        h2 {
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+        }
+
+        .card {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: box-shadow 0.3s ease, transform 0.3s ease;
+            margin-bottom: 1.5rem;
+            padding-left: 1rem;
+            padding-bottom: 1rem;
+        }
+
+        .card:hover {
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+            transform: translateY(-5px);
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 0.5rem 1rem;
+            font-size: 1rem;
+            font-weight: 500;
+            text-align: center;
+            text-decoration: none;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: none;
+        }
+
+        .btn-primary {
+            background-color: #3498db;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: #2980b9;
+        }
+
+        .btn-secondary {
+            background-color: #e74c3c;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background-color: #c0392b;
+        }
+
+        input,
+        select {
+            width: 92.5%;
+            padding: 0.75rem;
+            margin-bottom: 1rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        input {
+            width: 90%;
+        }
+
+        input:focus,
+        select:focus {
+            border-color: #3498db;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+        }
+
+        #cart-items li {
+            border-bottom: 1px solid #eee;
+            padding: 0.75rem 0;
+            margin-bottom: 0.75rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        #cart-items li:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+        }
+
+        #product-list li {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.75rem;
+        }
+
+        #product-list li,
+        #cart-items li {
+            padding-right: 3rem;
+        }
+
+        #checkoutButton:disabled {
+            background-color: #ddd;
+            color: #999;
+            cursor: not-allowed;
+        }
+
+        @media (min-width: 768px) {
+            main {
+                display: flex;
+                flex-wrap: wrap;
+                justify-content: space-between;
+            }
+
+            .card {
+                flex-basis: calc(33.333% - 1rem);
+            }
+        }
+
+        @media (max-width: 767px) {
+            .card {
+                margin-bottom: 1rem;
+            }
+        }
+    </style>
+</head>
+
+<body class="text-gray-800">
+    <header class="py-4">
+        <div class="container mx-auto px-4" style="display: flex; flex-direction: row; gap: 1rem;">
+            <h1 class="text-2xl font-semibold text-gray-900">Credit Store</h1>
+            <h3><a href="../">Back</a></h3>
+        </div>
+    </header>
+
+    <main class="container mx-auto mt-8 px-4">
+        <div class="flex flex-col lg:flex-row gap-8">
+            <div class="lg:w-1/4">
+                <div class="card p-6">
+                    <h2 class="text-xl font-semibold mb-4">Products</h2>
+                    <ul id="product-list" class="space-y-4"></ul>
+                </div>
+            </div>
+
+            <div class="lg:w-1/2">
+
+
+                <div class="card p-6">
+                    <h2 class="text-xl font-semibold mb-4">Contact information</h2>
+                    <input type="email" placeholder="Email" class="w-full p-3 border border-gray-300 mb-4"
+                        onchange="updateCart()">
+
+                    <h2 class="text-xl font-semibold mb-4">Shipping address</h2>
+                    <select class="w-full p-3 border border-gray-300 mb-4">
+                        <option>United States</option>
+                        <option>Canada</option>
+                        <option>United Kingdom</option>
+                        <option>Netherlands</option>
+                        <option>Hungary</option>
+                        <option>Japan</option>
+                    </select>
+                    <div class="flex gap-4 mb-4">
+                        <input type="text" placeholder="First name" class="w-1/2 p-3 border border-gray-300"
+                            onchange="updateCart()">
+                        <input type="text" placeholder="Last name" class="w-1/2 p-3 border border-gray-300"
+                            onchange="updateCart()">
+                        <input type="text" placeholder="Address" class="w-full p-3 border border-gray-300">
+                        <input type="text" placeholder="City" class="w-1/2 p-3 border border-gray-300">
+                        <input type="text" placeholder="Postal code" class="w-1/2 p-3 border border-gray-300">
+
+                    </div>
+                </div>
+            </div>
+
+            <div class="lg:w-1/4">
+                <div class="card p-6">
+                    <h2 class="text-xl font-semibold mb-4">Your Cart</h2>
+                    <ul id="cart-items" class="mb-4"></ul>
+                    <span style="font-size: larger;">Credit Balance</span>
+                    <div class="flex justify-between items-center mb-2 text-gray-600">
+                        <span>Current:</span>
+                        <span><span id="balance-current">0</span></span>
+                    </div>
+                    <div class="flex justify-between items-center mb-2 text-gray-600">
+                        <span>After checkout:</span>
+                        <span><span id="balance-next">10</span></span>
+                    </div>
+                    <ul id="cart-items" class="mb-4"></ul>
+                    <div class="flex justify-between items-center mb-2 text-gray-600">
+                        <span>Subtotal</span>
+                        <span>$<span id="cart-subtotal">0</span></span>
+                    </div>
+                    <div class="flex justify-between items-center mb-4 text-gray-600">
+                        <span>Shipping</span>
+                        <span>Calculated at next step</span>
+                    </div>
+                    <div class="flex justify-between items-center text-xl font-semibold">
+                        <span>Total</span>
+                        <span>$<span id="cart-total">0</span></span>
+                    </div>
+                    <button onclick="checkout()" class="w-full mt-4 btn btn-primary py-3 px-4" id="checkoutButton">
+                        Proceed to Checkout
+                    </button>
+                    <span style="color: #c0392b; display: none;" id="mailError">Invalid mail adress</span>
+                    <span style="color: #c0392b; display: none;" id="nameError">Invalid First and/or Last name</span>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        const products = [
+            { name: '100 Credits', price: 10, amountCredits: 100 },
+            { name: '500 Credits', price: 45, amountCredits: 500 },
+            { name: '1000 Credits', price: 80, amountCredits: 1000 },
+            { name: '2000 Credits', price: 150, amountCredits: 2000 },
+        ];
+
+        let tempTokens = localStorage.getItem('tokens');
+        let cart = {};
+        let total = 0;
+
+        if (localStorage.getItem('mail')) {
+            document.querySelector('input[type="email"]').value = localStorage.getItem('mail');
+        }
+
+        function addToCart(item, price) {
+            if (cart[item]) {
+                cart[item].quantity++;
+            } else {
+                cart[item] = { price, quantity: 1 };
+            }
+            total += price;
+            updateCart();
+        }
+
+        function removeFromCart(item) {
+            if (cart[item]) {
+                total -= cart[item].price;
+                cart[item].quantity--;
+                if (cart[item].quantity === 0) {
+                    delete cart[item];
+                }
+                updateCart();
+            }
+        }
+
+        function updateCart() {
+            const checkoutButton = document.getElementById('checkoutButton');
+            const cartItems = document.getElementById('cart-items');
+            const cartSubtotal = document.getElementById('cart-subtotal');
+            const cartTotal = document.getElementById('cart-total');
+            const mailError = document.getElementById('mailError');
+            const balanceCurrent = document.getElementById('balance-current');
+            const balanceNext = document.getElementById('balance-next');
+            const nameError = document.getElementById('nameError');
+            amountOfShopping = 0;
+            cartItems.innerHTML = '';
+            Object.entries(cart).forEach(([item, details]) => {
+                console.log(details, item);
+                let amount = parseInt(item.split(' ')[0]) * details.quantity;
+                amountOfShopping += amount;
+
+                const li = document.createElement('li');
+                li.className = 'flex justify-between items-center';
+                li.innerHTML = `
+                    <span>${details.quantity}x ${item} - $${(details.price * details.quantity).toFixed(2)}</span>
+                    <button onclick="removeFromCart('${item}')" class="btn btn-secondary py-1 px-2 text-sm">Remove</button>
+                `;
+                cartItems.appendChild(li);
+            });
+            balanceCurrent.textContent = localStorage.getItem('tokens');
+            balanceNext.textContent = (parseInt(localStorage.getItem('tokens')) + amountOfShopping);
+            tempTokens = amountOfShopping;
+
+
+            cartSubtotal.textContent = total.toFixed(2);
+            cartTotal.textContent = total.toFixed(2);
+            let mail = document.querySelector('input[type="email"]').value;
+            let fullname = [document.querySelector('input[placeholder="First name"]').value, document.querySelector('input[placeholder="Last name"]').value];
+            if (total === 0 || !mail || !mail.includes('@') || !mail.includes('.') || mail.length < 5) {
+                checkoutButton.disabled = true;
+                if (total !== 0) {
+                    mailError.style.display = 'block';
+                } else {
+                    mailError.style.display = 'none';
+                }
+            } else if (fullname[0].length < 2 || fullname[1].length < 2) {
+                console.log(fullname);
+                checkoutButton.disabled = true;
+                nameError.style.display = 'block';
+            } else {
+                mailError.style.display = 'none';
+                nameError.style.display = 'none';
+                checkoutButton.disabled = false;
+            }
+        }
+
+        function checkout() {
+            localStorage.setItem('lastCheckout', JSON.stringify({
+                cart,
+                totalCost: total,
+                amountOfShopping,
+                fullName: [document.querySelector('input[placeholder="First name"]').value, document.querySelector('input[placeholder="Last name"]').value],
+                balanceBefore: parseInt(localStorage.getItem('tokens')),
+            }));
+            localStorage.setItem('tokens', (parseInt(localStorage.getItem('tokens')) + amountOfShopping));
+            localStorage.setItem('mail', document.querySelector('input[type="email"]').value);
+            alert('Thank you for your purchase!');
+            cart = {};
+            total = 0;
+            updateCart();
+            if (!isMobile()) {
+                // Redirect to receipt page, on a new page _blank
+                window.open('./receipt', '_blank');
+            }
+            window.location.href = '../';
+        }
+
+        function isMobile() {
+            return window.innerWidth < 768;
+        }
+
+        function initializeProductList() {
+            const productList = document.getElementById('product-list');
+            products.forEach(product => {
+                const li = document.createElement('li');
+                li.className = 'flex justify-between items-center';
+                li.innerHTML = `
+                    <span>${product.name} - $${product.price}</span>
+                    <button onclick="addToCart('${product.name}', ${product.price})" class="btn btn-primary py-1 px-2 text-sm">
+                        Add to Cart
+                    </button>
+                `;
+                productList.appendChild(li);
+            });
+        }
+
+        function initializeRandomCart() {
+            products.forEach(product => {
+                const quantity = Math.floor(Math.random() * 3); // 0 to 2 items
+                for (let i = 0; i < quantity; i++) {
+                    addToCart(product.name, product.price);
+                }
+            });
+        }
+
+        const localsotrageBalance = localStorage.getItem('tokens');
+        // Initialize the page
+        initializeProductList();
+        updateCart();
+        // initializeRandomCart();
+    </script>
+</body>
+
+</html>

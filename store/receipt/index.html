@@ -1,0 +1,268 @@
+<html>
+
+<head>
+    <title>Checkout - Chess Simulator 256</title>
+    <meta name="keywords" content="chess, simulator, chess simulator, chess game, game">
+    <meta name="author" content="OldMartijntje">
+    <meta property="og:title" content="Chess Simulator 256">
+    <meta property="og:description" content="A very normal chess simulator website.">
+    <meta property="og:image" content="https://i.imgur.com/Aznlxui.png">
+    <meta property="og:url" content="https://oldmartijntje.github.io/SocialSelect/">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Chess Simulator 256">
+
+    <link rel="icon" href="https://i.imgur.com/Aznlxui.png" type="image/x-icon">
+    <link href='https://fonts.googleapis.com/css?family=Roboto:400,100,300,500,700,900' rel='stylesheet'
+        type='text/css'>
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/simple-line-icons/2.3.2/css/simple-line-icons.css">
+</head>
+
+<body>
+    <style>
+        body {
+            background-color: #f6f9f8;
+            font-family: 'Roboto', sans-serif;
+        }
+
+        a {
+            color: #0e7aea;
+            text-decoration: none;
+        }
+
+        h6 {
+            color: #9aa3ab;
+            font-weight: 300;
+            line-height: 15px;
+        }
+
+        h5 {
+            color: #99a1aa;
+            font-weight: 300;
+        }
+
+        h4 {
+            font-weight: 300;
+            font-size: 13px;
+            color: #97a2ad
+        }
+
+        h3 {
+            color: #58636a;
+            font-weight: 500;
+        }
+
+        .container {
+            width: 50%;
+            height: 40%;
+            min-width: 636px;
+            min-height: 456px;
+            margin: auto;
+            margin-top: 10%;
+            overflow: hidden;
+            border-radius: 5px 5px 5px 5px;
+            -webkit-box-shadow: 0px 5px 21px 0px rgba(128, 128, 128, 0.2);
+            -moz-box-shadow: 0px 5px 21px 0px rgba(128, 128, 128, 0.2);
+            box-shadow: 0px 5px 21px 0px rgba(128, 128, 128, 0.2);
+        }
+
+        .left {
+            background-color: #1882ef;
+            width: 39%;
+            height: 457px;
+            border-radius: 5px 0 0 5px;
+            float: left;
+            color: #ffffff;
+        }
+
+        .info-box {
+            margin-top: 35px;
+            margin-left: 35px;
+            margin-right: 35px;
+        }
+
+        .receipt {
+            font-weight: 300;
+            font-size: 15px;
+            line-height: 26px;
+            padding-top: 10px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #3895f4;
+            height: 15%;
+        }
+
+        .receipt>span {
+            font-weight: 500;
+            font-size: 21px;
+        }
+
+        .entry {
+            border-bottom: 1px solid #3895f4;
+            height: 15%;
+            overflow: hidden;
+            padding-top: 15px;
+        }
+
+        .entry>p {
+            font-weight: 300;
+            font-size: 13px;
+            line-height: 26px;
+            margin-top: 0px !important;
+            float: left;
+        }
+
+        .entry>i {
+            margin-top: 4px;
+            margin-right: 13px;
+            float: left;
+            color: #b4d8fc;
+        }
+
+        span:not(.autoChange) {
+            font-weight: 500;
+            font-size: 16px;
+        }
+
+        .entry:last-child {
+            border-bottom: none;
+        }
+
+        .right {
+            background-color: #fefefe;
+            width: 61%;
+            height: 100%;
+            float: left;
+            border-radius: 0 5px 5px 0;
+        }
+
+        .content {
+            margin-top: 50px;
+            margin-left: 40px;
+            margin-right: 40px;
+        }
+
+        .header {
+            overflow: hidden;
+            border-bottom: 1px solid #d7e2e7;
+            height: 50px;
+        }
+
+        .header>img {
+            width: 100px;
+            float: left;
+        }
+
+        .header>h4 {
+            text-align: right;
+            margin-top: 10px;
+        }
+
+        .main {
+            margin-top: 35px;
+        }
+
+        .message {
+            margin-top: 40px;
+        }
+
+        .message>p {
+            font-weight: 300;
+            font-size: 15px;
+            color: #7a838d;
+            line-height: 30px;
+        }
+
+        .message>h6 {
+            margin-top: 10px;
+        }
+
+        .footer {
+            overflow: hidden;
+            border-top: 1px solid #d7e2e7;
+            margin-top: 40px;
+            padding-top: 30px;
+        }
+
+        .footer>a {
+            font-size: 13px;
+            font-weight: 500;
+            float: left;
+        }
+
+        .footer>h6 {
+            color: #7a838d;
+            text-align: right;
+            margin-top: 0px !important;
+        }
+    </style>
+    <a href="../../" style="text-decoration: underline;">Homepage</a>
+    <div class="container">
+        <div class="left">
+            <div class="info-box">
+                <div class="receipt">
+                    Receipt for </br><span><a href="../../"
+                            style="color: fff; text-decoration: underline;">ChessSimulator256</a></span>
+                </div>
+                <div class="entry">
+                    <i class="icon-wallet" aria-hidden="true"></i>
+                    <p>Amount:</br><span>$<span class="costDisplay autoChange">20.00</span> USD</span></p>
+                </div>
+                <div class="entry">
+                    <i class="icon-calendar" aria-hidden="true"></i>
+                    <p>Date:</br><span><span id="shortDate" class="autoChange">Nov 5</span></span></p>
+                </div>
+                <div class="entry">
+                    <i class="icon-star" aria-hidden="true"></i>
+                    <p>Issuer:</br><span>OldMartijntje</span></p>
+                </div>
+                <div class="entry">
+                    <i class="icon-notebook" aria-hidden="true"></i>
+                    <p>Confirmation Nr:</br><span>0YX123580219G</span></p>
+                </div>
+            </div>
+        </div>
+        <div class="right">
+            <div class="content">
+                <div class="header">
+                    <img src="https://www.paypalobjects.com/webstatic/mktg/Logo/pp-logo-200px.png">
+                    <h4><span id="fullDate" class="autoChange">Oct 18, 2015 08:30:57 PDT</span></h4>
+                </div>
+                <div class="main">
+                    <h3>Chess Credits (<span id="tokens" class="autoChange"></span>)</h3>
+                    <h5>Total: $<span class="costDisplay autoChange">20.00</span> USD</h5>
+                </div>
+                <div class="message">
+                    <p>Hello <span id="name" class="autoChange"></span>,</br>You sent a payment of $<span
+                            class="costDisplay autoChange">20.00</span> USD to OldMartijntje
+                        (<a href="mailto:paypal@oldmartijntje.nl">paypal@oldmartijntje.nl</a>)</p>
+                    <h6>It may take a few moments for this</br>transaction to appear in your account.</h6>
+                </div>
+                <div class="footer">
+                    <a href="#">www.paypal.com/help</a>
+                    <h6>Invoice ID: 108165</h6>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        const costDisplay = document.querySelectorAll('.costDisplay');
+        const shortDate = document.getElementById('shortDate');
+        const fullDate = document.getElementById('fullDate');
+        const tokens = document.getElementById('tokens');
+        const name = document.getElementById('name');
+        const lastCheckout = localStorage.getItem('lastCheckout') ? JSON.parse(localStorage.getItem('lastCheckout')) : null;
+        if (lastCheckout) {
+            costDisplay.forEach(cost => {
+                cost.innerHTML = lastCheckout.totalCost.toFixed(2);
+            });
+            name.innerHTML = lastCheckout.fullName.join(' ');
+            tokens.innerHTML = lastCheckout.amountOfShopping;
+            const date = new Date();
+            shortDate.innerHTML = date.toLocaleString('en', { month: 'short', day: 'numeric' });
+            fullDate.innerHTML = date.toLocaleString('en', { month: 'short', day: 'numeric', year: 'numeric', hour: 'numeric', minute: 'numeric', second: 'numeric', hour12: true, timeZoneName: 'short' });
+        }
+
+    </script>
+</body>
+
+</html>

@@ -1,25 +1,34 @@
 class Chessboard {
-    constructor(boardElementId = 'chessboard') {
+    constructor(boardElementId = 'chessboard', gameState) {
         this.pieces = {
             white: ['pawn', 'pawn', 'pawn', 'pawn', 'pawn', 'pawn', 'pawn', 'pawn', 'rook', 'knight', 'bishop', 'queen', 'king', 'bishop', 'knight', 'rook'],
             black: ['rook', 'knight', 'bishop', 'queen', 'king', 'bishop', 'knight', 'rook', 'pawn', 'pawn', 'pawn', 'pawn', 'pawn', 'pawn', 'pawn', 'pawn']
         };
         this.letters = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'];
         this.board = document.getElementById(boardElementId);
-        this.boardState = new Array(BOARDSIZE).fill(null).map(() => new Array(BOARDSIZE).fill(null));
-        console.log(this.boardState);
+
         this.selectedPiece = null
         this.cachedPieceData = {
             pieceData: null,
             boardData: null,
             location: null
         }
-        this.lostPieces = {
-            black: [],
-            white: []
+
+        if (!gameState) {
+            this.boardState = new Array(BOARDSIZE).fill(null).map(() => new Array(BOARDSIZE).fill(null));
+            this.lostPieces = {
+                black: [],
+                white: []
+            }
+            this.createBoard();
+        } else {
+            this.boardState = gameState.boardState;
+            this.lostPieces = gameState.lostPieces;
+            this.render();
         }
 
-        this.createBoard();
+        console.log(this.boardState);
+
     }
 
 
@@ -60,6 +69,13 @@ class Chessboard {
                 this.board.appendChild(square, 1);
             }
             squareCount++;
+        }
+    }
+
+    getGameState() {
+        return {
+            boardState: this.boardState,
+            lostPieces: this.lostPieces
         }
     }
 
