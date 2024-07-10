@@ -5,7 +5,7 @@ tokenAmount.innerHTML = tokens
 const sendToStore = document.getElementById('sendToStore')
 
 window.onload = () => {
-
+    console.log(setupData)
 
     gameState = localStorage.getItem('gameState') ? JSON.parse(localStorage.getItem('gameState')) : undefined;
     localStorage.removeItem('gameState')
