@@ -20,10 +20,15 @@ class Chessboard {
                 black: [],
                 white: []
             }
+            this.summonablePieces = {
+                black: [],
+                white: []
+            }
             this.createBoard();
         } else {
-            this.boardState = gameState.boardState;
-            this.lostPieces = gameState.lostPieces;
+            this.boardState = gameState.boardState ? gameState.boardState : new Array(BOARDSIZE).fill(null).map(() => new Array(BOARDSIZE).fill(null));
+            this.lostPieces = gameState.lostPieces ? gameState.lostPieces : { black: [], white: [] };
+            this.summonablePieces = gameState.summonablePieces ? gameState.summonablePieces : { black: [], white: [] };
             this.render();
         }
 
@@ -75,7 +80,8 @@ class Chessboard {
     getGameState() {
         return {
             boardState: this.boardState,
-            lostPieces: this.lostPieces
+            lostPieces: this.lostPieces,
+            summonablePieces: this.summonablePieces
         }
     }
 
@@ -163,10 +169,14 @@ class Chessboard {
     }
 
     handleSquareClick(square) {
-        if (this.selectedPiece && this.selectedPiece.id !== square.id) {
+        if (!this.selectedPiece && square.getAttribute('piece-team') == 'neutral') {
+            console.warn('Cannot select neutral pieces at: ' + square.id + '. PieceInfo:', this.boardState[square.id.split(',')[0]][square.id.split(',')[1]]);
+        }
+        else if (this.selectedPiece && this.selectedPiece.id !== square.id) {
             if (!this.isThisALegalMove(parseInt(square.id.split(',')[0]), parseInt(square.id.split(',')[1])) && !UNLOCK_MOVEMENT) {
                 return;
             }
+
             let capture;
             square.dataset.selected = false;
             let location = square.id.split(',');
@@ -174,14 +184,22 @@ class Chessboard {
 
             if (this.boardState[location[0]][location[1]]) {
                 capture = true;
-                this.lostPieces[this.boardState[location[0]][location[1]].color].push(this.boardState[location[0]][location[1]].type);
-                for (let i = 0; i < Object.keys(winConditions['slainTroops']).length; i++) {
-                    if (this.lostPieces[this.boardState[location[0]][location[1]].color].filter(x => x == Object.keys(winConditions['slainTroops'])[i]).length >= winConditions['slainTroops'][Object.keys(winConditions['slainTroops'])[i]]) {
-                        this.render();
-                        let loser = this.boardState[location[0]][location[1]].color;
-                        setTimeout(() => {
-                            alert(`${loser} has been slain!`);
-                        }, 1);
+
+                if (this.boardState[location[0]][location[1]].color == 'neutral') {
+                    if (this.boardState[location[0]][location[1]].type == 'lootbox') {
+                        runLootBoxUnboxing(this.cachedPieceData.boardData.type, this.cachedPieceData.boardData.color);
+                    }
+                } else {
+
+                    this.lostPieces[this.boardState[location[0]][location[1]].color].push(this.boardState[location[0]][location[1]].type);
+                    for (let i = 0; i < Object.keys(winConditions['slainTroops']).length; i++) {
+                        if (this.lostPieces[this.boardState[location[0]][location[1]].color].filter(x => x == Object.keys(winConditions['slainTroops'])[i]).length >= winConditions['slainTroops'][Object.keys(winConditions['slainTroops'])[i]]) {
+                            this.render();
+                            let loser = this.boardState[location[0]][location[1]].color;
+                            setTimeout(() => {
+                                alert(`${loser} has been slain!`);
+                            }, 1);
+                        }
                     }
                 }
             }
@@ -208,7 +226,7 @@ class Chessboard {
                 location: null
             }
 
-
+            this.afterMove(this.getGameState());
 
             // Should re-add the notation logging.
             // console.log(`${this.characterCodes[square.innerHTML] ? this.characterCodes[square.innerHTML].color + ': ' : ''}${this.characterCodes[square.innerHTML] ? this.characterCodes[square.innerHTML].type : ''}${capture ? 'x' : ''}${square.id}`);
@@ -230,6 +248,23 @@ class Chessboard {
 
         }
         this.render();
+    }
+
+    afterMove(gameState) {
+        // if empty space exists on the board, spawn a lootbox
+        let emptySpaces = []
+        for (let i = 0; i < gameState.boardState.length; i++) {
+            for (let j = 0; j < gameState.boardState[i].length; j++) {
+                if (!gameState.boardState[i][j]) {
+                    emptySpaces.push([i, j]);
+                }
+            }
+        }
+        if (emptySpaces.length > 0 && percentageRandomiser(LOOTBOX_SPAWN_PERCENTAGE)) {
+            let randomIndex = Math.floor(Math.random() * emptySpaces.length);
+            let [x, y] = emptySpaces[randomIndex];
+            gameState.boardState[x][y] = { color: 'neutral', type: 'lootbox' };
+        }
     }
 }
 

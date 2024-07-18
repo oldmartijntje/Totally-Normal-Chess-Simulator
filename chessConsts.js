@@ -3,6 +3,7 @@ const INFINITE = BOARDSIZE * BOARDSIZE
 const friendlyFire = false;
 const UNLOCK_MOVEMENT = false;
 const INVERTED_LOGIC = false;
+const LOOTBOX_SPAWN_PERCENTAGE = 5
 
 const winConditions = {
     slainTroops: {
@@ -24,8 +25,10 @@ const pieces = {
             ],
         },
         display: {
-            white: '♖',
-            black: '♜',
+            // white: '♖',
+            // black: '♜',
+            white: '<img src="https://i.imgur.com/dzq4vtf.png">',
+            black: '<img src="https://i.imgur.com/iQBNl18.png">',
         },
         notationType: 'R',
 
@@ -56,8 +59,10 @@ const pieces = {
             ],
         },
         display: {
-            white: '♘',
-            black: '♞',
+            // white: '♘',
+            // black: '♞',
+            white: '<img src="https://i.imgur.com/SXaYjIk.png">',
+            black: '<img src="https://i.imgur.com/iXtJNpw.png">',
         },
         notationType: 'N',
     },
@@ -73,8 +78,10 @@ const pieces = {
             ],
         },
         display: {
-            white: '♗',
-            black: '♝',
+            // white: '♗',
+            // black: '♝',
+            white: '<img src="https://i.imgur.com/vIA5kSR.png">',
+            black: '<img src="https://i.imgur.com/yhW9ulD.png">'
         },
         notationType: 'B',
     },
@@ -94,8 +101,10 @@ const pieces = {
             ],
         },
         display: {
-            white: '♕',
-            black: '♛',
+            // white: '♕',
+            // black: '♛',
+            white: '<img src="https://i.imgur.com/PAPV0hG.png">',
+            black: '<img src="https://i.imgur.com/j6QeiaI.png">'
         },
         notationType: 'Q',
     },
@@ -115,8 +124,10 @@ const pieces = {
             ],
         },
         display: {
-            white: '♔',
-            black: '♚',
+            // white: '♔',
+            // black: '♚',
+            white: '<img src="https://i.imgur.com/wfis9bD.png">',
+            black: '<img src="https://i.imgur.com/YAdx7Sr.png">'
         },
         notationType: 'K',
     },
@@ -153,8 +164,10 @@ const pieces = {
             ],
         },
         display: {
-            white: '♙',
-            black: '♟',
+            // white: '♙',
+            // black: '♟',
+            white: '<img src="https://i.imgur.com/wJM6aPc.png">',
+            black: '<img src="https://i.imgur.com/1TN3hWU.png">',
         },
         notationType: '',
         convertion: {
@@ -163,4 +176,15 @@ const pieces = {
             convertsTo: 'queen',
         }
     },
+    'lootbox': {
+        display: {
+            neutral: `<div class="container">
+  <div class="box">
+  <div class="upper"></div>
+  <div class="lower"></div>
+  <div class="latch"></div>
+  </div>
+</div>`,
+        }
+    }
 }

@@ -28,11 +28,24 @@
             <span id="tokenAmount">-</span>
             <button id="sendToStore">+</button>
         </div>
+        <button id="debugButton">DEBUG</button>
     </header>
     <div class="chessboard" id="chessboard"></div>
+    <div class="overlay" id="lootboxOverlay">
+        <div class="container">
+            <div class="box shaking" id="lootbox">
+                <div class="upper"></div>
+                <div class="lower"></div>
+                <div class="latch"></div>
+            </div>
+        </div>
+        <div class="prize" id="prize"></div>
+        <div class="spinning-stripes" id="spinningStripes"></div>
+    </div>
 
     <script src="data.js" defer></script>
     <script src="chessConsts.js" defer></script>
+    <script src="lootBox.js" defer></script>
     <script src="chessBoard.js" defer></script>
     <script src="script.js" defer></script>
 </body>
