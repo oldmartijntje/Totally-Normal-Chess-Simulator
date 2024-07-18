@@ -177,6 +177,7 @@ const pieces = {
         }
     },
     'lootbox': {
+        neutralObject: true,
         display: {
             neutral: `<div class="container">
   <div class="box">

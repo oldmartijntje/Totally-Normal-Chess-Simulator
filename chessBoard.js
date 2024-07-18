@@ -21,8 +21,8 @@ class Chessboard {
                 white: []
             }
             this.summonablePieces = {
-                black: [],
-                white: []
+                black: ["pawn", "rook", "knight", "bishop", "queen"],
+                white: ["lootbox", "pawn", "pawn"]
             }
             this.createBoard();
         } else {
