@@ -20,15 +20,10 @@ class Chessboard {
                 black: [],
                 white: []
             }
-            this.summonablePieces = {
-                black: ["pawn", "rook", "knight", "bishop", "queen"],
-                white: ["lootbox", "pawn", "pawn"]
-            }
             this.createBoard();
         } else {
             this.boardState = gameState.boardState ? gameState.boardState : new Array(BOARDSIZE).fill(null).map(() => new Array(BOARDSIZE).fill(null));
             this.lostPieces = gameState.lostPieces ? gameState.lostPieces : { black: [], white: [] };
-            this.summonablePieces = gameState.summonablePieces ? gameState.summonablePieces : { black: [], white: [] };
             this.render();
         }
 
@@ -40,6 +35,7 @@ class Chessboard {
 
     createBoard() {
         this.setupInitialPosition();
+        this.generateLootBox(this.getGameState(), 100);
         this.render()
     }
 
@@ -81,7 +77,6 @@ class Chessboard {
         return {
             boardState: this.boardState,
             lostPieces: this.lostPieces,
-            summonablePieces: this.summonablePieces
         }
     }
 
@@ -187,7 +182,7 @@ class Chessboard {
 
                 if (this.boardState[location[0]][location[1]].color == 'neutral') {
                     if (this.boardState[location[0]][location[1]].type == 'lootbox') {
-                        runLootBoxUnboxing(this.cachedPieceData.boardData.type, this.cachedPieceData.boardData.color);
+                        runLootBoxUnboxing(getLootboxPiece(this.cachedPieceData.boardData.type), this.cachedPieceData.boardData.color, this.boardState, JSON.parse(JSON.stringify(this.cachedPieceData)));
                     }
                 } else {
 
@@ -250,7 +245,7 @@ class Chessboard {
         this.render();
     }
 
-    afterMove(gameState) {
+    generateLootBox(gameState, customPercentage = null) {
         // if empty space exists on the board, spawn a lootbox
         let emptySpaces = []
         for (let i = 0; i < gameState.boardState.length; i++) {
@@ -260,11 +255,18 @@ class Chessboard {
                 }
             }
         }
-        if (emptySpaces.length > 0 && percentageRandomiser(LOOTBOX_SPAWN_PERCENTAGE)) {
+        if (emptySpaces.length > 0 && percentageRandomiser(customPercentage ? customPercentage : LOOTBOX_SPAWN_PERCENTAGE)) {
             let randomIndex = Math.floor(Math.random() * emptySpaces.length);
             let [x, y] = emptySpaces[randomIndex];
+            console.log('Lootbox spawned at:', x, y);
             gameState.boardState[x][y] = { color: 'neutral', type: 'lootbox' };
+            return true;
         }
+        return false;
+    }
+
+    afterMove(gameState) {
+        this.generateLootBox(gameState);
     }
 }
 

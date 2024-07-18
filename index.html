@@ -26,11 +26,22 @@
         <div class="headerBox">
             <img src="https://i.imgur.com/jSEigOH.png" alt="coin" class="symbol">
             <span id="tokenAmount">-</span>
-            <button id="sendToStore">+</button>
+            <button id="sendToStore1">$+</button>
         </div>
-        <button id="debugButton">DEBUG</button>
+        <div class="headerBox">
+            <div class="box symbol" id="lootBoxIcon">
+                <div class="upper"></div>
+                <div class="lower"></div>
+                <div class="latch"></div>
+            </div>
+            <span id="lootboxesAmount">-</span>
+            <button id="sendToStore2">$+</button>
+        </div>
+        <!-- <button id="debugButton">DEBUG</button> -->
     </header>
-    <div class="chessboard" id="chessboard"></div>
+    <div id="main">
+        <div class="chessboard" id="chessboard"></div>
+    </div>
     <div class="overlay" id="lootboxOverlay">
         <div class="container">
             <div class="box shaking" id="lootbox">

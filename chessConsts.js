@@ -4,6 +4,7 @@ const friendlyFire = false;
 const UNLOCK_MOVEMENT = false;
 const INVERTED_LOGIC = false;
 const LOOTBOX_SPAWN_PERCENTAGE = 5
+const LOOTBOX_CAPTURING_PIECE_WEIGHT = 5
 
 const winConditions = {
     slainTroops: {
@@ -14,6 +15,9 @@ const winConditions = {
 
 const pieces = {
     'rook': {
+        lootbox: {
+            weight: 10,
+        },
         patterns: {
             movement: [
                 { direction: 'vertical', distance: INFINITE, jump: false },
@@ -34,6 +38,9 @@ const pieces = {
 
     },
     'knight': {
+        lootbox: {
+            weight: 20,
+        },
         patterns: {
             movement: [{
                 area: [
@@ -67,6 +74,9 @@ const pieces = {
         notationType: 'N',
     },
     'bishop': {
+        lootbox: {
+            weight: 20,
+        },
         patterns: {
             movement: [
                 { direction: 'diagonal/', distance: INFINITE, jump: false },
@@ -86,6 +96,9 @@ const pieces = {
         notationType: 'B',
     },
     'queen': {
+        lootbox: {
+            weight: 5,
+        },
         patterns: {
             movement: [
                 { direction: 'vertical', distance: INFINITE, jump: false },
@@ -109,6 +122,9 @@ const pieces = {
         notationType: 'Q',
     },
     'king': {
+        lootbox: {
+            weight: 0,
+        },
         patterns: {
             movement: [
                 { direction: 'vertical', distance: 1, jump: false },
@@ -132,6 +148,9 @@ const pieces = {
         notationType: 'K',
     },
     'pawn': {
+        lootbox: {
+            weight: 2.5,
+        },
         patterns: {
             movement: [
                 { direction: 'vertical', distance: 2, jump: false },
@@ -177,6 +196,9 @@ const pieces = {
         }
     },
     'lootbox': {
+        lootbox: {
+            weight: 1,
+        },
         neutralObject: true,
         display: {
             neutral: `<div class="container">
