@@ -28,7 +28,7 @@ function runLootBoxUnboxing(piece, color, chessBoardState = null, cachedPieceDat
                 spinningStripes.style.display = 'none';
 
                 lootbox.style.display = 'flex';
-
+                debugMessage('played animation for lootbox unboxing');
                 spawnLootboxPiece(piece, color, chessBoardState, cachedPieceData);
             }, 1500 * animationMultiplier);
         }, 1000 * animationMultiplier);
@@ -47,6 +47,7 @@ function spawnLootboxPiece(piece, color, chessBoardState, cachedPieceData) {
         type: piece,
         color: color,
     }
+    debugMessage('spawned piece from lootbox: ' + piece + ' at ' + location);
     render()
 
 }
@@ -74,6 +75,8 @@ function getLootboxPiece(capturingPiece = null) {
     }
     lootboxPieces = shuffle(lootboxPieces)
     // console.log(lootboxPieces.length, lootboxPieces.find((x) => x === 'lootbox') != undefined, lootboxPieces[0] == 'lootbox')
+
+    debugMessage('piece to spawn in lootbox: ' + lootboxPieces[0])
     return lootboxPieces[0]
 }
 

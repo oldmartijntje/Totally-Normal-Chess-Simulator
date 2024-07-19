@@ -204,6 +204,7 @@ class Chessboard {
                 }
             }
             this.boardState[location[0]][location[1]] = this.boardState[this.cachedPieceData.location[0]][this.cachedPieceData.location[1]];
+            debugMessage('switched pieces')
             this.boardState[location[0]][location[1]].moved = true;
 
             if (this.cachedPieceData.pieceData.convertion) {
@@ -218,6 +219,7 @@ class Chessboard {
                 }
             }
 
+            debugMessage('cached piece is removed.')
             this.boardState[this.cachedPieceData.location[0]][this.cachedPieceData.location[1]] = null;
             this.selectedPiece = null;
             this.cachedPieceData = {
@@ -275,6 +277,7 @@ class Chessboard {
     }
 
     afterMove(gameState) {
+        debugMessage('aftermove()')
         this.generateLootBox(gameState);
     }
 }
