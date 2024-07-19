@@ -164,8 +164,10 @@ class Chessboard {
     }
 
     handleSquareClick(square) {
+        alert('This is a test alert');
         if (!this.selectedPiece && square.getAttribute('piece-team') == 'neutral') {
             console.warn('Cannot select neutral pieces at: ' + square.id + '. PieceInfo:', this.boardState[square.id.split(',')[0]][square.id.split(',')[1]]);
+            alert('Cannot select neutral pieces');
         }
         else if (this.selectedPiece && this.selectedPiece.id !== square.id) {
             if (!this.isThisALegalMove(parseInt(square.id.split(',')[0]), parseInt(square.id.split(',')[1])) && !UNLOCK_MOVEMENT) {
