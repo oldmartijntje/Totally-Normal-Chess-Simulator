@@ -164,17 +164,16 @@ class Chessboard {
     }
 
     handleSquareClick(square) {
-        debugBox.innerHTML = 'Clicked a squere. ' + debugBox.innerHTML;
         if (!this.selectedPiece && square.getAttribute('piece-team') == 'neutral') {
             console.warn('Cannot select neutral pieces at: ' + square.id + '. PieceInfo:', this.boardState[square.id.split(',')[0]][square.id.split(',')[1]]);
-            debugBox.innerHTML = 'Cannot seect neutral pieces. ' + debugBox.innerHTML;
+            debugMessage('cannot select neutral pieces')
         }
         else if (this.selectedPiece && this.selectedPiece.id !== square.id) {
             if (!this.isThisALegalMove(parseInt(square.id.split(',')[0]), parseInt(square.id.split(',')[1])) && !UNLOCK_MOVEMENT) {
-                debugBox.innerHTML = 'Illegal move. ' + debugBox.innerHTML;
+                debugMessage('illegal move')
                 return;
             }
-            debugBox.innerHTML = 'Valid move. ' + debugBox.innerHTML;
+            debugMessage('valid move')
 
             let capture;
             square.dataset.selected = false;
@@ -183,13 +182,15 @@ class Chessboard {
 
             if (this.boardState[location[0]][location[1]]) {
                 capture = true;
+                debugMessage('found something on this coordinate')
 
                 if (this.boardState[location[0]][location[1]].color == 'neutral') {
                     if (this.boardState[location[0]][location[1]].type == 'lootbox') {
+                        debugMessage('lootbox found')
                         runLootBoxUnboxing(getLootboxPiece(this.cachedPieceData.boardData.type), this.cachedPieceData.boardData.color, this.boardState, JSON.parse(JSON.stringify(this.cachedPieceData)));
                     }
                 } else {
-
+                    debugMessage('piece found')
                     this.lostPieces[this.boardState[location[0]][location[1]].color].push(this.boardState[location[0]][location[1]].type);
                     for (let i = 0; i < Object.keys(winConditions['slainTroops']).length; i++) {
                         if (this.lostPieces[this.boardState[location[0]][location[1]].color].filter(x => x == Object.keys(winConditions['slainTroops'])[i]).length >= winConditions['slainTroops'][Object.keys(winConditions['slainTroops'])[i]]) {
@@ -230,7 +231,7 @@ class Chessboard {
             // Should re-add the notation logging.
             // console.log(`${this.characterCodes[square.innerHTML] ? this.characterCodes[square.innerHTML].color + ': ' : ''}${this.characterCodes[square.innerHTML] ? this.characterCodes[square.innerHTML].type : ''}${capture ? 'x' : ''}${square.id}`);
         } else if (this.selectedPiece && this.selectedPiece.id == square.id) {
-            debugBox.innerHTML = 'Deselected piece. ' + debugBox.innerHTML;
+            debugMessage('deselected piece')
             this.selectedPiece = null;
             this.cachedPieceData = {
                 pieceData: null,
@@ -238,7 +239,7 @@ class Chessboard {
                 location: null
             }
         } else if (square.innerHTML) {
-            debugBox.innerHTML = 'Selected piece. ' + debugBox.innerHTML;
+            debugMessage('selected piece')
 
             this.selectedPiece = square;
             this.cachedPieceData = {
@@ -248,7 +249,7 @@ class Chessboard {
             }
 
         } else {
-            debugBox.innerHTML = 'Unknown else {}. ' + debugBox.innerHTML;
+            debugMessage('unknown else fork.')
         }
         this.render();
     }

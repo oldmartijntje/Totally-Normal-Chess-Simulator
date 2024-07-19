@@ -16,6 +16,20 @@ const closePopupButton = document.getElementById('closePopupButton');
 const shopButton = document.getElementById('shopButton');
 const debugBox = document.getElementById('debugBox');
 
+function debugMessage(message) {
+    if (!DEBUG_MODE) {
+        return;
+    }
+    debugBox.innerHTML = message + '| ' + debugBox.innerHTML;
+    if (debugBox.innerHTML.length > 1000) {
+        debugBox.innerHTML = debugBox.innerHTML.slice(0, 1000);
+    }
+}
+
+if (!DEBUG_MODE) {
+    debugBox.style.display = 'none';
+}
+
 function showPopup() {
     popupOverlay.style.display = 'block';
     noLootboxPopup.style.display = 'block';

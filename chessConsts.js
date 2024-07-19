@@ -5,6 +5,7 @@ const UNLOCK_MOVEMENT = false;
 const INVERTED_LOGIC = false;
 const LOOTBOX_SPAWN_PERCENTAGE = 5
 const LOOTBOX_CAPTURING_PIECE_WEIGHT = 5
+const DEBUG_MODE = true;
 
 const winConditions = {
     slainTroops: {
