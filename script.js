@@ -1,13 +1,29 @@
 const tokenAmount = document.getElementById('tokenAmount')
 let tokens = localStorage.getItem('tokens') ? localStorage.getItem('tokens') : 100
 tokenAmount.innerHTML = tokens
+localStorage.setItem('tokens', tokens)
 const lootboxesAmount = document.getElementById('lootboxesAmount')
 let lootboxes = localStorage.getItem('lootboxes') ? localStorage.getItem('lootboxes') : 3
+localStorage.setItem('lootboxes', lootboxes)
 lootboxesAmount.innerHTML = lootboxes
 const degugButton = document.getElementById('debugButton')
 const sendToStore1 = document.getElementById('sendToStore1')
-const sendToStore2 = document.getElementById('sendToStore2')
-const lootBoxIcon = document.getElementById('lootBoxIcon')
+const lootBoxIcon = document.getElementById('summonLootbox')
+const popupOverlay = document.getElementById('popupOverlay');
+const noLootboxPopup = document.getElementById('noLootboxPopup');
+const goToShopButton = document.getElementById('goToShopButton');
+const closePopupButton = document.getElementById('closePopupButton');
+const shopButton = document.getElementById('shopButton');
+
+function showPopup() {
+    popupOverlay.style.display = 'block';
+    noLootboxPopup.style.display = 'block';
+}
+
+function hidePopup() {
+    popupOverlay.style.display = 'none';
+    noLootboxPopup.style.display = 'none';
+}
 
 let chessboard
 
@@ -36,29 +52,42 @@ window.onload = () => {
         localStorage.setItem('gameState', JSON.stringify(chessboard.getGameState()))
         window.location.href = './store'
     })
-    sendToStore2.addEventListener('click', () => {
-        localStorage.setItem('lootboxes', lootboxes)
-        localStorage.setItem('gameState', JSON.stringify(chessboard.getGameState()))
-        window.location.href = './store'
-    })
 
     lootBoxIcon.addEventListener('click', () => {
+        lootboxes = localStorage.getItem('lootboxes') ? localStorage.getItem('lootboxes') : 0
         if (lootboxes <= 0) {
-            console.warn('No lootboxes left')
-            alert('No lootboxes left')
-            return
+            console.warn('No lootboxes left');
+            showPopup();
+            return;
         }
         let success = chessboard.generateLootBox(chessboard.getGameState(), 100);
         if (success) {
-            lootboxes--
-            lootboxesAmount.innerHTML = lootboxes
-            render()
-            localStorage.setItem('lootboxes', lootboxes)
+            lootboxes--;
+            lootboxesAmount.innerHTML = lootboxes;
+            render();
+            localStorage.setItem('lootboxes', lootboxes);
         }
-    })
+    });
 
-    degugButton.addEventListener('click', () => {
-        console.warn('Debugging button clicked')
-        // runLootBoxUnboxing(getLootboxPiece(), 'black')
-    })
+    closePopupButton.addEventListener('click', hidePopup);
+
+    popupOverlay.addEventListener('click', (event) => {
+        if (event.target === popupOverlay) {
+            hidePopup();
+        }
+    });
+
+    goToShopButton.addEventListener('click', () => {
+        localStorage.setItem('gameState', JSON.stringify(chessboard.getGameState()));
+        window.location.href = './shop';
+    });
+
+    shopButton.addEventListener('click', () => {
+        localStorage.setItem('gameState', JSON.stringify(chessboard.getGameState()));
+        window.location.href = './shop';
+    });
+
+    // degugButton.addEventListener('click', () => {
+    //     console.warn('Debugging button clicked')
+    // })
 };

@@ -35,7 +35,7 @@ class Chessboard {
 
     createBoard() {
         this.setupInitialPosition();
-        this.generateLootBox(this.getGameState(), 100);
+        this.generateLootBox(this.getGameState(), 10);
         this.render()
     }
 

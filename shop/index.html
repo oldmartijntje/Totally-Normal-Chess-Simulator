@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shop - Chess Simulator 256</title>
+    <meta name="keywords" content="chess, simulator, chess simulator, chess game, game">
+    <meta name="author" content="OldMartijntje">
+    <meta property="og:title" content="Chess Simulator 256">
+    <meta property="og:description" content="A very normal chess simulator website.">
+    <meta property="og:image" content="https://i.imgur.com/Aznlxui.png">
+    <meta property="og:url" content="https://oldmartijntje.github.io/SocialSelect/">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Chess Simulator 256">
+    <link rel="icon" href="https://i.imgur.com/Aznlxui.png" type="image/x-icon">
+    <style>
+        :root {
+            --back: #5a7fb7;
+            --upper: #fdfdfd;
+            --lower: orange;
+            --belt: #585757;
+            --radius: 10%;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: var(--back);
+            margin: 0;
+            padding: 20px;
+            color: #ffffff;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            background-color: rgba(0, 0, 0, 0.2);
+            border-radius: 5px;
+        }
+
+        .token-display {
+            display: flex;
+            align-items: center;
+        }
+
+        .token-icon {
+            width: 24px;
+            height: 24px;
+            margin-right: 5px;
+        }
+
+        .shop-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .shop-item {
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            width: 200px;
+        }
+
+        .item-icon {
+            width: 100px;
+            height: 100px;
+            margin: 0 auto 10px;
+        }
+
+        .box {
+            width: 100px;
+            height: 100px;
+            display: flex;
+            position: relative;
+            flex-direction: column;
+            cursor: pointer;
+            margin: 0 auto 10px;
+        }
+
+        .box:hover {
+            box-shadow: 0px 20px 50px 10px rgba(0, 0, 0, .5);
+            animation: shake 1s cubic-bezier(.3, .06, .2, .9) infinite;
+        }
+
+        .upper {
+            width: 100%;
+            flex: 1;
+            background-color: var(--upper);
+            border-top-left-radius: var(--radius);
+            border-top-right-radius: var(--radius);
+            border-bottom: 5px solid var(--belt);
+        }
+
+        .lower {
+            width: 100%;
+            flex: 1;
+            background-color: var(--lower);
+            border-bottom-left-radius: var(--radius);
+            border-bottom-right-radius: var(--radius);
+        }
+
+        .latch {
+            position: absolute;
+            width: 10%;
+            height: 15%;
+            background-color: var(--belt);
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -10%);
+        }
+
+        button {
+            background-color: #4CAF50;
+            border: none;
+            color: white;
+            padding: 10px 20px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 4px 2px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        button:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+        }
+
+        @keyframes shake {
+
+            10%,
+            90% {
+                transform: translate3d(-1px, -1px, 0) rotate(5deg);
+            }
+
+            20%,
+            80% {
+                transform: translate3d(2px, -4px, 0) rotate(-2deg);
+            }
+
+            30%,
+            50%,
+            70% {
+                transform: translate3d(-4px, -1px, 0) rotate(3deg);
+            }
+
+            40%,
+            60% {
+                transform: translate3d(4px, 2px, 0) rotate(-4deg);
+            }
+        }
+
+        .quantity {
+            font-weight: bold;
+            font-size: 1.2em;
+            margin-bottom: 10px;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            background-color: rgba(0, 0, 0, 0.2);
+            border-radius: 5px;
+        }
+
+        .header-left,
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .back-button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+
+        .back-button:hover {
+            background-color: #2980b9;
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <div class="header-left">
+            <button class="back-button" onclick="goToMainSite()">Back to Main</button>
+            <h1>Chess Simulator 256 Shop</h1>
+        </div>
+        <div class="header-right">
+            <div class="token-display">
+                <img src="https://i.imgur.com/jSEigOH.png" alt="Token" class="token-icon">
+                <span id="tokenAmount">-</span>
+            </div>
+            <button class="back-button" onclick="goToStoreSite()">Buy more!</button>
+        </div>
+    </header>
+
+    <div class="shop-container" id="shopContainer"></div>
+
+    <script>
+
+        function goToMainSite() {
+            window.location.href = '../';
+        }
+
+        function goToStoreSite() {
+            window.location.href = '../store';
+        }
+        // Sample shop items (this could be loaded from an external JSON file)
+        const shopItems = [
+            {
+                id: 'lootbox-1',
+                name: 'Lootbox',
+                price: 25,
+                description: 'A mysterious box containing random chess pieces',
+                icon: 'lootbox',
+                content: {
+                    'Lootbox': 1
+                },
+                containsText: '1x Lootbox'
+            },
+            {
+                id: 'lootbox-3',
+                name: 'Lootbox Bundle',
+                content: {
+                    'Lootbox': 3
+                },
+                price: 65,
+                description: 'A bundle of mysterious boxes containing random chess pieces',
+                icon: 'lootbox',
+                containsText: '3x Lootbox'
+            },
+            {
+                id: 'lootbox-10',
+                name: 'Lootbox Mega Bundle',
+                price: 200,
+                description: 'A mega bundle of mysterious boxes containing random chess pieces',
+                icon: 'lootbox',
+                content: {
+                    'Lootbox': 10
+                },
+                containsText: '10x Lootbox'
+            },
+            // Add more items here as needed
+        ];
+
+        let tokens = parseInt(localStorage.getItem('tokens')) || 0;
+        let lootboxes = parseInt(localStorage.getItem('lootboxes')) || 0;
+
+        function updateTokenDisplay() {
+            document.getElementById('tokenAmount').textContent = tokens;
+        }
+
+        function createShopItem(item) {
+            const itemElement = document.createElement('div');
+            itemElement.className = 'shop-item';
+
+            let iconHtml = '';
+            if (item.icon === 'lootbox') {
+                iconHtml = `
+                    <div class="box">
+                        <div class="upper"></div>
+                        <div class="lower"></div>
+                        <div class="latch"></div>
+                    </div>
+                `;
+            } else {
+                iconHtml = `<img src="${item.icon}" alt="${item.name}" class="item-icon">`;
+            }
+
+            itemElement.innerHTML = `
+                ${iconHtml}
+                <h2>${item.name}</h2>
+                <div class="quantity">${item.containsText}</div>
+                <p>${item.description}</p>
+                <p>Price: ${item.price} tokens</p>
+                <button onclick="buyItem('${item.id}')">Buy</button>
+            `;
+
+            return itemElement;
+        }
+
+        function renderShop() {
+            const shopContainer = document.getElementById('shopContainer');
+            shopContainer.innerHTML = '';
+            shopItems.forEach(item => {
+                shopContainer.appendChild(createShopItem(item));
+            });
+        }
+
+        function buyItem(itemId) {
+            tokens = parseInt(localStorage.getItem('tokens')) || 0;
+            const item = shopItems.find(i => i.id === itemId);
+            if (item && tokens >= item.price) {
+                tokens -= item.price;
+                for (const [itemName, quantity] of Object.entries(item.content)) {
+                    if (itemName === 'Lootbox') {
+                        lootboxes += quantity;
+                    }
+                }
+                updateTokenDisplay();
+                localStorage.setItem('tokens', tokens);
+                localStorage.setItem('lootboxes', lootboxes);
+                alert(`You bought a ${item.name}!`);
+            } else {
+                alert('Not enough tokens!');
+            }
+        }
+
+        // Initialize
+        updateTokenDisplay();
+        renderShop();
+    </script>
+</body>
+
+</html>

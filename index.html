@@ -26,16 +26,19 @@
         <div class="headerBox">
             <img src="https://i.imgur.com/jSEigOH.png" alt="coin" class="symbol">
             <span id="tokenAmount">-</span>
-            <button id="sendToStore1">$+</button>
+            <button id="sendToStore1" class="pointer">$+</button>
         </div>
-        <div class="headerBox">
+        <div class="headerBox pointer" id="summonLootbox">
             <div class="box symbol" id="lootBoxIcon">
                 <div class="upper"></div>
                 <div class="lower"></div>
                 <div class="latch"></div>
             </div>
             <span id="lootboxesAmount">-</span>
-            <button id="sendToStore2">$+</button>
+        </div>
+        <div class="headerBox pointer" id="shopButton">
+            <img src="https://i.imgur.com/Qmu3wt1.png" alt="shop" class="symbol">
+            <span>Shop</span>
         </div>
         <!-- <button id="debugButton">DEBUG</button> -->
     </header>
@@ -52,6 +55,15 @@
         </div>
         <div class="prize" id="prize"></div>
         <div class="spinning-stripes" id="spinningStripes"></div>
+    </div>
+
+    <div id="popupOverlay" class="popup-overlay"></div>
+
+    <div id="noLootboxPopup" class="popup">
+        <button class="close-button" id="closePopupButton">&times;</button>
+        <h2>Oops!</h2>
+        <p>You're out of lootboxes! Want to get more?</p>
+        <button id="goToShopButton">Go to Shop</button>
     </div>
 
     <script src="data.js" defer></script>
