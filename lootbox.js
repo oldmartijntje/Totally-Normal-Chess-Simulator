@@ -28,7 +28,6 @@ function runLootBoxUnboxing(piece, color, chessBoardState = null, cachedPieceDat
                 spinningStripes.style.display = 'none';
 
                 lootbox.style.display = 'flex';
-                debugMessage('played animation for lootbox unboxing');
                 spawnLootboxPiece(piece, color, chessBoardState, cachedPieceData);
             }, 1500 * animationMultiplier);
         }, 1000 * animationMultiplier);
@@ -47,7 +46,6 @@ function spawnLootboxPiece(piece, color, chessBoardState, cachedPieceData) {
         type: piece,
         color: color,
     }
-    debugMessage('spawned piece from lootbox: ' + piece + ' at ' + location);
     render()
 
 }
