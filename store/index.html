@@ -177,10 +177,11 @@
     <header class="py-4">
         <div class="container mx-auto px-4" style="display: flex; flex-direction: row; gap: 1rem;">
             <h1 class="text-2xl font-semibold text-gray-900">Credit Store</h1>
-            <button class="btn btn-primary py-1 px-2 text-sm" style="margin: 1rem 0 1rem 1rem"
-                onclick="goTo('../')">Back to Main</button>
-            <button class="btn btn-primary py-1 px-2 text-sm" style="margin: 1rem 0 1rem 1rem"
-                onclick="goTo('../shop')">Shop</button>
+            <div
+                style="display: flex; flex-direction: row; align-items: center; flex-wrap: wrap; gap: 0.5rem 1rem; justify-content: end;">
+                <button class="btn btn-primary py-1 px-2 text-sm" onclick="goTo('../')">Back to Main</button>
+                <button class="btn btn-primary py-1 px-2 text-sm" onclick="goTo('../shop')">Shop</button>
+            </div>
         </div>
     </header>
 
@@ -199,7 +200,7 @@
                 <div class="card p-6">
                     <h2 class="text-xl font-semibold mb-4">Contact information</h2>
                     <input type="email" placeholder="Email" class="w-full p-3 border border-gray-300 mb-4"
-                        onchange="updateCart()">
+                        onchange="updateCart()" onabort="updateCart()">
 
                     <h2 class="text-xl font-semibold mb-4">Shipping address</h2>
                     <select class="w-full p-3 border border-gray-300 mb-4">
@@ -212,9 +213,9 @@
                     </select>
                     <div class="flex gap-4 mb-4">
                         <input type="text" placeholder="First name" class="w-1/2 p-3 border border-gray-300"
-                            onchange="updateCart()">
+                            onchange="updateCart()" onabort="updateCart()">
                         <input type="text" placeholder="Last name" class="w-1/2 p-3 border border-gray-300"
-                            onchange="updateCart()">
+                            onchange="updateCart()" onabort="updateCart()">
                         <input type="text" placeholder="Address" class="w-full p-3 border border-gray-300">
                         <input type="text" placeholder="City" class="w-1/2 p-3 border border-gray-300">
                         <input type="text" placeholder="Postal code" class="w-1/2 p-3 border border-gray-300">
@@ -333,20 +334,30 @@
             cartTotal.textContent = total.toFixed(2);
             let mail = document.querySelector('input[type="email"]').value;
             let fullname = [document.querySelector('input[placeholder="First name"]').value, document.querySelector('input[placeholder="Last name"]').value];
-            if (total === 0 || !mail || !mail.includes('@') || !mail.includes('.') || mail.length < 5) {
-                checkoutButton.disabled = true;
+            let error = false;
+            if (!mail || !mail.includes('@') || !mail.includes('.') || mail.length < 5) {
+                error = true;
                 if (total !== 0) {
                     mailError.style.display = 'block';
                 } else {
                     mailError.style.display = 'none';
                 }
-            } else if (fullname[0].length < 2 || fullname[1].length < 2) {
-                checkoutButton.disabled = true;
-                nameError.style.display = 'block';
             } else {
                 mailError.style.display = 'none';
+            }
+
+            if (fullname[0].length < 2 || fullname[1].length < 2) {
+                error = true;
+                if (total !== 0) {
+                    nameError.style.display = 'block';
+                } else {
+                    nameError.style.display = 'none';
+                }
+            } else {
                 nameError.style.display = 'none';
-                checkoutButton.disabled = false;
+            }
+            if (error || total === 0) {
+                checkoutButton.disabled = true;
             }
         }
 
