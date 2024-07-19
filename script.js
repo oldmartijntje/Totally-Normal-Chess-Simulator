@@ -14,6 +14,7 @@ const noLootboxPopup = document.getElementById('noLootboxPopup');
 const goToShopButton = document.getElementById('goToShopButton');
 const closePopupButton = document.getElementById('closePopupButton');
 const shopButton = document.getElementById('shopButton');
+const debugBox = document.getElementById('debugBox');
 
 function showPopup() {
     popupOverlay.style.display = 'block';

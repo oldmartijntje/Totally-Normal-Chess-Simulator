@@ -164,15 +164,17 @@ class Chessboard {
     }
 
     handleSquareClick(square) {
-        alert('This is a test alert');
+        debugBox.innerHTML = 'Clicked a squere. ' + debugBox.innerHTML;
         if (!this.selectedPiece && square.getAttribute('piece-team') == 'neutral') {
             console.warn('Cannot select neutral pieces at: ' + square.id + '. PieceInfo:', this.boardState[square.id.split(',')[0]][square.id.split(',')[1]]);
-            alert('Cannot select neutral pieces');
+            debugBox.innerHTML = 'Cannot seect neutral pieces. ' + debugBox.innerHTML;
         }
         else if (this.selectedPiece && this.selectedPiece.id !== square.id) {
             if (!this.isThisALegalMove(parseInt(square.id.split(',')[0]), parseInt(square.id.split(',')[1])) && !UNLOCK_MOVEMENT) {
+                debugBox.innerHTML = 'Illegal move. ' + debugBox.innerHTML;
                 return;
             }
+            debugBox.innerHTML = 'Valid move. ' + debugBox.innerHTML;
 
             let capture;
             square.dataset.selected = false;
@@ -228,6 +230,7 @@ class Chessboard {
             // Should re-add the notation logging.
             // console.log(`${this.characterCodes[square.innerHTML] ? this.characterCodes[square.innerHTML].color + ': ' : ''}${this.characterCodes[square.innerHTML] ? this.characterCodes[square.innerHTML].type : ''}${capture ? 'x' : ''}${square.id}`);
         } else if (this.selectedPiece && this.selectedPiece.id == square.id) {
+            debugBox.innerHTML = 'Deselected piece. ' + debugBox.innerHTML;
             this.selectedPiece = null;
             this.cachedPieceData = {
                 pieceData: null,
@@ -235,6 +238,7 @@ class Chessboard {
                 location: null
             }
         } else if (square.innerHTML) {
+            debugBox.innerHTML = 'Selected piece. ' + debugBox.innerHTML;
 
             this.selectedPiece = square;
             this.cachedPieceData = {
@@ -243,6 +247,8 @@ class Chessboard {
                 location: this.selectedPiece.id.split(',')
             }
 
+        } else {
+            debugBox.innerHTML = 'Unknown else {}. ' + debugBox.innerHTML;
         }
         this.render();
     }
