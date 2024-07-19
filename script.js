@@ -15,6 +15,50 @@ const goToShopButton = document.getElementById('goToShopButton');
 const closePopupButton = document.getElementById('closePopupButton');
 const shopButton = document.getElementById('shopButton');
 const debugBox = document.getElementById('debugBox');
+const clipboardButton = document.getElementById('clipboardButton');
+const clipboardOverlay = document.getElementById('clipboardOverlay');
+const closeClipboard = document.getElementById('closeClipboard');
+const prevPage = document.getElementById('prevPage');
+const nextPage = document.getElementById('nextPage');
+const pageNumber = document.getElementById('pageNumber');
+
+let currentPage = 1;
+const totalPages = 2;
+
+function showPage(pageNum) {
+    document.querySelectorAll('.clipboard-page').forEach(page => page.style.display = 'none');
+    document.getElementById(`page${pageNum}`).style.display = 'block';
+    pageNumber.textContent = `Page ${pageNum} / ${totalPages}`;
+}
+
+clipboardButton.addEventListener('click', () => {
+    clipboardOverlay.style.display = 'block';
+    showPage(currentPage);
+});
+
+closeClipboard.addEventListener('click', () => {
+    clipboardOverlay.style.display = 'none';
+});
+
+clipboardOverlay.addEventListener('click', (event) => {
+    if (event.target === clipboardOverlay) {
+        clipboardOverlay.style.display = 'none';
+    }
+});
+
+prevPage.addEventListener('click', () => {
+    if (currentPage > 1) {
+        currentPage--;
+        showPage(currentPage);
+    }
+});
+
+nextPage.addEventListener('click', () => {
+    if (currentPage < totalPages) {
+        currentPage++;
+        showPage(currentPage);
+    }
+});
 
 function debugMessage(message) {
     if (!DEBUG_MODE) {
@@ -100,6 +144,12 @@ window.onload = () => {
     shopButton.addEventListener('click', () => {
         localStorage.setItem('gameState', JSON.stringify(chessboard.getGameState()));
         window.location.href = './shop';
+    });
+
+    clipboardButton.addEventListener('click', () => {
+        localStorage.setItem('gameState', JSON.stringify(chessboard.getGameState()))
+        clipboardOverlay.style.display = 'block';
+        showPage(currentPage);
     });
 
     // degugButton.addEventListener('click', () => {
