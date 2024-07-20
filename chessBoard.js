@@ -14,6 +14,7 @@ class Chessboard {
             location: null
         }
         this.lastPlayedMove = []
+        this.activePlayer = 'white';
 
         if (!gameState) {
             this.boardState = new Array(BOARDSIZE).fill(null).map(() => new Array(BOARDSIZE).fill(null));
@@ -27,7 +28,7 @@ class Chessboard {
             this.lostPieces = gameState.lostPieces ? gameState.lostPieces : { black: [], white: [] };
             this.render();
         }
-        this.activePlayer = 'white';
+
 
         console.log(this.boardState);
 
@@ -76,6 +77,7 @@ class Chessboard {
             }
             squareCount++;
         }
+        setPlayerIndicator(this.activePlayer);
     }
 
     getGameState() {
@@ -240,6 +242,7 @@ class Chessboard {
             }
 
             this.afterMove(this.getGameState());
+            return;
 
             // Should re-add the notation logging.
             // console.log(`${this.characterCodes[square.innerHTML] ? this.characterCodes[square.innerHTML].color + ': ' : ''}${this.characterCodes[square.innerHTML] ? this.characterCodes[square.innerHTML].type : ''}${capture ? 'x' : ''}${square.id}`);
@@ -288,6 +291,7 @@ class Chessboard {
     afterMove(gameState) {
         this.activePlayer = this.activePlayer == 'white' ? 'black' : 'white';
         this.generateLootBox(gameState);
+        this.render();
     }
 }
 
