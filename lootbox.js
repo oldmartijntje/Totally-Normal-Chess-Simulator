@@ -1,37 +1,44 @@
 const animationMultiplier = 1
 
-function runLootBoxUnboxing(piece, color, chessBoardState = null, cachedPieceData = null) {
-    const overlay = document.getElementById('lootboxOverlay');
-    const lootbox = document.getElementById('lootbox');
-    const prize = document.getElementById('prize');
-    const spinningStripes = document.getElementById('spinningStripes');
-
-    overlay.style.display = 'flex';
-
-    setTimeout(() => {
-        lootbox.classList.add('open');
+function runLootBoxUnboxing(piece, color, chessBoardState = null, cachedPieceData = null, animation = true) {
+    if (animation) {
+        const overlay = document.getElementById('lootboxOverlay');
+        const lootbox = document.getElementById('lootbox');
+        const prize = document.getElementById('prize');
+        const spinningStripes = document.getElementById('spinningStripes');
+        overlay.style.display = 'flex';
 
         setTimeout(() => {
-            lootbox.style.display = 'none';
-
-            if (pieces[piece].neutralObject) {
-                color = 'neutral';
-            }
-            prize.innerHTML = `<div class="prizeItem">${pieces[piece]["display"][color]}</div>`;
-            prize.style.display = 'block';
-            spinningStripes.style.display = 'block';
+            lootbox.classList.add('open');
 
             setTimeout(() => {
-                overlay.style.display = 'none';
-                lootbox.classList.remove('open');
-                prize.style.display = 'none';
-                spinningStripes.style.display = 'none';
+                lootbox.style.display = 'none';
 
-                lootbox.style.display = 'flex';
-                spawnLootboxPiece(piece, color, chessBoardState, cachedPieceData);
-            }, 1500 * animationMultiplier);
+                if (pieces[piece].neutralObject) {
+                    color = 'neutral';
+                }
+                prize.innerHTML = `<div class="prizeItem">${pieces[piece]["display"][color]}</div>`;
+                prize.style.display = 'block';
+                spinningStripes.style.display = 'block';
+
+                setTimeout(() => {
+                    overlay.style.display = 'none';
+                    lootbox.classList.remove('open');
+                    prize.style.display = 'none';
+                    spinningStripes.style.display = 'none';
+
+                    lootbox.style.display = 'flex';
+                    spawnLootboxPiece(piece, color, chessBoardState, cachedPieceData);
+                }, 1500 * animationMultiplier);
+            }, 1000 * animationMultiplier);
         }, 1000 * animationMultiplier);
-    }, 1000 * animationMultiplier);
+    } else {
+        setTimeout(() => { // has to be delayed, cause the move of the piece to capture the lootbox happens after the unboxing asynchroniously
+            // otherwise it will happen after, making the lootbox piece overwrite the capturing piece
+            spawnLootboxPiece(piece, color, chessBoardState, cachedPieceData);
+        }, 10);
+    }
+
 }
 
 function spawnLootboxPiece(piece, color, chessBoardState, cachedPieceData) {
@@ -41,7 +48,7 @@ function spawnLootboxPiece(piece, color, chessBoardState, cachedPieceData) {
     if (pieces[piece].neutralObject) {
         color = 'neutral';
     }
-    let location = cachedPieceData.location;
+    let location = [...cachedPieceData.location];
     chessBoardState[parseInt(location[0])][parseInt(location[1])] = {
         type: piece,
         color: color,

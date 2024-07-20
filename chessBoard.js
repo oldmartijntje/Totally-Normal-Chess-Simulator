@@ -1,5 +1,17 @@
 class Chessboard {
-    constructor(boardElementId = 'chessboard', gameState) {
+    constructor(boardElementId = 'chessboard', gameState, playerIndicators = { white: 'whitePlayer', black: 'blackPlayer' }, boardData = { blockInteraction: false, lootBoxAnimation: false }) {
+
+        // Binding the decorator to all methods of the class
+        for (const key of Object.getOwnPropertyNames(Object.getPrototypeOf(this))) {
+            if (typeof this[key] === 'function' && key !== 'constructor') {
+                this[key] = errorHandlerDecorator(this[key], this.handleError);
+            }
+        }
+
+        this.staticBoard = boardData.blockInteraction;
+        this.lootBoxAnimation = boardData.lootBoxAnimation;
+        this.playerIndicators = playerIndicators // the 2 elements that will be used to indicate the active player
+
         this.pieces = {
             white: ['pawn', 'pawn', 'pawn', 'pawn', 'pawn', 'pawn', 'pawn', 'pawn', 'rook', 'knight', 'bishop', 'queen', 'king', 'bishop', 'knight', 'rook'],
             black: ['rook', 'knight', 'bishop', 'queen', 'king', 'bishop', 'knight', 'rook', 'pawn', 'pawn', 'pawn', 'pawn', 'pawn', 'pawn', 'pawn', 'pawn']
@@ -7,12 +19,13 @@ class Chessboard {
         this.letters = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h']; // unused, for notation
         this.board = document.getElementById(boardElementId);
 
-        this.selectedPiece = null // This is used to store the selected piece
+        this.selectedPiece = null // This is used to store the selected piece coordinate
         this.cachedPieceData = { // This is used to store the piece data of the selected piece
             pieceData: null,
             boardData: null,
             location: null
         }
+
         this.lastPlayedMove = [] // this stores the last move, were you moved from and to.
         this.activePlayer = STARTING_PLAYER;
 
@@ -26,15 +39,42 @@ class Chessboard {
         } else {
             this.boardState = gameState.boardState ? gameState.boardState : new Array(BOARDSIZE).fill(null).map(() => new Array(BOARDSIZE).fill(null));
             this.lostPieces = gameState.lostPieces ? gameState.lostPieces : { black: [], white: [] };
-            this.render();
+            this.activePlayer = gameState.activePlayer ? gameState.activePlayer : STARTING_PLAYER;
+            this.lastPlayedMove = gameState.lastPlayedMove ? gameState.lastPlayedMove : [];
+            this.cachedPieceData = gameState.cachedPieceData ? gameState.cachedPieceData : { pieceData: null, boardData: null, location: null };
+            if (gameState.selectedPiece) {
+                this.render(); // it has to render first to get the selected piece
+                this.selectedPiece = document.getElementById(gameState.selectedPiece);
+                if (!this.cachedPieceData || !this.cachedPieceData.pieceData || !this.cachedPieceData.boardData || !this.cachedPieceData.location) {
+                    // if there is no piece on the location of the active piece, then it will not select the piece
+                    if (pieces[this.selectedPiece.getAttribute('piece-name')] == undefined || this.boardState[this.selectedPiece.id.split(',')[0]][this.selectedPiece.id.split(',')[1]] == null) {
+                        this.selectedPiece = null;
+                        return;
+                    }
+                    this.cachedPieceData = {
+                        pieceData: pieces[this.selectedPiece.getAttribute('piece-name')],
+                        boardData: this.boardState[this.selectedPiece.id.split(',')[0]][this.selectedPiece.id.split(',')[1]],
+                        location: this.selectedPiece.id.split(',')
+                    }
+                }
+                this.render();
+            } else {
+                this.render();
+            }
+
+
         }
-
-
         console.log(this.boardState);
-
     }
 
-
+    handleError(error) {
+        console.error('An error occurred:', error);
+        const gameState = this.getGameState()
+        if (DEBUG_MODE) {
+            localStorage.setItem('gameState-DEBUG_MODE', JSON.stringify(gameState))
+        }
+        console.warn('Game state saved:', gameState);
+    }
 
     createBoard() {
         this.setupInitialPosition();
@@ -49,12 +89,14 @@ class Chessboard {
             for (let j = 0; j < this.boardState[i].length; j++) {
                 const square = document.createElement('div');
                 square.classList.add('square');
-                square.classList.add((i + j) % 2 === 0 ? 'white' : 'black');
-                square.addEventListener('click', () => this.handleSquareClick(square));
-                square.addEventListener('touchend', (event) => {
-                    event.preventDefault(); // Prevents the click event from also firing
-                    this.handleSquareClick(square);
-                });
+                if (this.boardState[i][j] != 404) {
+                    square.classList.add((i + j) % 2 === 0 ? 'white' : 'black');
+                    square.addEventListener('click', () => this.handleSquareClick(square));
+                    square.addEventListener('touchend', (event) => {
+                        event.preventDefault(); // Prevents the click event from also firing
+                        this.handleSquareClick(square);
+                    });
+                }
 
                 square.id = `${i},${j}`;
                 if (this.selectedPiece && this.selectedPiece.id == square.id) {
@@ -67,7 +109,7 @@ class Chessboard {
                     square.classList.add('last-move');
                 }
 
-                if (this.boardState[i][j]) {
+                if (this.boardState[i][j] && this.boardState[i][j] != 404) {
                     square.innerHTML = pieces[this.boardState[i][j].type].display[this.boardState[i][j].color];
                     square.setAttribute('piece-name', this.boardState[i][j].type);
                     square.setAttribute('piece-team', this.boardState[i][j].color);
@@ -75,15 +117,29 @@ class Chessboard {
 
                 this.board.appendChild(square, 1);
             }
+            if (this.boardState[i].length < BOARDSIZE) {
+                for (let j = this.boardState[i].length; j < BOARDSIZE; j++) {
+                    const square = document.createElement('div');
+                    square.classList.add('square');
+                    square.id = `${i},${j}`;
+                    this.board.appendChild(square, 1);
+                }
+            }
             squareCount++;
         }
-        setPlayerIndicator(this.activePlayer);
+        if (this.playerIndicators && this.playerIndicators.white && this.playerIndicators.black) {
+            setPlayerIndicator(this.activePlayer, this.playerIndicators);
+        }
     }
 
     getGameState() {
         return {
             boardState: this.boardState,
             lostPieces: this.lostPieces,
+            activePlayer: this.activePlayer,
+            selectedPiece: this.selectedPiece?.id,
+            cachedPieceData: this.cachedPieceData,
+            lastPlayedMove: this.lastPlayedMove
         }
     }
 
@@ -174,6 +230,9 @@ class Chessboard {
     }
 
     handleSquareClick(square) {
+        if (this.staticBoard) {
+            return;
+        }
         if (!this.selectedPiece && square.getAttribute('piece-team') == 'neutral') {
             console.warn('Cannot select neutral pieces at: ' + square.id + '. PieceInfo:', this.boardState[square.id.split(',')[0]][square.id.split(',')[1]]);
         }
@@ -189,6 +248,11 @@ class Chessboard {
                 this.render();
                 return;
             }
+            let discoveredPieces = localStorage.getItem('discoveredPieces') ? JSON.parse(localStorage.getItem('discoveredPieces')) : {}
+            if (this.cachedPieceData.pieceData.needsDiscovery && !discoveredPieces[this.cachedPieceData.pieceData.type]) {
+                discoveredPieces[this.cachedPieceData.pieceData.type] = true
+                localStorage.setItem('discoveredPieces', JSON.stringify(discoveredPieces))
+            }
 
             let capture;
             square.dataset.selected = false;
@@ -200,7 +264,7 @@ class Chessboard {
 
                 if (this.boardState[location[0]][location[1]].color == 'neutral') {
                     if (this.boardState[location[0]][location[1]].type == 'lootbox') {
-                        runLootBoxUnboxing(getLootboxPiece(this.cachedPieceData.boardData.type), this.cachedPieceData.boardData.color, this.boardState, JSON.parse(JSON.stringify(this.cachedPieceData)));
+                        runLootBoxUnboxing(getLootboxPiece(this.cachedPieceData.boardData.type), this.cachedPieceData.boardData.color, this.boardState, JSON.parse(JSON.stringify(this.cachedPieceData)), this.lootBoxAnimation);
                     }
                 } else {
                     this.lostPieces[this.boardState[location[0]][location[1]].color].push(this.boardState[location[0]][location[1]].type);
@@ -213,6 +277,13 @@ class Chessboard {
                             }, 1);
                         }
                     }
+                }
+            }
+
+            if (capture) {
+                if (pieces[this.boardState[location[0]][location[1]].type].needsDiscovery && !discoveredPieces[this.boardState[location[0]][location[1]].type]) {
+                    discoveredPieces[this.boardState[location[0]][location[1]].type] = true
+                    localStorage.setItem('discoveredPieces', JSON.stringify(discoveredPieces))
                 }
             }
 

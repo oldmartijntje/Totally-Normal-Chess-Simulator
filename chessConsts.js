@@ -203,6 +203,7 @@ const pieces = {
             weight: 1,
         },
         neutralObject: true,
+        needsDiscovery: true,
         display: {
             neutral: `<div class="container">
   <div class="box">
