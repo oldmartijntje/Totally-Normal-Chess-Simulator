@@ -249,8 +249,9 @@ class Chessboard {
                 return;
             }
             let discoveredPieces = localStorage.getItem('discoveredPieces') ? JSON.parse(localStorage.getItem('discoveredPieces')) : {}
-            if (this.cachedPieceData.pieceData.needsDiscovery && !discoveredPieces[this.cachedPieceData.pieceData.type]) {
-                discoveredPieces[this.cachedPieceData.pieceData.type] = true
+            console.log(this.cachedPieceData)
+            if (this.cachedPieceData.pieceData.needsDiscovery && !discoveredPieces[this.cachedPieceData.boardData.type]) {
+                discoveredPieces[this.cachedPieceData.boardData.type] = true
                 localStorage.setItem('discoveredPieces', JSON.stringify(discoveredPieces))
             }
 

@@ -75,6 +75,8 @@ const pieces = {
             black: '<img src="https://i.imgur.com/iXtJNpw.png">',
         },
         notationType: 'N',
+        description: "<p>Jumps over pieces.</p>",
+
     },
     'bishop': {
         lootbox: {
@@ -149,6 +151,7 @@ const pieces = {
             black: '<img src="https://i.imgur.com/YAdx7Sr.png">'
         },
         notationType: 'K',
+        description: "<p>Once captured, you lose.</p>",
     },
     'pawn': {
         lootbox: {
@@ -191,6 +194,7 @@ const pieces = {
             white: '<img src="https://i.imgur.com/wJM6aPc.png">',
             black: '<img src="https://i.imgur.com/1TN3hWU.png">',
         },
+        description: "<p>First move can move 2 spaces forward instead of 1<br>Attacks diagonally forward.<br>Transforms into a queen once you reach the opposite side of the board.<br>Black moves in the opposite direction.</p>",
         notationType: '',
         convertion: {
             rows: [0],
@@ -204,6 +208,7 @@ const pieces = {
         },
         neutralObject: true,
         needsDiscovery: true,
+        description: "<p>Once captured, you will get a random piece.<br>Spawns randomly and can be bought.</p>",
         display: {
             neutral: `<div class="container">
   <div class="box">
