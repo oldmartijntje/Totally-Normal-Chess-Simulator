@@ -4,16 +4,16 @@ class Chessboard {
             white: ['pawn', 'pawn', 'pawn', 'pawn', 'pawn', 'pawn', 'pawn', 'pawn', 'rook', 'knight', 'bishop', 'queen', 'king', 'bishop', 'knight', 'rook'],
             black: ['rook', 'knight', 'bishop', 'queen', 'king', 'bishop', 'knight', 'rook', 'pawn', 'pawn', 'pawn', 'pawn', 'pawn', 'pawn', 'pawn', 'pawn']
         };
-        this.letters = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'];
+        this.letters = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h']; // unused, for notation
         this.board = document.getElementById(boardElementId);
 
-        this.selectedPiece = null
-        this.cachedPieceData = {
+        this.selectedPiece = null // This is used to store the selected piece
+        this.cachedPieceData = { // This is used to store the piece data of the selected piece
             pieceData: null,
             boardData: null,
             location: null
         }
-        this.lastPlayedMove = []
+        this.lastPlayedMove = [] // this stores the last move, were you moved from and to.
         this.activePlayer = STARTING_PLAYER;
 
         if (!gameState) {
