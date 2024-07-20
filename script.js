@@ -22,6 +22,7 @@ const prevPage = document.getElementById('prevPage');
 const nextPage = document.getElementById('nextPage');
 const pageNumber = document.getElementById('pageNumber');
 
+let chessboard;
 let currentPage = 1;
 
 function loadPage(pageElement, pageNum) {
@@ -40,6 +41,13 @@ function setPlayerIndicator(color) {
         whitePlayer.classList.remove('active');
     } else {
         console.error('Invalid color. Use "white" or "black".');
+    }
+}
+
+function switchActivePlayer() {
+    if (chessboard) {
+        chessboard.switchActivePlayer();
+
     }
 }
 
@@ -104,7 +112,7 @@ function hidePopup() {
     noLootboxPopup.style.display = 'none';
 }
 
-let chessboard
+
 
 function percentageRandomiser(percent) {
     let x = percent / 100
@@ -122,7 +130,9 @@ window.onload = () => {
     console.log(setupData)
 
     gameState = localStorage.getItem('gameState') ? JSON.parse(localStorage.getItem('gameState')) : undefined;
-    localStorage.removeItem('gameState')
+    if (!DEBUG_MODE) {
+        localStorage.removeItem('gameState')
+    }
 
     chessboard = new Chessboard(undefined, gameState);
 

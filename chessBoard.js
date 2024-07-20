@@ -217,7 +217,6 @@ class Chessboard {
             }
 
             this.lastPlayedMove = [this.cachedPieceData.location, location];
-            console.log('Last played move:', this.lastPlayedMove);
             this.boardState[location[0]][location[1]] = this.boardState[this.cachedPieceData.location[0]][this.cachedPieceData.location[1]];
             this.boardState[location[0]][location[1]].moved = true;
 
@@ -288,10 +287,28 @@ class Chessboard {
         return false;
     }
 
-    afterMove(gameState) {
+    switchActivePlayer() {
         this.activePlayer = this.activePlayer == 'white' ? 'black' : 'white';
+        this.render();
+    }
+
+    afterMove(gameState) {
+        let nextPlayer = this.activePlayer == 'white' ? 'black' : 'white';
+        let piecesLeftOfActivePlayer = 0;
+        for (let i = 0; i < this.boardState.length; i++) {
+            for (let j = 0; j < this.boardState[i].length; j++) {
+                if (this.boardState[i][j] && this.boardState[i][j].color == nextPlayer) {
+                    piecesLeftOfActivePlayer++;
+                }
+            }
+        }
+        if (piecesLeftOfActivePlayer == 0) {
+            nextPlayer = nextPlayer == 'white' ? 'black' : 'white';
+        }
+        this.activePlayer = nextPlayer;
         this.generateLootBox(gameState);
         this.render();
+
     }
 }
 

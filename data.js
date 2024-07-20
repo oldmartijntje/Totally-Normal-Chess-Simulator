@@ -22,10 +22,12 @@ const editableRulebook = [
                     <ul>
                         <li>Castling</li>
                         <li>En passant</li>
+                        <li>Check notifier</li>
                         <li>Checkmate (hit the king to win)</li>
                         <li>Stalemate</li>
-                        <li>Turns, you can play only with white if you want to.</li>
-                    </ul>`
+                    </ul>
+                    <p>Once you have won, you can continue playing, You'll just get a "You won!" popup every time you trigger the win condition again.</p>`
+
     },
     {
         length: 0,
