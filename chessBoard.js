@@ -14,7 +14,7 @@ class Chessboard {
             location: null
         }
         this.lastPlayedMove = []
-        this.activePlayer = 'white';
+        this.activePlayer = STARTING_PLAYER;
 
         if (!gameState) {
             this.boardState = new Array(BOARDSIZE).fill(null).map(() => new Array(BOARDSIZE).fill(null));
