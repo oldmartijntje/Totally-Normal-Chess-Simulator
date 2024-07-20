@@ -35,10 +35,6 @@
     background-color: #b58863;
 }
 
-.legal-move {
-    position: relative;
-}
-
 body {
     font-family: Arial, sans-serif;
     margin: 0;
@@ -82,15 +78,38 @@ header {
     height: 30px;
 }
 
-.legal-move::after {
+.last-move {
+    position: relative;
+}
+
+.last-move::before {
     content: "";
     position: absolute;
+    background-color: rgba(238, 255, 0, 0.219);
+    pointer-events: none;
     top: 0;
     left: 0;
     right: 0;
     bottom: 0;
-    background-color: rgba(189, 76, 76, 0.5);
+}
+
+.legal-move {
+    position: relative;
+}
+
+.legal-move::after {
+    content: "";
+    position: absolute;
+    top: 25%;
+    left: 25%;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(48, 48, 48, 0.5);
+    border-radius: 100%;
+    width: 50%;
+    height: 50%;
     pointer-events: none;
+    filter: saturate(1)
 }
 
 .overlay {

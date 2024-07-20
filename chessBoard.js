@@ -13,6 +13,7 @@ class Chessboard {
             boardData: null,
             location: null
         }
+        this.lastPlayedMove = []
 
         if (!gameState) {
             this.boardState = new Array(BOARDSIZE).fill(null).map(() => new Array(BOARDSIZE).fill(null));
@@ -26,6 +27,7 @@ class Chessboard {
             this.lostPieces = gameState.lostPieces ? gameState.lostPieces : { black: [], white: [] };
             this.render();
         }
+        this.activePlayer = 'white';
 
         console.log(this.boardState);
 
@@ -60,6 +62,9 @@ class Chessboard {
                 if (this.isThisALegalMove(i, j)) {
                     square.classList.add('legal-move');
                 }
+                if (this.lastPlayedMove.length != 0 && (i == this.lastPlayedMove[0][0] && j == this.lastPlayedMove[0][1] || i == this.lastPlayedMove[1][0] && j == this.lastPlayedMove[1][1])) {
+                    square.classList.add('last-move');
+                }
 
                 if (this.boardState[i][j]) {
                     square.innerHTML = pieces[this.boardState[i][j].type].display[this.boardState[i][j].color];
@@ -81,11 +86,14 @@ class Chessboard {
     }
 
     isThisALegalMove(x, y) {
-        const legal = this.isLegalMove(x, y);
+        let legal = this.isLegalMove(x, y);
         return INVERTED_LOGIC != legal;
     }
 
     isLegalMove(x, y) {
+        if (this.cachedPieceData.boardData && this.cachedPieceData.boardData.color != this.activePlayer && FORCE_PLAYER_TURNS) {
+            return false;
+        }
         if (this.selectedPiece == null) {
             return false;
         }
@@ -168,7 +176,15 @@ class Chessboard {
             console.warn('Cannot select neutral pieces at: ' + square.id + '. PieceInfo:', this.boardState[square.id.split(',')[0]][square.id.split(',')[1]]);
         }
         else if (this.selectedPiece && this.selectedPiece.id !== square.id) {
+            // if you have selected a piece and you click on a different square
             if (!this.isThisALegalMove(parseInt(square.id.split(',')[0]), parseInt(square.id.split(',')[1])) && !UNLOCK_MOVEMENT) {
+                this.selectedPiece = null;
+                this.cachedPieceData = {
+                    pieceData: null,
+                    boardData: null,
+                    location: null
+                }
+                this.render();
                 return;
             }
 
@@ -197,6 +213,9 @@ class Chessboard {
                     }
                 }
             }
+
+            this.lastPlayedMove = [this.cachedPieceData.location, location];
+            console.log('Last played move:', this.lastPlayedMove);
             this.boardState[location[0]][location[1]] = this.boardState[this.cachedPieceData.location[0]][this.cachedPieceData.location[1]];
             this.boardState[location[0]][location[1]].moved = true;
 
@@ -225,6 +244,7 @@ class Chessboard {
             // Should re-add the notation logging.
             // console.log(`${this.characterCodes[square.innerHTML] ? this.characterCodes[square.innerHTML].color + ': ' : ''}${this.characterCodes[square.innerHTML] ? this.characterCodes[square.innerHTML].type : ''}${capture ? 'x' : ''}${square.id}`);
         } else if (this.selectedPiece && this.selectedPiece.id == square.id) {
+            // if you have selected a piece and you click on the same square
             this.selectedPiece = null;
             this.cachedPieceData = {
                 pieceData: null,
@@ -232,7 +252,7 @@ class Chessboard {
                 location: null
             }
         } else if (square.innerHTML) {
-
+            // if you click on a square with a piece
             this.selectedPiece = square;
             this.cachedPieceData = {
                 pieceData: pieces[square.getAttribute('piece-name')],
@@ -266,6 +286,7 @@ class Chessboard {
     }
 
     afterMove(gameState) {
+        this.activePlayer = this.activePlayer == 'white' ? 'black' : 'white';
         this.generateLootBox(gameState);
     }
 }
