@@ -1,6 +1,6 @@
 const setupData = {
-    votingUrl: 'https://www.reddit.com/r/AnarchyChess/comments/1e750dz/3_added_lootboxes_to_my_totally_accurate_chess/',
-    githubRepo: 'https://github.com/oldmartijntje/SocialSelect',
+    votingUrl: 'https://www.reddit.com/r/AnarchyChess/comments/1e8mxgr/4_added_merging_of_pieces_to_my_totally_accurate/',
+    githubRepo: 'https://github.com/oldmartijntje/Totally-Normal-Chess-Simulator',
     version: 3
 }
 
