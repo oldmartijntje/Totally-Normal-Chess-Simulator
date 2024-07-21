@@ -151,7 +151,7 @@ const pieces = {
             black: '<img src="https://i.imgur.com/YAdx7Sr.png">'
         },
         notationType: 'K',
-        description: "<p>Once captured, you lose.</p>",
+        description: "<p>Once captured, you lose.</p><p><a href=\"https://en.wikipedia.org/wiki/Castling\" target=\"_blank\">Castling</a> is not a thing.</p>",
     },
     'pawn': {
         lootbox: {
@@ -194,7 +194,7 @@ const pieces = {
             white: '<img src="https://i.imgur.com/wJM6aPc.png">',
             black: '<img src="https://i.imgur.com/1TN3hWU.png">',
         },
-        description: "<p>First move can move 2 spaces forward instead of 1<br>Attacks diagonally forward.<br>Transforms into a queen once you reach the opposite side of the board.<br>Black moves in the opposite direction.</p>",
+        description: "<p>First move can move 2 spaces forward instead of 1<br>Attacks diagonally forward.<br>Transforms into a queen once you reach the opposite side of the board.<br>Black moves in the opposite direction.</p><p><a href=\"https://en.wikipedia.org/wiki/En_passant\" target=\"_blank\">En passant</a> is not a thing.</p>",
         notationType: '',
         convertion: {
             rows: [0],

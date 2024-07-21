@@ -61,6 +61,10 @@ function generateChessboard(pieceName) {
 
 let chessboard;
 
+function goHome() {
+    window.location.href = '../'
+}
+
 
 generateButtons()
 generateChessboard(Object.keys(pieces)[0])

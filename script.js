@@ -21,6 +21,7 @@ const closeClipboard = document.getElementById('closeClipboard');
 const prevPage = document.getElementById('prevPage');
 const nextPage = document.getElementById('nextPage');
 const pageNumber = document.getElementById('pageNumber');
+const Encyclopedia = document.getElementById('Encyclopedia');
 
 let chessboard;
 let currentPage = 1;
@@ -159,6 +160,11 @@ window.onload = () => {
         localStorage.setItem('gameState', JSON.stringify(chessboard.getGameState()))
         clipboardOverlay.style.display = 'block';
         showPage(currentPage);
+    });
+
+    Encyclopedia.addEventListener('click', () => {
+        localStorage.setItem('gameState', JSON.stringify(chessboard.getGameState()))
+        window.location.href = './encyclopedia';
     });
 
     // degugButton.addEventListener('click', () => {
