@@ -114,8 +114,7 @@ window.onload = () => {
         localStorage.removeItem('gameState')
     }
 
-    chessboard = new Chessboard(undefined, gameState);
-
+    chessboard = new Chessboard(undefined, gameState, undefined, {"lootBoxAnimation": true});
     sendToStore1.addEventListener('click', () => {
         localStorage.setItem('tokens', tokens)
         localStorage.setItem('gameState', JSON.stringify(chessboard.getGameState()))
