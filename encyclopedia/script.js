@@ -12,8 +12,7 @@ function generateGameState(pieceName, x = 4, y = 5) {
             if (i === x && j === y) {
                 let piece = {
                     "color": "white",
-                    "type": pieceName,
-                    "moved": true
+                    "type": pieceName
                 }
                 if (pieces[pieceName].neutralObject) {
                     piece.color = "neutral"
@@ -56,7 +55,7 @@ function generateButtons() {
 }
 
 function generateChessboard(pieceName) {
-    chessboard = new Chessboard(undefined, generateGameState(pieceName), null, { blockInteraction: true });
+    chessboard = new Chessboard(undefined, generateGameState(pieceName), null, { blockInteraction: false, sandboxChessBoard: true });
 }
 
 let chessboard;

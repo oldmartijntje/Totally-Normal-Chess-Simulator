@@ -5,7 +5,7 @@ const UNLOCK_MOVEMENT = false;
 const INVERTED_LOGIC = false;
 const LOOTBOX_SPAWN_PERCENTAGE = 5
 const LOOTBOX_CAPTURING_PIECE_WEIGHT = 5
-const DEBUG_MODE = false;
+const DEBUG_MODE = true;
 const FORCE_PLAYER_TURNS = true;
 const STARTING_PLAYER = 'white';
 
@@ -38,6 +38,9 @@ const pieces = {
             black: '<img src="https://i.imgur.com/iQBNl18.png">',
         },
         notationType: 'R',
+        mergability: {
+            'rook': 'reversed-rook',
+        }
 
     },
     'knight': {
@@ -76,6 +79,9 @@ const pieces = {
         },
         notationType: 'N',
         description: "<p>Jumps over pieces.</p>",
+        mergability: {
+            'knight': 'winged-knight',
+        }
 
     },
     'bishop': {
@@ -99,6 +105,9 @@ const pieces = {
             black: '<img src="https://i.imgur.com/yhW9ulD.png">'
         },
         notationType: 'B',
+        mergability: {
+            'bishop': 'double-bishop',
+        }
     },
     'queen': {
         lootbox: {
@@ -125,6 +134,9 @@ const pieces = {
             black: '<img src="https://i.imgur.com/j6QeiaI.png">'
         },
         notationType: 'Q',
+        mergability: {
+            'queen': 'royal-queen',
+        }
     },
     'king': {
         lootbox: {
@@ -151,7 +163,7 @@ const pieces = {
             black: '<img src="https://i.imgur.com/YAdx7Sr.png">'
         },
         notationType: 'K',
-        description: "<p>Once captured, you lose.</p><p><a href=\"https://en.wikipedia.org/wiki/Castling\" target=\"_blank\">Castling</a> is not a thing.</p>",
+        description: "<p>Once captured, you lose.</p><p><a href=\"https://en.wikipedia.org/wiki/Castling\" target=\"_blank\">Castling</a> is not a thing.</p>"
     },
     'pawn': {
         lootbox: {
@@ -200,6 +212,9 @@ const pieces = {
             rows: [0],
             collumns: [0, 1, 2, 3, 4, 5, 6, 7],
             convertsTo: 'queen',
+        },
+        mergability: {
+            'pawn': 'pawned',
         }
     },
     'lootbox': {
@@ -218,5 +233,193 @@ const pieces = {
   </div>
 </div>`,
         }
-    }
+    },
+    'reversed-rook': {
+        lootbox: {
+            weight: 2,
+        },
+        patterns: {
+            movement: [
+                { direction: 'vertical', distance: INFINITE, jump: false, extraThickLine: 0.5 },
+                { direction: 'horizontal', distance: INFINITE, jump: false, extraThickLine: 0.5 },
+
+            ],
+            capture: [
+                { direction: 'vertical', distance: INFINITE, jump: false, extraThickLine: 0.5 },
+                { direction: 'horizontal', distance: INFINITE, jump: false, extraThickLine: 0.5 },
+            ],
+        },
+        display: {
+            white: '<img src="https://i.imgur.com/KiRlbQJ.png">',
+            black: '<img src="https://i.imgur.com/9sCgUI8.png">',
+        },
+        notationType: 'RR',
+        needsDiscovery: true,
+        description: "<p>Unlocked by merging 2 rooks, Moves like there is a second rook on the square North-West of itself.</p>",
+
+    },
+    'winged-knight': {
+        lootbox: {
+            weight: 2,
+        },
+        patterns: {
+            movement: [{
+                area: [
+                    [null, null, 1, null, null, null, 1, null, null],
+                    [null, null, null, null, null, null, null, null, null],
+                    [1, null, null, 1, null, 1, null, null, 1],
+                    [null, null, 1, null, null, null, 1, null, null,],
+                    [null, null, null, null, 0, null, null, null, null,],
+                    [null, null, 1, null, null, null, 1, null, null,],
+                    [1, null, null, 1, null, 1, null, null, 1],
+                    [null, null, null, null, null, null, null, null, null],
+                    [null, null, 1, null, null, null, 1, null, null,],
+                ]
+            }],
+            capture: [{
+                area: [
+                    [null, null, 1, null, null, null, 1, null, null],
+                    [null, null, null, null, null, null, null, null, null],
+                    [1, null, null, 1, null, 1, null, null, 1],
+                    [null, null, 1, null, null, null, 1, null, null,],
+                    [null, null, null, null, 0, null, null, null, null,],
+                    [null, null, 1, null, null, null, 1, null, null,],
+                    [1, null, null, 1, null, 1, null, null, 1],
+                    [null, null, null, null, null, null, null, null, null],
+                    [null, null, 1, null, null, null, 1, null, null,],
+                ]
+
+            },
+                // { everywhere: true, exclude: true }, // funny
+                // { everywhere: true, type: ['pawn'] },
+            ],
+        },
+        display: {
+            white: '<img src="https://i.imgur.com/O2bofNX.png">',
+            black: '<img src="https://i.imgur.com/srBBfh4.png">',
+        },
+        notationType: 'NN',
+        description: "<p>Unlocked by merging 2 Knights and can do 2 jumps in a row.</p>",
+        needsDiscovery: true,
+
+    },
+    'double-bishop': {
+        lootbox: {
+            weight: 3,
+        },
+        patterns: {
+            movement: [
+                { direction: 'diagonal/', distance: INFINITE, jump: false, extraThickLine: 1 },
+                { direction: 'diagonal\\', distance: INFINITE, jump: false, extraThickLine: 1 },
+            ],
+            capture: [
+                { direction: 'diagonal/', distance: INFINITE, jump: false },
+                { direction: 'diagonal\\', distance: INFINITE, jump: false },
+            ],
+        },
+        display: {
+            white: '<img src="https://i.imgur.com/Nr8OCKj.png">',
+            black: '<img src="https://i.imgur.com/9miqt0h.png">'
+        },
+        notationType: 'BB',
+        description: "<p>Unlocked by merging 2 Bishops. Moves like 3 Bishops next to each other, Attacks like a normal bishop.</p>",
+        needsDiscovery: true,
+    },
+    'royal-queen': {
+        lootbox: {
+            weight: 1,
+        },
+        patterns: {
+            movement: [
+                { direction: 'vertical', distance: INFINITE, jump: true },
+                { direction: 'horizontal', distance: INFINITE, jump: true },
+                { direction: 'diagonal/', distance: INFINITE, jump: true },
+                { direction: 'diagonal\\', distance: INFINITE, jump: true },
+            ],
+            capture: [
+                { direction: 'vertical', distance: INFINITE, jump: false },
+                { direction: 'horizontal', distance: INFINITE, jump: false },
+                { direction: 'diagonal/', distance: INFINITE, jump: false },
+                { direction: 'diagonal\\', distance: INFINITE, jump: false },
+            ],
+        },
+        display: {
+            white: '<img src="https://i.imgur.com/NR7aMX1.png">',
+            black: '<img src="https://i.imgur.com/tli76ZK.png">'
+        },
+        needsDiscovery: true,
+        notationType: 'QQ',
+        description: "<p>Unlocked by merging 2 Queens. Attacks like a normal queen, but whilst moving to an empty piece it can jump over pieces.</p>",
+    },
+    'pawned': {
+        lootbox: {
+            weight: 2.5,
+        },
+        patterns: {
+            movement: [
+                { direction: 'vertical', distance: 2, jump: false },
+                {
+                    area: [
+                        [null, 1, null],
+                        [null, null, null],
+                        [null, 0, null],
+                        [null, null, null],
+                        [null, 1, null],
+                    ],
+                    unmoved: [
+                        [null, 0, null],
+                    ],
+                    exclude: true,
+                }
+            ],
+            capture: [
+                {
+                    area: [
+                        [1, null, 1],
+                        [null, 0, null],
+                        [1, null, 1],
+                    ],
+                }
+            ],
+        },
+        display: {
+            white: '<img src="https://i.imgur.com/kCamJU1.png">',
+            black: '<img src="https://i.imgur.com/YBxZXmv.png">',
+        },
+        needsDiscovery: true,
+        description: "<p>First move can move 2 spaces instead of 1<br>Attacks diagonally.<br>Transforms into a Queened once you reach the opposite side of the board.</p>",
+        notationType: '',
+        convertion: {
+            rows: [0],
+            collumns: [0, 1, 2, 3, 4, 5, 6, 7],
+            convertsTo: 'queened',
+        },
+    },
+    'queened': {
+        lootbox: {
+            weight: 0,
+        },
+        patterns: {
+            movement: [
+                { everywhere: true, exclude: false },
+                { direction: 'vertical', distance: INFINITE, jump: false, exclude: true },
+                { direction: 'horizontal', distance: INFINITE, jump: false, exclude: true },
+                { direction: 'diagonal/', distance: INFINITE, jump: false, exclude: true },
+                { direction: 'diagonal\\', distance: INFINITE, jump: false, exclude: true },
+            ],
+            capture: [
+                { direction: 'vertical', distance: 1, jump: false },
+                { direction: 'horizontal', distance: 1, jump: false },
+                { direction: 'diagonal/', distance: 1, jump: false },
+                { direction: 'diagonal\\', distance: 1, jump: false },
+            ],
+        },
+        display: {
+            white: '<img src="https://i.imgur.com/3xivipk.png">',
+            black: '<img src="https://i.imgur.com/rJ7Pd34.png">'
+        },
+        needsDiscovery: true,
+        description: "<p>Moves as an inversed Queen, attacks as a King. Unlocked by promoting a Pawned.</p>",
+        notationType: 'Q\'d',
+    },
 }

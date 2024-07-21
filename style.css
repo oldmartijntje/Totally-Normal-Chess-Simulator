@@ -114,6 +114,10 @@ header {
     filter: saturate(1)
 }
 
+.mergeable::after {
+    background-color: rgba(204, 0, 255, 0.5);
+}
+
 .overlay {
     display: none;
     position: fixed;

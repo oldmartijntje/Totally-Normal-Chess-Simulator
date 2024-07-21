@@ -1,5 +1,5 @@
 class Chessboard {
-    constructor(boardElementId = 'chessboard', gameState, playerIndicators = { white: 'whitePlayer', black: 'blackPlayer' }, boardData = { blockInteraction: false, lootBoxAnimation: false }) {
+    constructor(boardElementId = 'chessboard', gameState, playerIndicators = { white: 'whitePlayer', black: 'blackPlayer' }, boardData = { blockInteraction: false, lootBoxAnimation: false, sandboxChessBoard: false }) {
 
         // Binding the decorator to all methods of the class
         for (const key of Object.getOwnPropertyNames(Object.getPrototypeOf(this))) {
@@ -8,6 +8,7 @@ class Chessboard {
             }
         }
 
+        this.sandboxChessBoard = boardData.sandboxChessBoard;
         this.staticBoard = boardData.blockInteraction;
         this.lootBoxAnimation = boardData.lootBoxAnimation;
         this.playerIndicators = playerIndicators // the 2 elements that will be used to indicate the active player
@@ -41,21 +42,18 @@ class Chessboard {
             this.lostPieces = gameState.lostPieces ? gameState.lostPieces : { black: [], white: [] };
             this.activePlayer = gameState.activePlayer ? gameState.activePlayer : STARTING_PLAYER;
             this.lastPlayedMove = gameState.lastPlayedMove ? gameState.lastPlayedMove : [];
-            this.cachedPieceData = gameState.cachedPieceData ? gameState.cachedPieceData : { pieceData: null, boardData: null, location: null };
             if (gameState.selectedPiece) {
                 this.render(); // it has to render first to get the selected piece
                 this.selectedPiece = document.getElementById(gameState.selectedPiece);
-                if (!this.cachedPieceData || !this.cachedPieceData.pieceData || !this.cachedPieceData.boardData || !this.cachedPieceData.location) {
-                    // if there is no piece on the location of the active piece, then it will not select the piece
-                    if (pieces[this.selectedPiece.getAttribute('piece-name')] == undefined || this.boardState[this.selectedPiece.id.split(',')[0]][this.selectedPiece.id.split(',')[1]] == null) {
-                        this.selectedPiece = null;
-                        return;
-                    }
-                    this.cachedPieceData = {
-                        pieceData: pieces[this.selectedPiece.getAttribute('piece-name')],
-                        boardData: this.boardState[this.selectedPiece.id.split(',')[0]][this.selectedPiece.id.split(',')[1]],
-                        location: this.selectedPiece.id.split(',')
-                    }
+                // if there is no piece on the location of the active piece, then it will not select the piece
+                if (pieces[this.selectedPiece.getAttribute('piece-name')] == undefined || this.boardState[this.selectedPiece.id.split(',')[0]][this.selectedPiece.id.split(',')[1]] == null) {
+                    this.selectedPiece = null;
+                    return;
+                }
+                this.cachedPieceData = {
+                    pieceData: pieces[this.selectedPiece.getAttribute('piece-name')],
+                    boardData: this.boardState[this.selectedPiece.id.split(',')[0]][this.selectedPiece.id.split(',')[1]],
+                    location: this.selectedPiece.id.split(',')
                 }
                 this.render();
             } else {
@@ -64,7 +62,9 @@ class Chessboard {
 
 
         }
-        console.log(this.boardState);
+        if (DEBUG_MODE) {
+            console.log(this.boardState);
+        }
     }
 
     handleError(error) {
@@ -83,6 +83,7 @@ class Chessboard {
     }
 
     render() {
+        this.cacheMoveData()
         this.board.innerHTML = '';
         let squareCount = 0;
         for (let i = 0; i < this.boardState.length; i++) {
@@ -107,6 +108,9 @@ class Chessboard {
                 }
                 if (this.lastPlayedMove.length != 0 && (i == this.lastPlayedMove[0][0] && j == this.lastPlayedMove[0][1] || i == this.lastPlayedMove[1][0] && j == this.lastPlayedMove[1][1])) {
                     square.classList.add('last-move');
+                }
+                if (this.isPieceMergable(this.cachedPieceData.boardData, this.boardState[i][j])) {
+                    square.classList.add('mergeable');
                 }
 
                 if (this.boardState[i][j] && this.boardState[i][j] != 404) {
@@ -148,28 +152,44 @@ class Chessboard {
         return INVERTED_LOGIC != legal;
     }
 
-    isLegalMove(x, y) {
-        if (this.cachedPieceData.boardData && this.cachedPieceData.boardData.color != this.activePlayer && FORCE_PLAYER_TURNS) {
+    isPieceMergable(piece1boardData, piece2) {
+        if (!piece2 || !piece1boardData) {
             return false;
         }
-        if (this.selectedPiece == null) {
+        if (piece2?.color != piece1boardData?.color) {
             return false;
         }
-        if (this.selectedPiece.id == `${x},${y}`) {
+        if (!pieces[piece1boardData.type].mergability) {
             return false;
         }
-        if (!friendlyFire && this.boardState[x][y] && this.boardState[x][y].color == this.selectedPiece.getAttribute('piece-team')) {
-            return false;
+        if (pieces[piece1boardData.type].mergability[piece2.type]) {
+            return true;
         }
-        let patterns = this.boardState[x][y] ? this.cachedPieceData.pieceData.patterns.capture : this.cachedPieceData.pieceData.patterns.movement;
-        if (!patterns) {
-            return false;
+        return false;
+    }
+
+    mergePieces(piece1, piece2Type) {
+        return pieces[piece1.type].mergability[piece2Type];
+    }
+
+    cacheMoveData() {
+        if (!this.cachedPieceData.boardData) {
+            return;
         }
-        let piece = null
-        if (this.boardState[x][y]) {
-            piece = this.boardState[x][y].type
+        if (!this.selectedPiece) {
+            return;
         }
-        let legalMove = false;
+        let attackLocations = []
+        let movementLocations = []
+        if (this.cachedPieceData.pieceData.patterns) {
+            attackLocations = this.cachedPieceData.pieceData.patterns.capture ? this.getAllLegalMoves(this.cachedPieceData.pieceData.patterns.capture, true) : []
+            movementLocations = this.cachedPieceData.pieceData.patterns.movement ? this.getAllLegalMoves(this.cachedPieceData.pieceData.patterns.movement, false) : []
+        }
+        this.cachedPieceData.movementLocations = { attackLocations, movementLocations }
+    }
+
+    getAllLegalMoves(patterns, attack = false) {
+        let allMoves = []
         for (let i = 0; i < patterns.length; i++) {
             if (patterns[i].area) {
                 let pattern = patterns[i].area;
@@ -181,36 +201,71 @@ class Chessboard {
                 if (patterns[i].flipForBlack && this.cachedPieceData.boardData.color == 'black') {
                     pattern = [...pattern].reverse();
                 }
-                let coordinates = findCoordinates(pattern, piece);
+                let coordinates = findCoordinates(pattern);
                 for (let j = 0; j < coordinates.oneCoordinates.length; j++) {
-                    if (parseInt(this.selectedPiece.id.split(',')[0]) + coordinates.oneCoordinates[j][0] - coordinates.zeroPosition[0] == x && parseInt(this.selectedPiece.id.split(',')[1]) + coordinates.oneCoordinates[j][1] - coordinates.zeroPosition[1] == y) {
-                        if (patterns[i].exclude) {
-                            legalMove = false;
-                        } else {
-                            legalMove = true;
-                        }
+                    let coordinate = `${parseInt(this.selectedPiece.id.split(',')[0]) + coordinates.oneCoordinates[j][0] - coordinates.zeroPosition[0]},${parseInt(this.selectedPiece.id.split(',')[1]) + coordinates.oneCoordinates[j][1] - coordinates.zeroPosition[1]}`
+                    if (patterns[i].exclude) {
+                        allMoves = allMoves.filter(x => x != coordinate);
+                    } else {
+                        allMoves.push(coordinate);
                     }
                 }
             } else if (patterns[i].direction) {
-                const locations = grabAllLocationsOnALine(this, x, y, patterns[i].direction, patterns[i].distance, patterns[i].jump);
+                const locations = this.grabAllLocationsOnALine(parseInt(this.selectedPiece.id.split(',')[0]), parseInt(this.selectedPiece.id.split(',')[1]), patterns[i].direction, patterns[i].distance, patterns[i].jump, attack, patterns[i].extraThickLine);
                 for (let j = 0; j < locations.length; j++) {
-                    if (locations[j][0] == this.selectedPiece.id.split(',')[0] && locations[j][1] == this.selectedPiece.id.split(',')[1]) {
+                    if (patterns[i].exclude) {
+                        allMoves = allMoves.filter(x => x != `${locations[j][0]},${locations[j][1]}`);
+                    } else {
+                        allMoves.push(`${locations[j][0]},${locations[j][1]}`);
+                    }
+
+                }
+            } else if (patterns[i].everywhere) {
+                for (let io = 0; io < this.boardState.length; io++) {
+                    for (let j = 0; j < this.boardState[i].length; j++) {
                         if (patterns[i].exclude) {
-                            legalMove = false;
+                            allMoves = allMoves.filter(x => x != `${io},${j}`);
                         } else {
-                            legalMove = true;
+                            allMoves.push(`${io},${j}`);
                         }
                     }
                 }
-            } else if (patterns[i].everywhere) {
-                if (patterns[i].type && !patterns[i].type.includes(piece)) {
-                    continue;
-                }
-                if (patterns[i].exclude) {
-                    legalMove = false;
-                } else {
-                    legalMove = true;
-                }
+            }
+        }
+        return allMoves;
+    }
+
+    isLegalMove(x, y) {
+        if (this.cachedPieceData.boardData && this.cachedPieceData.boardData.color != this.activePlayer && FORCE_PLAYER_TURNS) {
+            return false;
+        }
+        if (this.selectedPiece == null) {
+            return false;
+        }
+        if (this.selectedPiece.id == `${x},${y}`) {
+            return false;
+        }
+        if (!this.cachedPieceData.movementLocations) {
+            return false;
+        }
+        if (!friendlyFire && this.boardState[x][y] && this.boardState[x][y].color == this.selectedPiece.getAttribute('piece-team')) {
+            if (!this.isPieceMergable(this.cachedPieceData.boardData, this.boardState[x][y])) {
+                return false;
+            }
+        }
+        let patterns = this.boardState[x][y] ? 'attackLocations' : 'movementLocations';
+        if (!patterns) {
+            return false;
+        }
+        let piece = null
+        if (this.boardState[x][y]) {
+            piece = this.boardState[x][y].type
+        }
+        let legalMove = false;
+        for (let i = 0; i < this.cachedPieceData.movementLocations[patterns].length; i++) {
+            if (this.cachedPieceData.movementLocations[patterns][i] == `${x},${y}`) {
+                legalMove = true;
+                break;
             }
         }
 
@@ -227,6 +282,10 @@ class Chessboard {
         for (let i = 0; i < 16; i++) {
             this.boardState[Math.floor(i / BOARDSIZE)][i % BOARDSIZE] = { color: 'black', type: this.pieces.black[i], moved: false };
         }
+    }
+
+    saveGameState() {
+        localStorage.setItem('gameState', JSON.stringify(this.getGameState()));
     }
 
     handleSquareClick(square) {
@@ -249,7 +308,6 @@ class Chessboard {
                 return;
             }
             let discoveredPieces = localStorage.getItem('discoveredPieces') ? JSON.parse(localStorage.getItem('discoveredPieces')) : {}
-            console.log(this.cachedPieceData)
             if (this.cachedPieceData.pieceData.needsDiscovery && !discoveredPieces[this.cachedPieceData.boardData.type]) {
                 discoveredPieces[this.cachedPieceData.boardData.type] = true
                 localStorage.setItem('discoveredPieces', JSON.stringify(discoveredPieces))
@@ -262,6 +320,9 @@ class Chessboard {
 
             if (this.boardState[location[0]][location[1]]) {
                 capture = true;
+                if (this.boardState[location[0]][location[1]].color == this.activePlayer && this.isPieceMergable(this.cachedPieceData.boardData, this.boardState[location[0]][location[1]])) {
+                    this.boardState[this.cachedPieceData.location[0]][this.cachedPieceData.location[1]].type = this.mergePieces(this.cachedPieceData.boardData, this.boardState[location[0]][location[1]].type);
+                }
 
                 if (this.boardState[location[0]][location[1]].color == 'neutral') {
                     if (this.boardState[location[0]][location[1]].type == 'lootbox') {
@@ -378,40 +439,57 @@ class Chessboard {
             nextPlayer = nextPlayer == 'white' ? 'black' : 'white';
         }
         this.activePlayer = nextPlayer;
-        this.generateLootBox(gameState);
+        if (!this.sandboxChessBoard) {
+            this.generateLootBox(gameState);
+        }
+        this.cacheMoveData();
         this.render();
 
     }
-}
+    grabAllLocationsOnALine(x, y, direction, distance, jump = false, attack = false, extraThickLine = 0) {
+        const locations = [];
+        const directions = {
+            'vertical': { "directions": [[-1, 0], [1, 0]], "offsetDir": [true, false] },
+            'horizontal': { "directions": [[0, -1], [0, 1]], "offsetDir": [false, true] },
+            'diagonal/': { "directions": [[-1, -1], [1, 1]], "offsetDir": [true, false] },
+            'diagonal\\': { "directions": [[-1, 1], [1, -1]], "offsetDir": [false, true] }
+        };
 
-function grabAllLocationsOnALine(self, x, y, direction, distance, jump = false) {
-    const locations = [];
-    const directions = {
-        'vertical': [[-1, 0], [1, 0]],
-        'horizontal': [[0, -1], [0, 1]],
-        'diagonal/': [[-1, -1], [1, 1]],
-        'diagonal\\': [[-1, 1], [1, -1]]
-    };
+        for (const [dx, dy] of directions[direction]["directions"]) {
+            let offsetDir = directions[direction]["offsetDir"];
+            let offset = extraThickLine != 0 ? extraThickLine * -1 : 0;
+            for (let io = 1; io <= Math.floor(extraThickLine * 2 + 1); io++) {
+                for (let i = 1; i <= distance; i++) {
+                    let newX = x + i * dx;
+                    let newY = y + i * dy;
+                    if (offsetDir[1] && extraThickLine != 0) {
+                        newX += Math.floor(offset + io - 1);
+                    }
+                    if (offsetDir[0] && extraThickLine != 0) {
+                        newY += Math.floor(offset + io - 1);
+                    }
+                    if (newX < 0 || newX >= BOARDSIZE || newY < 0 || newY >= BOARDSIZE) {
+                        break; // Out of bounds
+                    }
+                    if (this.boardState[newX][newY] != null && !jump) {
+                        // pieces can't merge ith this enabled
+                        // if (attack && this.boardState[newX][newY].color != this.cachedPieceData.boardData.color || true) {
+                        //     locations.push([newX, newY]);
+                        // }
 
-    for (const [dx, dy] of directions[direction]) {
-        for (let i = 1; i <= distance; i++) {
-            const newX = x + i * dx;
-            const newY = y + i * dy;
+                        locations.push([newX, newY]);
+                        break; // Obstacle found
+                    }
 
-            if (newX < 0 || newX >= BOARDSIZE || newY < 0 || newY >= BOARDSIZE || (self.boardState[newX][newY] && !jump)) {
-                locations.push([newX, newY]);
-                break; // Out of bounds
+                    locations.push([newX, newY]);
+                }
             }
-            if (self.boardState[newX][newY] != null) {
-                locations.push([newX, newY]);
-                break; // Obstacle found
-            }
 
-            locations.push([newX, newY]);
         }
+        return locations;
     }
-    return locations;
 }
+
 
 
 function findCoordinates(matrix, extraCondition = null) {
