@@ -1,7 +1,7 @@
 const setupData = {
     votingUrl: 'https://www.reddit.com/r/AnarchyChess/comments/1e750dz/3_added_lootboxes_to_my_totally_accurate_chess/',
     githubRepo: 'https://github.com/oldmartijntje/SocialSelect',
-    version: 2
+    version: 3
 }
 
 const editableRulebook = [
@@ -38,6 +38,16 @@ const editableRulebook = [
 ]
 
 const addedFeatures = [
+    {
+        length: 0.5,
+        content: `<h2>3.Merging pieces</h2>
+                        <img src="https://i.imgur.com/O2bofNX.png">
+                        <p>You can mere specific pieces together to make new pieces.</p>
+                        <p>All base pieces turn into something else once merged with the same type of pieces. You can see how the movement of each piece works in <a href="./encyclopedia">the Encyclopedia</a>.</p>
+                        <p>Pieces that you haven't moved or killed yet will appear as ???.</p>
+                        `,
+        commentLink: "https://www.reddit.com/r/AnarchyChess/comments/1e750dz/comment/ldyngi1/?utm_source=share&utm_medium=web3x&utm_name=web3xcss&utm_term=1&utm_content=share_button"
+    },
     {
         length: 0.5,
         content: `<h2>2.Lootboxes</h2>

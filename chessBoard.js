@@ -114,6 +114,9 @@ class Chessboard {
                 }
 
                 if (this.boardState[i][j] && this.boardState[i][j] != 404) {
+                    if (this.isThisALegalMove(i, j)) {
+                        square.classList.add('attack-move');
+                    }
                     square.innerHTML = pieces[this.boardState[i][j].type].display[this.boardState[i][j].color];
                     square.setAttribute('piece-name', this.boardState[i][j].type);
                     square.setAttribute('piece-team', this.boardState[i][j].color);

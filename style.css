@@ -114,6 +114,25 @@ header {
     filter: saturate(1)
 }
 
+.attack-move {
+    position: relative;
+}
+
+.attack-move::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle, transparent 50%, rgba(48, 48, 48, 0.5) 50%);
+    border-radius: 100%;
+    pointer-events: none;
+}
+
+
 .mergeable::after {
     background-color: rgba(204, 0, 255, 0.5);
 }

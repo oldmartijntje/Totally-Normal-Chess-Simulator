@@ -69,12 +69,12 @@ function getLootboxPiece(capturingPiece = null) {
         if (!pieces[type]['lootbox']) {
             continue
         }
-        for (let j = 0; j < Math.floor(pieces[type]['lootbox']['weight'] * 10); j++) {
+        for (let j = 0; j < Math.ceil(pieces[type]['lootbox']['weight'] * LOOTBOX_RARITY_MODIFIER); j++) {
             lootboxPieces.push(type)
         }
     }
     if (capturingPiece) {
-        for (let i = 0; i < LOOTBOX_CAPTURING_PIECE_WEIGHT; i++) {
+        for (let i = 0; i < Math.ceil(LOOTBOX_CAPTURING_PIECE_WEIGHT * LOOTBOX_RARITY_MODIFIER); i++) {
             lootboxPieces.push(capturingPiece)
         }
     }

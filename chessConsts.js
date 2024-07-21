@@ -8,6 +8,7 @@ const LOOTBOX_CAPTURING_PIECE_WEIGHT = 5
 const DEBUG_MODE = false;
 const FORCE_PLAYER_TURNS = true;
 const STARTING_PLAYER = 'white';
+const LOOTBOX_RARITY_MODIFIER = 10;
 
 const winConditions = {
     slainTroops: {
@@ -236,17 +237,21 @@ const pieces = {
     },
     'reversed-rook': {
         lootbox: {
-            weight: 2,
+            weight: 1,
         },
         patterns: {
             movement: [
-                { direction: 'vertical', distance: INFINITE, jump: false, extraThickLine: 0.5 },
-                { direction: 'horizontal', distance: INFINITE, jump: false, extraThickLine: 0.5 },
+                { direction: 'vertical', distance: INFINITE, jump: false, extraThickLine: 1 },
+                { direction: 'horizontal', distance: INFINITE, jump: false, extraThickLine: 1 },
+                { direction: 'vertical', distance: INFINITE, jump: false, exclude: true },
+                { direction: 'horizontal', distance: INFINITE, jump: false, exclude: true },
 
             ],
             capture: [
-                { direction: 'vertical', distance: INFINITE, jump: false, extraThickLine: 0.5 },
-                { direction: 'horizontal', distance: INFINITE, jump: false, extraThickLine: 0.5 },
+                { direction: 'vertical', distance: INFINITE, jump: false, extraThickLine: 1 },
+                { direction: 'horizontal', distance: INFINITE, jump: false, extraThickLine: 1 },
+                { direction: 'vertical', distance: INFINITE, jump: false, exclude: true },
+                { direction: 'horizontal', distance: INFINITE, jump: false, exclude: true },
             ],
         },
         display: {
@@ -255,7 +260,7 @@ const pieces = {
         },
         notationType: 'RR',
         needsDiscovery: true,
-        description: "<p>Unlocked by merging 2 rooks, Moves like there is a second rook on the square North-West of itself.</p>",
+        description: "<p>Unlocked by merging 2 rooks.</p>",
 
     },
     'winged-knight': {
@@ -305,7 +310,7 @@ const pieces = {
     },
     'double-bishop': {
         lootbox: {
-            weight: 3,
+            weight: 2,
         },
         patterns: {
             movement: [
@@ -327,7 +332,7 @@ const pieces = {
     },
     'royal-queen': {
         lootbox: {
-            weight: 1,
+            weight: 0.5,
         },
         patterns: {
             movement: [
@@ -353,7 +358,7 @@ const pieces = {
     },
     'pawned': {
         lootbox: {
-            weight: 2.5,
+            weight: 0.25,
         },
         patterns: {
             movement: [
@@ -397,7 +402,7 @@ const pieces = {
     },
     'queened': {
         lootbox: {
-            weight: 0,
+            weight: 0.05,
         },
         patterns: {
             movement: [
@@ -407,11 +412,15 @@ const pieces = {
                 { direction: 'diagonal/', distance: INFINITE, jump: false, exclude: true },
                 { direction: 'diagonal\\', distance: INFINITE, jump: false, exclude: true },
             ],
-            capture: [
-                { direction: 'vertical', distance: 1, jump: false },
-                { direction: 'horizontal', distance: 1, jump: false },
-                { direction: 'diagonal/', distance: 1, jump: false },
-                { direction: 'diagonal\\', distance: 1, jump: false },
+            capture: [{
+                area: [
+                    [null, 1, null, 1, null],
+                    [1, null, null, null, 1],
+                    [null, null, 0, null, null],
+                    [1, null, null, null, 1],
+                    [null, 1, null, 1, null],
+                ],
+            }
             ],
         },
         display: {
@@ -419,7 +428,7 @@ const pieces = {
             black: '<img src="https://i.imgur.com/rJ7Pd34.png">'
         },
         needsDiscovery: true,
-        description: "<p>Moves as an inversed Queen, attacks as a King. Unlocked by promoting a Pawned.</p>",
+        description: "<p>Moves as an inversed Queen, attacks as a Knight. Unlocked by promoting a Pawned.</p>",
         notationType: 'Q\'d',
     },
 }
