@@ -392,7 +392,7 @@ const pieces = {
             black: '<img src="https://i.imgur.com/YBxZXmv.png">',
         },
         needsDiscovery: true,
-        description: "<p>First move can move 2 spaces instead of 1<br>Attacks diagonally.<br>Transforms into a Queened once you reach the opposite side of the board.</p>",
+        description: "<p>First move can move 2 spaces instead of 1<br>Attacks diagonally.<br>Transforms into something once you reach the opposite side of the board.</p>",
         notationType: '',
         convertion: {
             rows: [0],

@@ -55,7 +55,7 @@ function generateButtons() {
 }
 
 function generateChessboard(pieceName) {
-    chessboard = new Chessboard(undefined, generateGameState(pieceName), null, { blockInteraction: false, sandboxChessBoard: true });
+    chessboard = new Chessboard(undefined, generateGameState(pieceName), null, { blockInteraction: false, sandboxChessBoard: true, ignoreUnlocks: true });
 }
 
 let chessboard;

@@ -1,5 +1,5 @@
 class Chessboard {
-    constructor(boardElementId = 'chessboard', gameState, playerIndicators = { white: 'whitePlayer', black: 'blackPlayer', pieceInfoField: 'infoBox' }, boardData = { blockInteraction: false, lootBoxAnimation: false, sandboxChessBoard: false }) {
+    constructor(boardElementId = 'chessboard', gameState, playerIndicators = { white: 'whitePlayer', black: 'blackPlayer', pieceInfoField: 'infoBox' }, boardData = { blockInteraction: false, lootBoxAnimation: false, sandboxChessBoard: false, ignoreUnlocks: false }) {
 
         // Binding the decorator to all methods of the class
         for (const key of Object.getOwnPropertyNames(Object.getPrototypeOf(this))) {
@@ -11,6 +11,7 @@ class Chessboard {
         this.sandboxChessBoard = boardData.sandboxChessBoard;
         this.staticBoard = boardData.blockInteraction;
         this.lootBoxAnimation = boardData.lootBoxAnimation;
+        this.ignoreUnlocks = boardData.ignoreUnlocks;
         this.playerIndicators = playerIndicators // the 2 elements that will be used to indicate the active player
 
         this.pieces = {
@@ -67,6 +68,13 @@ class Chessboard {
         }
     }
 
+    getChessCoordinate(pos) {
+        let [x, y] = pos
+        x = parseInt(x)
+        y = parseInt(y)
+        return this.letters[y] + (BOARDSIZE - x)
+    }
+
     renderInfoBox() {
         if (!this.playerIndicators.pieceInfoField) {
             return;
@@ -75,7 +83,7 @@ class Chessboard {
         if (this.selectedPiece) {
             if (box) {
                 box.style.display = 'block';
-                let content = `<h2>${this.cachedPieceData.boardData.type}</h2>`
+                let content = `<h2>${this.cachedPieceData.boardData.type} ${this.getChessCoordinate(this.selectedPiece.id.split(','))}</h2>`
                 for (let index = 0; index < Object.keys(this.cachedPieceData.boardData).length; index++) {
                     content += `<p>${Object.keys(this.cachedPieceData.boardData)[index]}: ${this.cachedPieceData.boardData[Object.keys(this.cachedPieceData.boardData)[index]]}</p>`
 
@@ -84,7 +92,7 @@ class Chessboard {
                 return;
             }
         }
-        box.style.display = 'none';
+        // box.style.display = 'none';
 
     }
 
@@ -333,7 +341,7 @@ class Chessboard {
                 return;
             }
             let discoveredPieces = localStorage.getItem('discoveredPieces') ? JSON.parse(localStorage.getItem('discoveredPieces')) : {}
-            if (this.cachedPieceData.pieceData.needsDiscovery && !discoveredPieces[this.cachedPieceData.boardData.type]) {
+            if (this.cachedPieceData.pieceData.needsDiscovery && !discoveredPieces[this.cachedPieceData.boardData.type] && !this.ignoreUnlocks) {
                 discoveredPieces[this.cachedPieceData.boardData.type] = true
                 localStorage.setItem('discoveredPieces', JSON.stringify(discoveredPieces))
             }
@@ -346,7 +354,13 @@ class Chessboard {
             if (this.boardState[location[0]][location[1]]) {
                 capture = true;
                 if (this.boardState[location[0]][location[1]].color == this.activePlayer && this.isPieceMergable(this.cachedPieceData.boardData, this.boardState[location[0]][location[1]])) {
-                    this.boardState[this.cachedPieceData.location[0]][this.cachedPieceData.location[1]].type = this.mergePieces(this.cachedPieceData.boardData, this.boardState[location[0]][location[1]].type);
+                    let pieceType = this.mergePieces(this.cachedPieceData.boardData, this.boardState[location[0]][location[1]].type)
+                    this.boardState[this.cachedPieceData.location[0]][this.cachedPieceData.location[1]].type = pieceType;
+                    // unlock it in the encyclopedia
+                    if (pieces[pieceType].needsDiscovery && !discoveredPieces[pieceType] && !this.ignoreUnlocks) {
+                        discoveredPieces[pieceType] = true
+                        localStorage.setItem('discoveredPieces', JSON.stringify(discoveredPieces))
+                    }
                 }
 
                 if (this.boardState[location[0]][location[1]].color == 'neutral') {
@@ -368,7 +382,7 @@ class Chessboard {
             }
 
             if (capture) {
-                if (pieces[this.boardState[location[0]][location[1]].type].needsDiscovery && !discoveredPieces[this.boardState[location[0]][location[1]].type]) {
+                if (pieces[this.boardState[location[0]][location[1]].type].needsDiscovery && !discoveredPieces[this.boardState[location[0]][location[1]].type] && !this.ignoreUnlocks) {
                     discoveredPieces[this.boardState[location[0]][location[1]].type] = true
                     localStorage.setItem('discoveredPieces', JSON.stringify(discoveredPieces))
                 }
