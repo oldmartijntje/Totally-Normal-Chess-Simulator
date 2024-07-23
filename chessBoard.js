@@ -1,5 +1,5 @@
 class Chessboard {
-    constructor(boardElementId = 'chessboard', gameState, playerIndicators = { white: 'whitePlayer', black: 'blackPlayer' }, boardData = { blockInteraction: false, lootBoxAnimation: false, sandboxChessBoard: false }) {
+    constructor(boardElementId = 'chessboard', gameState, playerIndicators = { white: 'whitePlayer', black: 'blackPlayer', pieceInfoField: 'infoBox' }, boardData = { blockInteraction: false, lootBoxAnimation: false, sandboxChessBoard: false }) {
 
         // Binding the decorator to all methods of the class
         for (const key of Object.getOwnPropertyNames(Object.getPrototypeOf(this))) {
@@ -65,6 +65,27 @@ class Chessboard {
         if (DEBUG_MODE) {
             console.log(this.boardState);
         }
+    }
+
+    renderInfoBox() {
+        if (!this.playerIndicators.pieceInfoField) {
+            return;
+        }
+        let box = document.getElementById(this.playerIndicators.pieceInfoField)
+        if (this.selectedPiece) {
+            if (box) {
+                box.style.display = 'block';
+                let content = `<h2>${this.cachedPieceData.boardData.type}</h2>`
+                for (let index = 0; index < Object.keys(this.cachedPieceData.boardData).length; index++) {
+                    content += `<p>${Object.keys(this.cachedPieceData.boardData)[index]}: ${this.cachedPieceData.boardData[Object.keys(this.cachedPieceData.boardData)[index]]}</p>`
+
+                }
+                box.innerHTML = content
+                return;
+            }
+        }
+        box.style.display = 'none';
+
     }
 
     handleError(error) {
@@ -137,6 +158,7 @@ class Chessboard {
         if (this.playerIndicators && this.playerIndicators.white && this.playerIndicators.black) {
             setPlayerIndicator(this.activePlayer, this.playerIndicators);
         }
+        this.renderInfoBox()
     }
 
     getGameState() {
@@ -298,7 +320,7 @@ class Chessboard {
         if (!this.selectedPiece && square.getAttribute('piece-team') == 'neutral') {
             console.warn('Cannot select neutral pieces at: ' + square.id + '. PieceInfo:', this.boardState[square.id.split(',')[0]][square.id.split(',')[1]]);
         }
-        else if (this.selectedPiece && this.selectedPiece.id !== square.id) {
+        if (this.selectedPiece && this.selectedPiece.id !== square.id) {
             // if you have selected a piece and you click on a different square
             if (!this.isThisALegalMove(parseInt(square.id.split(',')[0]), parseInt(square.id.split(',')[1])) && !UNLOCK_MOVEMENT) {
                 this.selectedPiece = null;
