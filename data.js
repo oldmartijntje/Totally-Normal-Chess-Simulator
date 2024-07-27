@@ -1,5 +1,5 @@
 const setupData = {
-    votingUrl: 'https://www.reddit.com/r/AnarchyChess/comments/1e8mxgr/4_added_merging_of_pieces_to_my_totally_accurate/',
+    votingUrl: 'https://www.reddit.com/r/AnarchyChess/comments/1edeyhi/5_added_carrying_of_pieces_to_my_totally_accurate/',
     githubRepo: 'https://github.com/oldmartijntje/Totally-Normal-Chess-Simulator',
     version: 4
 }
