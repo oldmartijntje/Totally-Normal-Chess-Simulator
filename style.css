@@ -22,6 +22,10 @@
     cursor: pointer;
 }
 
+.square.flipped-tile {
+    transform: rotate(180deg);
+}
+
 .square *,
 .prizeItem * {
     width: 100%;
@@ -40,6 +44,11 @@ body {
     font-family: Arial, sans-serif;
     margin: 0;
     padding: 0;
+
+}
+
+.chessboard.flipped-board {
+    transform: rotate(180deg);
 
 }
 

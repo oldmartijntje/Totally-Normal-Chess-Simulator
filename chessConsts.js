@@ -17,6 +17,13 @@ const winConditions = {
     }
 }
 
+const defaultSettings = {
+    boardOrientation: "4",
+    aiOpponent: "1",
+    allowLootboxSummoning: "1",
+    checkmateDetection: "2"
+};
+
 const pieces = {
     'rook': {
         lootbox: {

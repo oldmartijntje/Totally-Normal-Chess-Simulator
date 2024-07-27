@@ -155,13 +155,14 @@
         <div class="setting">
             <label for="boardOrientation">Board Orientation:</label>
             <select id="boardOrientation">
-                <option value="1">Standard view (White at bottom)</option>
-                <option value="2">Flip board for Black's turn</option>
-                <option value="3">Always face active player</option>
+                <option value="1">Static board, No rotating.</option>
+                <option value="2">Flip board upside down for black.</option>
+                <option value="3">Flip pieces upside down for black.</option>
+                <option value="4">Force active player at the bottom of the screen.</option>
             </select>
         </div>
 
-        <div class="setting">
+        <div class="setting" style="display:none">
             <label for="aiOpponent">AI Opponent:</label>
             <select id="aiOpponent">
                 <option value="1">Human vs Human</option>
@@ -172,14 +173,14 @@
         </div>
 
         <div class="setting">
-            <label for="pieceUnlocking">Summon LootBoxes button:</label>
-            <select id="pieceUnlocking">
+            <label for="allowLootboxSummoning">Summon LootBoxes button:</label>
+            <select id="allowLootboxSummoning">
                 <option value="1">Enabled</option>
                 <option value="2">Disabled</option>
             </select>
         </div>
 
-        <div class="setting">
+        <div class="setting" style="display:none">
             <label for="checkmateDetection">Checkmate Detection:</label>
             <select id="checkmateDetection">
                 <option value="1">Enabled (may affect performance)</option>
@@ -200,9 +201,9 @@
 
     <script>
         const defaultSettings = {
-            boardOrientation: "1",
+            boardOrientation: "4",
             aiOpponent: "1",
-            pieceUnlocking: "1",
+            allowLootboxSummoning: "1",
             checkmateDetection: "2"
         };
 
@@ -215,7 +216,7 @@
 
             document.getElementById('boardOrientation').value = currentSettings.boardOrientation;
             document.getElementById('aiOpponent').value = currentSettings.aiOpponent;
-            document.getElementById('pieceUnlocking').value = currentSettings.pieceUnlocking;
+            document.getElementById('allowLootboxSummoning').value = currentSettings.allowLootboxSummoning;
             document.getElementById('checkmateDetection').value = currentSettings.checkmateDetection;
 
             if (!localStorage.getItem('chessSettings')) {
@@ -239,7 +240,7 @@
             const settings = {
                 boardOrientation: document.getElementById('boardOrientation').value,
                 aiOpponent: document.getElementById('aiOpponent').value,
-                pieceUnlocking: document.getElementById('pieceUnlocking').value,
+                allowLootboxSummoning: document.getElementById('allowLootboxSummoning').value,
                 checkmateDetection: document.getElementById('checkmateDetection').value
             };
 

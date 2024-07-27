@@ -1,5 +1,15 @@
 class Chessboard {
-    constructor(boardElementId = 'chessboard', gameState, playerIndicators = { white: 'whitePlayer', black: 'blackPlayer', pieceInfoField: 'infoBox' }, boardData = { blockInteraction: false, lootBoxAnimation: false, sandboxChessBoard: false, ignoreUnlocks: false }) {
+    constructor(
+        boardElementId = 'chessboard',
+        gameState,
+        playerIndicators = { white: 'whitePlayer', black: 'blackPlayer', pieceInfoField: 'infoBox' },
+        boardData = { blockInteraction: false, lootBoxAnimation: false, sandboxChessBoard: false, ignoreUnlocks: false },
+        loadedSettings = {
+            boardOrientation: "1",
+            aiOpponent: "1",
+            allowLootboxSummoning: "1",
+            checkmateDetection: "2"
+        }) {
 
         // Binding the decorator to all methods of the class
         for (const key of Object.getOwnPropertyNames(Object.getPrototypeOf(this))) {
@@ -8,6 +18,7 @@ class Chessboard {
             }
         }
 
+        this.playerSettings = loadedSettings;
         this.sandboxChessBoard = boardData.sandboxChessBoard;
         this.staticBoard = boardData.blockInteraction;
         this.lootBoxAnimation = boardData.lootBoxAnimation;
@@ -130,14 +141,20 @@ class Chessboard {
     }
 
     render() {
+        let renderBoard = this.boardState;
+        if ((this.playerSettings.boardOrientation == "2" || this.playerSettings.boardOrientation == "4") && this.activePlayer == 'black') {
+            this.board.classList.add('flipped-board');
+        } else {
+            this.board.classList.remove('flipped-board');
+        }
         this.cacheMoveData()
         this.board.innerHTML = '';
         let squareCount = 0;
-        for (let i = 0; i < this.boardState.length; i++) {
-            for (let j = 0; j < this.boardState[i].length; j++) {
+        for (let i = 0; i < renderBoard.length; i++) {
+            for (let j = 0; j < renderBoard[i].length; j++) {
                 const square = document.createElement('div');
                 square.classList.add('square');
-                if (this.boardState[i][j] != 404) {
+                if (renderBoard[i][j] != 404) {
                     square.classList.add((i + j) % 2 === 0 ? 'white' : 'black');
                     square.addEventListener('click', () => this.handleSquareClick(square));
                     square.addEventListener('touchend', (event) => {
@@ -146,9 +163,14 @@ class Chessboard {
                     });
                 }
 
+
                 square.id = `${i},${j}`;
                 if (this.selectedPiece && this.selectedPiece.id == square.id) {
                     square.style.backgroundColor = 'yellow';
+                }
+
+                if ((this.playerSettings.boardOrientation == "3" || this.playerSettings.boardOrientation == "4") && this.activePlayer == 'black') {
+                    square.classList.add('flipped-tile');
                 }
                 if (this.isThisALegalMove(i, j)) {
                     square.classList.add('legal-move');
@@ -157,28 +179,28 @@ class Chessboard {
                     square.classList.add('last-move');
                 }
 
-                if (this.boardState[i][j] && this.boardState[i][j] != 404) {
+                if (renderBoard[i][j] && renderBoard[i][j] != 404) {
                     if (this.isThisALegalMove(i, j)) {
                         square.classList.add('attack-move');
-                        if (this.isPieceMergable(this.cachedPieceData.boardData, this.boardState[i][j])) {
+                        if (this.isPieceMergable(this.cachedPieceData.boardData, renderBoard[i][j])) {
                             square.classList.add('mergeable');
-                        } else if (this.boardState[i][j].color == this.activePlayer) {
+                        } else if (renderBoard[i][j].color == this.activePlayer) {
                             square.classList.add('carry-move');
                         }
                     }
-                    square.innerHTML = pieces[this.boardState[i][j].type].display[this.boardState[i][j].color];
-                    square.setAttribute('piece-name', this.boardState[i][j].type);
-                    square.setAttribute('piece-team', this.boardState[i][j].color);
-                    if (this.boardState[i][j].carrying) {
+                    square.innerHTML = pieces[renderBoard[i][j].type].display[renderBoard[i][j].color];
+                    square.setAttribute('piece-name', renderBoard[i][j].type);
+                    square.setAttribute('piece-team', renderBoard[i][j].color);
+                    if (renderBoard[i][j].carrying) {
                         square.classList.add('carrying-piece');
-                        square.innerHTML += pieces[this.boardState[i][j].carrying.type].display[this.boardState[i][j].carrying.color];
+                        square.innerHTML += pieces[renderBoard[i][j].carrying.type].display[renderBoard[i][j].carrying.color];
                     }
                 }
 
                 this.board.appendChild(square, 1);
             }
-            if (this.boardState[i].length < BOARDSIZE) {
-                for (let j = this.boardState[i].length; j < BOARDSIZE; j++) {
+            if (renderBoard[i].length < BOARDSIZE) {
+                for (let j = renderBoard[i].length; j < BOARDSIZE; j++) {
                     const square = document.createElement('div');
                     square.classList.add('square');
                     square.id = `${i},${j}`;
