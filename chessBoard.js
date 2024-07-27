@@ -15,8 +15,8 @@ class Chessboard {
         this.playerIndicators = playerIndicators // the 2 elements that will be used to indicate the active player
 
         this.pieces = {
-            white: ['pawn', 'pawn', 'pawn', 'pawn', 'pawn', 'pawn', 'pawn', 'pawn', 'rook', 'knight', 'bishop', 'queen', 'king', 'bishop', 'knight', 'rook'],
-            black: ['rook', 'knight', 'bishop', 'queen', 'king', 'bishop', 'knight', 'rook', 'pawn', 'pawn', 'pawn', 'pawn', 'pawn', 'pawn', 'pawn', 'pawn']
+            white: ['pawn', 'pawn', 'pawn', 'pawn', 'pawn', 'pawn', 'pawn', 'pawned', 'rook', 'knight', 'bishop', 'queen', 'king', 'bishop', 'knight', 'reversed-rook'],
+            black: ['rook', 'knight', 'bishop', 'queened', 'king', 'bishop', 'knight', 'rook', 'pawn', 'pawn', 'pawn', 'pawn', 'pawn', 'pawn', 'pawn', 'pawn']
         };
         this.letters = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h']; // unused, for notation
         this.board = document.getElementById(boardElementId);
@@ -75,17 +75,35 @@ class Chessboard {
         return this.letters[y] + (BOARDSIZE - x)
     }
 
+    getPieceByCoordinate(pos) {
+        let [x, y] = pos
+        x = parseInt(x)
+        y = parseInt(y)
+        return this.boardState[x][y]
+    }
+
     renderInfoBox() {
         if (!this.playerIndicators.pieceInfoField) {
             return;
         }
         let box = document.getElementById(this.playerIndicators.pieceInfoField)
-        if (this.selectedPiece) {
+        let selectedPiece = this.selectedPiece ? this.selectedPiece.id.split(',') : this.lastPlayedMove[1];
+        if (selectedPiece) {
             if (box) {
                 box.style.display = 'block';
-                let content = `<h2>${this.cachedPieceData.boardData.type} ${this.getChessCoordinate(this.selectedPiece.id.split(','))}</h2>`
-                for (let index = 0; index < Object.keys(this.cachedPieceData.boardData).length; index++) {
-                    content += `<p>${Object.keys(this.cachedPieceData.boardData)[index]}: ${this.cachedPieceData.boardData[Object.keys(this.cachedPieceData.boardData)[index]]}</p>`
+                let tile = this.getPieceByCoordinate(selectedPiece)
+                let content = `<h2>${tile ? tile.type : 'Empty Tile'} ${this.getChessCoordinate(selectedPiece)}</h2>`
+                if (!tile) {
+                    content += `<p>Empty Tile</p>`
+                    box.innerHTML = content
+                    return;
+                }
+                for (let index = 0; index < Object.keys(tile).length; index++) {
+                    if (Object.keys(tile)[index] == 'carrying') {
+                        content += `<p>carrying: ${tile.carrying.moved ? 'moved' : 'unmoved'} ${tile.carrying.type}</p>`
+                        continue;
+                    }
+                    content += `<p>${Object.keys(tile)[index]}: ${tile[Object.keys(tile)[index]]}</p>`
 
                 }
                 box.innerHTML = content
