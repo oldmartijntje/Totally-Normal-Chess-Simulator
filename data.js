@@ -40,12 +40,23 @@ const editableRulebook = [
 const addedFeatures = [
     {
         length: 0.5,
+        content: `<h2>4.Added piece Carrying.</h2>
+                    <div class="square carrying-piece" piece-name="reversed-rook" piece-team="white"><img src="https://i.imgur.com/KiRlbQJ.png"><img src="https://i.imgur.com/vIA5kSR.png"></div>
+                    <p>You can carry a piece with upside-down pieces.</p>
+                    <p>When you attack a piece of your color with the upside-down piece (carrier), it will pick it up.<br>Selecting a carrying piece will allow you to move with both pieces their movesets, but can only attack as the the carrier.<br>You can also choose to leave the piece you carry behind, by attacking another 1 of your pieces.</p>
+                    <p>The indicator for carrying a piece is a cyan cube outline.</p>`,
+
+
+        commentLink: "https://www.reddit.com/r/AnarchyChess/comments/1e8mxgr/comment/le91ci4/?utm_source=share&utm_medium=web3x&utm_name=web3xcss&utm_term=1&utm_content=share_button"
+    },
+    {
+        length: 0.5,
         content: `<h2>3.Merging pieces</h2>
-                        <img src="https://i.imgur.com/O2bofNX.png">
+                        <img src="https://i.imgur.com/O2bofNX.png" class="imageDisplay">
                         <p>You can mere specific pieces together to make new pieces.</p>
                         <p>All base pieces turn into something else once merged with the same type of pieces. You can see how the movement of each piece works in <a href="./encyclopedia">the Encyclopedia</a>.</p>
                         <p>Pieces that you haven't moved or killed yet will appear as ???.</p>
-                        `,
+                        <p>The indicator for merging a piece is a purple attack circle.</p>`,
         commentLink: "https://www.reddit.com/r/AnarchyChess/comments/1e750dz/comment/ldyngi1/?utm_source=share&utm_medium=web3x&utm_name=web3xcss&utm_term=1&utm_content=share_button"
     },
     {

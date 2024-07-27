@@ -145,10 +145,17 @@ class Chessboard {
                 if (this.boardState[i][j] && this.boardState[i][j] != 404) {
                     if (this.isThisALegalMove(i, j)) {
                         square.classList.add('attack-move');
+                        if (this.boardState[i][j].color == this.activePlayer) {
+                            square.classList.add('carry-move');
+                        }
                     }
                     square.innerHTML = pieces[this.boardState[i][j].type].display[this.boardState[i][j].color];
                     square.setAttribute('piece-name', this.boardState[i][j].type);
                     square.setAttribute('piece-team', this.boardState[i][j].color);
+                    if (this.boardState[i][j].carrying) {
+                        square.classList.add('carrying-piece');
+                        square.innerHTML += pieces[this.boardState[i][j].carrying.type].display[this.boardState[i][j].carrying.color];
+                    }
                 }
 
                 this.board.appendChild(square, 1);
@@ -214,9 +221,15 @@ class Chessboard {
         }
         let attackLocations = []
         let movementLocations = []
+        let carryingLocations = []
         if (this.cachedPieceData.pieceData.patterns) {
             attackLocations = this.cachedPieceData.pieceData.patterns.capture ? this.getAllLegalMoves(this.cachedPieceData.pieceData.patterns.capture, true) : []
             movementLocations = this.cachedPieceData.pieceData.patterns.movement ? this.getAllLegalMoves(this.cachedPieceData.pieceData.patterns.movement, false) : []
+        }
+        if (this.cachedPieceData.boardData.carrying) {
+            let carryingPieceType = this.cachedPieceData.boardData.carrying.type
+            carryingLocations = pieces[carryingPieceType].patterns.movement ? this.getAllLegalMoves(pieces[carryingPieceType].patterns.movement, false) : []
+            movementLocations = [movementLocations, carryingLocations].flat()
         }
         this.cachedPieceData.movementLocations = { attackLocations, movementLocations }
     }
@@ -282,7 +295,11 @@ class Chessboard {
             return false;
         }
         if (!friendlyFire && this.boardState[x][y] && this.boardState[x][y].color == this.selectedPiece.getAttribute('piece-team')) {
-            if (!this.isPieceMergable(this.cachedPieceData.boardData, this.boardState[x][y])) {
+            if (this.isPieceMergable(this.cachedPieceData.boardData, this.boardState[x][y])) {
+
+            } else if (this.cachedPieceData.pieceData.carrying && !this.boardState[x][y].carrying) {
+
+            } else {
                 return false;
             }
         }
@@ -345,14 +362,16 @@ class Chessboard {
                 discoveredPieces[this.cachedPieceData.boardData.type] = true
                 localStorage.setItem('discoveredPieces', JSON.stringify(discoveredPieces))
             }
-
             let capture;
             square.dataset.selected = false;
+            let placeOnOldLocation = null;
             let location = square.id.split(',');
             location = location.map(x => parseInt(x));
 
             if (this.boardState[location[0]][location[1]]) {
-                capture = true;
+                if (this.boardState[location[0]][location[1]].color != this.activePlayer) {
+                    capture = true;
+                }
                 if (this.boardState[location[0]][location[1]].color == this.activePlayer && this.isPieceMergable(this.cachedPieceData.boardData, this.boardState[location[0]][location[1]])) {
                     let pieceType = this.mergePieces(this.cachedPieceData.boardData, this.boardState[location[0]][location[1]].type)
                     this.boardState[this.cachedPieceData.location[0]][this.cachedPieceData.location[1]].type = pieceType;
@@ -361,14 +380,25 @@ class Chessboard {
                         discoveredPieces[pieceType] = true
                         localStorage.setItem('discoveredPieces', JSON.stringify(discoveredPieces))
                     }
+                } else if (this.boardState[location[0]][location[1]].color == this.activePlayer && this.cachedPieceData.pieceData.carrying) {
+                    if (this.cachedPieceData.boardData.carrying) {
+                        placeOnOldLocation = this.cachedPieceData.boardData.carrying;
+                    }
+                    this.boardState[this.cachedPieceData.location[0]][this.cachedPieceData.location[1]].carrying = this.boardState[location[0]][location[1]];
                 }
 
+            }
+
+            if (capture) {
                 if (this.boardState[location[0]][location[1]].color == 'neutral') {
                     if (this.boardState[location[0]][location[1]].type == 'lootbox') {
                         runLootBoxUnboxing(getLootboxPiece(this.cachedPieceData.boardData.type), this.cachedPieceData.boardData.color, this.boardState, JSON.parse(JSON.stringify(this.cachedPieceData)), this.lootBoxAnimation);
                     }
                 } else {
                     this.lostPieces[this.boardState[location[0]][location[1]].color].push(this.boardState[location[0]][location[1]].type);
+                    if (this.boardState[location[0]][location[1]].carrying) {
+                        this.lostPieces[this.boardState[location[0]][location[1]].color].push(this.boardState[location[0]][location[1]].carrying.type);
+                    }
                     for (let i = 0; i < Object.keys(winConditions['slainTroops']).length; i++) {
                         if (this.lostPieces[this.boardState[location[0]][location[1]].color].filter(x => x == Object.keys(winConditions['slainTroops'])[i]).length >= winConditions['slainTroops'][Object.keys(winConditions['slainTroops'])[i]]) {
                             this.render();
@@ -379,9 +409,7 @@ class Chessboard {
                         }
                     }
                 }
-            }
 
-            if (capture) {
                 if (pieces[this.boardState[location[0]][location[1]].type].needsDiscovery && !discoveredPieces[this.boardState[location[0]][location[1]].type] && !this.ignoreUnlocks) {
                     discoveredPieces[this.boardState[location[0]][location[1]].type] = true
                     localStorage.setItem('discoveredPieces', JSON.stringify(discoveredPieces))
@@ -391,6 +419,7 @@ class Chessboard {
             this.lastPlayedMove = [this.cachedPieceData.location, location];
             this.boardState[location[0]][location[1]] = this.boardState[this.cachedPieceData.location[0]][this.cachedPieceData.location[1]];
             this.boardState[location[0]][location[1]].moved = true;
+
 
             if (this.cachedPieceData.pieceData.convertion) {
                 let y = location[0];
@@ -404,7 +433,11 @@ class Chessboard {
                 }
             }
 
-            this.boardState[this.cachedPieceData.location[0]][this.cachedPieceData.location[1]] = null;
+            if (placeOnOldLocation) {
+                this.boardState[this.cachedPieceData.location[0]][this.cachedPieceData.location[1]] = placeOnOldLocation;
+            } else {
+                this.boardState[this.cachedPieceData.location[0]][this.cachedPieceData.location[1]] = null;
+            }
             this.selectedPiece = null;
             this.cachedPieceData = {
                 pieceData: null,

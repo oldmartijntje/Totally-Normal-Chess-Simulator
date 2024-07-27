@@ -260,7 +260,8 @@ const pieces = {
         },
         notationType: 'RR',
         needsDiscovery: true,
-        description: "<p>Unlocked by merging 2 rooks.</p>",
+        description: "<p>Unlocked by merging 2 rooks.<br>It can carry other pieces.</p>",
+        carrying: true,
 
     },
     'winged-knight': {
@@ -360,6 +361,7 @@ const pieces = {
         lootbox: {
             weight: 0.25,
         },
+        carrying: true,
         patterns: {
             movement: [
                 { direction: 'vertical', distance: 2, jump: false },
@@ -392,7 +394,7 @@ const pieces = {
             black: '<img src="https://i.imgur.com/YBxZXmv.png">',
         },
         needsDiscovery: true,
-        description: "<p>First move can move 2 spaces instead of 1<br>Attacks diagonally.<br>Transforms into something once you reach the opposite side of the board.</p>",
+        description: "<p>First move can move 2 spaces instead of 1<br>Attacks diagonally.<br>It can carry other pieces.<br>Transforms into something once you reach the opposite side of the board.</p>",
         notationType: '',
         convertion: {
             rows: [0],
@@ -404,6 +406,7 @@ const pieces = {
         lootbox: {
             weight: 0.05,
         },
+        carrying: true,
         patterns: {
             movement: [
                 { everywhere: true, exclude: false },
@@ -428,7 +431,7 @@ const pieces = {
             black: '<img src="https://i.imgur.com/rJ7Pd34.png">'
         },
         needsDiscovery: true,
-        description: "<p>Moves as an inversed Queen, attacks as a Knight. Unlocked by promoting a Pawned.</p>",
+        description: "<p>Moves as an inversed Queen, attacks as a Knight. Unlocked by promoting a Pawned.<br>It can carry other pieces.</p>",
         notationType: 'Q\'d',
     },
 }

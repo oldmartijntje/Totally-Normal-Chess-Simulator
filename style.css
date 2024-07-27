@@ -137,6 +137,22 @@ header {
     background-color: rgba(204, 0, 255, 0.5);
 }
 
+.carry-move::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border: rgba(0, 255, 157, 0.322) 8px solid;
+    border-radius: 0;
+    width: calc(100% - 16px);
+    height: calc(100% - 16px);
+    pointer-events: none;
+    filter: saturate(1);
+    background: none;
+}
+
 .overlay {
     display: none;
     position: fixed;
@@ -470,6 +486,26 @@ header {
     text-transform: capitalize;
     border-bottom: 2px solid #b58863;
     padding-bottom: 5px;
+}
+
+.carrying-piece {
+    display: flex;
+    flex-direction: column-reverse;
+    align-items: center;
+    justify-content: center;
+}
+
+.carrying-piece img {
+    margin-top: -5px;
+    margin-bottom: -5px;
+    width: 35px;
+    height: 35px;
+    overflow: visible;
+}
+
+.imageDisplay {
+    width: 60px;
+    height: 60px;
 }
 
 #infoBox p {
