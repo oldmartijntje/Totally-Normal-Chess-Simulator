@@ -83,7 +83,7 @@ class Chessboard {
     }
 
     renderInfoBox() {
-        if (!this.playerIndicators.pieceInfoField) {
+        if (!this.playerIndicators || !this.playerIndicators.pieceInfoField) {
             return;
         }
         let box = document.getElementById(this.playerIndicators.pieceInfoField)
@@ -295,6 +295,23 @@ class Chessboard {
                 }
             }
         }
+        for (let i = 0; i < allMoves.length; i++) {
+            let [x, y] = allMoves[i].split(',');
+            if (this.boardState[x][y] && this.boardState[x][y].type && pieces[this.boardState[x][y].type].ignoresThings) {
+                if (pieces[this.boardState[x][y].type].ignoresThings.ignoreKill && this.boardState[x][y].color != this.activePlayer) {
+                    allMoves.splice(i, 1);
+                    i--;
+                } else if (pieces[this.boardState[x][y].type].ignoresThings.ignoreCarry && this.boardState[x][y].color == this.activePlayer && this.cachedPieceData.pieceData.carrying) {
+                    allMoves.splice(i, 1);
+                    i--;
+                }
+
+
+            } else if (this.boardState[x][y] == 404) {
+                allMoves.splice(i, 1);
+                i--;
+            }
+        }
         return allMoves;
     }
 
@@ -392,6 +409,9 @@ class Chessboard {
                 if (this.boardState[location[0]][location[1]].color == this.activePlayer && this.isPieceMergable(this.cachedPieceData.boardData, this.boardState[location[0]][location[1]])) {
                     let pieceType = this.mergePieces(this.cachedPieceData.boardData, this.boardState[location[0]][location[1]].type)
                     this.boardState[this.cachedPieceData.location[0]][this.cachedPieceData.location[1]].type = pieceType;
+                    if (pieces[pieceType].summonOnBeingMerged) {
+                        placeOnOldLocation = { color: this.activePlayer, type: pieces[pieceType].summonOnBeingMerged, moved: true }
+                    }
                     // unlock it in the encyclopedia
                     if (pieces[pieceType].needsDiscovery && !discoveredPieces[pieceType] && !this.ignoreUnlocks) {
                         discoveredPieces[pieceType] = true
@@ -451,6 +471,13 @@ class Chessboard {
             }
 
             if (placeOnOldLocation) {
+                if (pieces[placeOnOldLocation.type].neutralObject) {
+                    placeOnOldLocation.color = 'neutral';
+                }
+                if (pieces[placeOnOldLocation.type].needsDiscovery && !discoveredPieces[placeOnOldLocation.type] && !this.ignoreUnlocks) {
+                    discoveredPieces[placeOnOldLocation.type] = true
+                    localStorage.setItem('discoveredPieces', JSON.stringify(discoveredPieces))
+                }
                 this.boardState[this.cachedPieceData.location[0]][this.cachedPieceData.location[1]] = placeOnOldLocation;
             } else {
                 this.boardState[this.cachedPieceData.location[0]][this.cachedPieceData.location[1]] = null;

@@ -5,7 +5,7 @@ const UNLOCK_MOVEMENT = false;
 const INVERTED_LOGIC = false;
 const LOOTBOX_SPAWN_PERCENTAGE = 5
 const LOOTBOX_CAPTURING_PIECE_WEIGHT = 5
-const DEBUG_MODE = false;
+const DEBUG_MODE = true;
 const FORCE_PLAYER_TURNS = true;
 const STARTING_PLAYER = 'white';
 const LOOTBOX_RARITY_MODIFIER = 10;
@@ -38,7 +38,6 @@ const pieces = {
             white: '<img src="https://i.imgur.com/dzq4vtf.png">',
             black: '<img src="https://i.imgur.com/iQBNl18.png">',
         },
-        notationType: 'R',
         mergability: {
             'rook': 'reversed-rook',
         }
@@ -78,7 +77,6 @@ const pieces = {
             white: '<img src="https://i.imgur.com/SXaYjIk.png">',
             black: '<img src="https://i.imgur.com/iXtJNpw.png">',
         },
-        notationType: 'N',
         description: "<p>Jumps over pieces.</p>",
         mergability: {
             'knight': 'winged-knight',
@@ -105,7 +103,6 @@ const pieces = {
             white: '<img src="https://i.imgur.com/vIA5kSR.png">',
             black: '<img src="https://i.imgur.com/yhW9ulD.png">'
         },
-        notationType: 'B',
         mergability: {
             'bishop': 'double-bishop',
         }
@@ -134,7 +131,6 @@ const pieces = {
             white: '<img src="https://i.imgur.com/PAPV0hG.png">',
             black: '<img src="https://i.imgur.com/j6QeiaI.png">'
         },
-        notationType: 'Q',
         mergability: {
             'queen': 'royal-queen',
         }
@@ -163,7 +159,6 @@ const pieces = {
             white: '<img src="https://i.imgur.com/wfis9bD.png">',
             black: '<img src="https://i.imgur.com/YAdx7Sr.png">'
         },
-        notationType: 'K',
         description: "<p>Once captured, you lose.</p><p><a href=\"https://en.wikipedia.org/wiki/Castling\" target=\"_blank\">Castling</a> is not a thing.</p>"
     },
     'pawn': {
@@ -208,7 +203,6 @@ const pieces = {
             black: '<img src="https://i.imgur.com/1TN3hWU.png">',
         },
         description: "<p>First move can move 2 spaces forward instead of 1<br>Attacks diagonally forward.<br>Transforms into a queen once you reach the opposite side of the board.<br>Black moves in the opposite direction.</p><p><a href=\"https://en.wikipedia.org/wiki/En_passant\" target=\"_blank\">En passant</a> is not a thing.</p>",
-        notationType: '',
         convertion: {
             rows: [0],
             collumns: [0, 1, 2, 3, 4, 5, 6, 7],
@@ -258,7 +252,6 @@ const pieces = {
             white: '<img src="https://i.imgur.com/KiRlbQJ.png">',
             black: '<img src="https://i.imgur.com/9sCgUI8.png">',
         },
-        notationType: 'RR',
         needsDiscovery: true,
         description: "<p>Unlocked by merging 2 rooks.<br>It can carry other pieces.</p>",
         carrying: true,
@@ -304,7 +297,6 @@ const pieces = {
             white: '<img src="https://i.imgur.com/O2bofNX.png">',
             black: '<img src="https://i.imgur.com/srBBfh4.png">',
         },
-        notationType: 'NN',
         description: "<p>Unlocked by merging 2 Knights and can do 2 jumps in a row.</p>",
         needsDiscovery: true,
 
@@ -327,7 +319,6 @@ const pieces = {
             white: '<img src="https://i.imgur.com/Nr8OCKj.png">',
             black: '<img src="https://i.imgur.com/9miqt0h.png">'
         },
-        notationType: 'BB',
         description: "<p>Unlocked by merging 2 Bishops. Moves like 3 Bishops next to each other, Attacks like a normal bishop.</p>",
         needsDiscovery: true,
     },
@@ -354,7 +345,6 @@ const pieces = {
             black: '<img src="https://i.imgur.com/tli76ZK.png">'
         },
         needsDiscovery: true,
-        notationType: 'QQ',
         description: "<p>Unlocked by merging 2 Queens. Attacks like a normal queen, but whilst moving to an empty piece it can jump over pieces.</p>",
     },
     'pawned': {
@@ -395,12 +385,12 @@ const pieces = {
         },
         needsDiscovery: true,
         description: "<p>First move can move 2 spaces instead of 1<br>Attacks diagonally.<br>It can carry other pieces.<br>Transforms into something once you reach the opposite side of the board.</p>",
-        notationType: '',
         convertion: {
             rows: [0],
             collumns: [0, 1, 2, 3, 4, 5, 6, 7],
             convertsTo: 'queened',
         },
+        // summonOnBeingMerged: 'brick', <- add this to the piece if you want to summon a piece when merging
     },
     'queened': {
         lootbox: {
@@ -432,6 +422,28 @@ const pieces = {
         },
         needsDiscovery: true,
         description: "<p>Moves as an inversed Queen, attacks as a Knight. Unlocked by promoting a Pawned.<br>It can carry other pieces.</p>",
-        notationType: 'Q\'d',
+    },
+    'brick': {
+        lootbox: {
+            weight: 0,
+        },
+        patterns: {
+            movement: [
+
+            ],
+            capture: [
+
+            ],
+        },
+        display: {
+            white: '<img src="https://i.imgur.com/g3qXsth.png">',
+            black: '<img src="https://i.imgur.com/bYTLYrb.png">'
+        },
+        // needsDiscovery: true,
+        description: "<p>Brick can not be moved or killed. But it can be carried.</p>",
+        ignoresThings: {
+            "ignoreCarry": false,
+            "ignoreKill": true,
+        }
     },
 }
