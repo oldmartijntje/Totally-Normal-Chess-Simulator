@@ -18,7 +18,7 @@ const winConditions = {
 }
 
 const defaultSettings = {
-    boardOrientation: "4",
+    boardOrientation: "1",
     aiOpponent: "1",
     allowLootboxSummoning: "1",
     checkmateDetection: "2"

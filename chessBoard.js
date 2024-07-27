@@ -171,6 +171,8 @@ class Chessboard {
 
                 if ((this.playerSettings.boardOrientation == "3" || this.playerSettings.boardOrientation == "4") && this.activePlayer == 'black') {
                     square.classList.add('flipped-tile');
+                } else if (this.playerSettings.boardOrientation == "5" && renderBoard[i][j] && renderBoard[i][j].color == 'black') {
+                    square.classList.add('flipped-tile');
                 }
                 if (this.isThisALegalMove(i, j)) {
                     square.classList.add('legal-move');
