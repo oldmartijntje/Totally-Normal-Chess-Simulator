@@ -52,7 +52,7 @@ header {
     align-items: start;
     flex-wrap: wrap;
     overflow: hidden;
-    width: 100%;
+    width: calc(100% - 2rem);
 }
 
 .headerBox {

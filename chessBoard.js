@@ -156,14 +156,13 @@ class Chessboard {
                 if (this.lastPlayedMove.length != 0 && (i == this.lastPlayedMove[0][0] && j == this.lastPlayedMove[0][1] || i == this.lastPlayedMove[1][0] && j == this.lastPlayedMove[1][1])) {
                     square.classList.add('last-move');
                 }
-                if (this.isPieceMergable(this.cachedPieceData.boardData, this.boardState[i][j])) {
-                    square.classList.add('mergeable');
-                }
 
                 if (this.boardState[i][j] && this.boardState[i][j] != 404) {
                     if (this.isThisALegalMove(i, j)) {
                         square.classList.add('attack-move');
-                        if (this.boardState[i][j].color == this.activePlayer) {
+                        if (this.isPieceMergable(this.cachedPieceData.boardData, this.boardState[i][j])) {
+                            square.classList.add('mergeable');
+                        } else if (this.boardState[i][j].color == this.activePlayer) {
                             square.classList.add('carry-move');
                         }
                     }
