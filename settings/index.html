@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Settings - Chess Simulator 256</title>
+    <meta name="keywords" content="chess, simulator, chess simulator, chess game, game">
+    <meta name="author" content="OldMartijntje">
+    <meta property="og:title" content="Chess Simulator 256">
+    <meta property="og:description" content="A very normal chess simulator website.">
+    <meta property="og:image" content="https://i.imgur.com/Aznlxui.png">
+    <meta property="og:url" content="https://oldmartijntje.github.io/SocialSelect/">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Chess Simulator 256">
+    <link rel="icon" href="https://i.imgur.com/Aznlxui.png" type="image/x-icon">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        #main {
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            max-width: 800px;
+            width: 100%;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        h1 {
+            color: #333;
+            margin: 0;
+        }
+
+        .home-button {
+            background-color: #00c3ff;
+            border: none;
+            color: white;
+            padding: 10px 20px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+
+        .home-button:hover {
+            background-color: #0077ff;
+        }
+
+        .setting {
+            margin-bottom: 20px;
+            background-color: #f9f9f9;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 15px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: #333;
+            font-weight: bold;
+        }
+
+        select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+            color: #333;
+        }
+
+        #save-button {
+            background-color: #4CAF50;
+            border: none;
+            color: white;
+            padding: 10px 20px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin-top: 20px;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+
+        #save-button:hover {
+            background-color: #45a049;
+        }
+
+        #unsaved-flag {
+            color: red;
+            font-size: 0.8em;
+            margin-left: 10px;
+            display: none;
+        }
+
+        .overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+        }
+
+        .popup {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: white;
+            padding: 20px;
+            border-radius: 5px;
+            text-align: center;
+        }
+
+        .popup button {
+            margin: 10px;
+            padding: 5px 10px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="main">
+        <div class="header">
+            <h1>Chess Game Settings <span id="unsaved-flag">(Unsaved)</span></h1>
+            <button class="home-button" onclick="checkUnsavedChanges()">Home</button>
+        </div>
+
+        <div class="setting">
+            <label for="boardOrientation">Board Orientation:</label>
+            <select id="boardOrientation">
+                <option value="1">Standard view (White at bottom)</option>
+                <option value="2">Flip board for Black's turn</option>
+                <option value="3">Always face active player</option>
+            </select>
+        </div>
+
+        <div class="setting">
+            <label for="aiOpponent">AI Opponent:</label>
+            <select id="aiOpponent">
+                <option value="1">Human vs Human</option>
+                <option value="2">Human (White) vs AI (Black)</option>
+                <option value="3">AI (White) vs Human (Black)</option>
+                <option value="4">AI vs AI</option>
+            </select>
+        </div>
+
+        <div class="setting">
+            <label for="pieceUnlocking">Summon LootBoxes button:</label>
+            <select id="pieceUnlocking">
+                <option value="1">Enabled</option>
+                <option value="2">Disabled</option>
+            </select>
+        </div>
+
+        <div class="setting">
+            <label for="checkmateDetection">Checkmate Detection:</label>
+            <select id="checkmateDetection">
+                <option value="1">Enabled (may affect performance)</option>
+                <option value="2">Disabled</option>
+            </select>
+        </div>
+
+        <button id="save-button" onclick="saveSettings()">Save Settings</button>
+    </div>
+
+    <div class="overlay" id="overlay">
+        <div class="popup">
+            <p>You have unsaved changes. Are you sure you want to leave?</p>
+            <button onclick="confirmLeave()">Yes, leave</button>
+            <button onclick="cancelLeave()">No, stay</button>
+        </div>
+    </div>
+
+    <script>
+        const defaultSettings = {
+            boardOrientation: "1",
+            aiOpponent: "1",
+            pieceUnlocking: "1",
+            checkmateDetection: "2"
+        };
+
+        let currentSettings = {};
+        let hasUnsavedChanges = false;
+
+        function loadSettings() {
+            let settings = JSON.parse(localStorage.getItem('chessSettings')) || {};
+            currentSettings = { ...defaultSettings, ...settings };
+
+            document.getElementById('boardOrientation').value = currentSettings.boardOrientation;
+            document.getElementById('aiOpponent').value = currentSettings.aiOpponent;
+            document.getElementById('pieceUnlocking').value = currentSettings.pieceUnlocking;
+            document.getElementById('checkmateDetection').value = currentSettings.checkmateDetection;
+
+            if (!localStorage.getItem('chessSettings')) {
+                saveSettings();
+            }
+
+            addChangeListeners();
+        }
+
+        function addChangeListeners() {
+            const selects = document.querySelectorAll('select');
+            selects.forEach(select => {
+                select.addEventListener('change', () => {
+                    hasUnsavedChanges = true;
+                    document.getElementById('unsaved-flag').style.display = 'inline';
+                });
+            });
+        }
+
+        function saveSettings() {
+            const settings = {
+                boardOrientation: document.getElementById('boardOrientation').value,
+                aiOpponent: document.getElementById('aiOpponent').value,
+                pieceUnlocking: document.getElementById('pieceUnlocking').value,
+                checkmateDetection: document.getElementById('checkmateDetection').value
+            };
+
+            localStorage.setItem('chessSettings', JSON.stringify(settings));
+            currentSettings = settings;
+            hasUnsavedChanges = false;
+            document.getElementById('unsaved-flag').style.display = 'none';
+        }
+
+        function checkUnsavedChanges() {
+            if (hasUnsavedChanges) {
+                document.getElementById('overlay').style.display = 'block';
+            } else {
+                window.location.href = '../';
+            }
+        }
+
+        function confirmLeave() {
+            window.location.href = '../';
+        }
+
+        function cancelLeave() {
+            document.getElementById('overlay').style.display = 'none';
+        }
+
+        window.onload = loadSettings;
+    </script>
+</body>
+
+</html>

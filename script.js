@@ -22,6 +22,7 @@ const prevPage = document.getElementById('prevPage');
 const nextPage = document.getElementById('nextPage');
 const pageNumber = document.getElementById('pageNumber');
 const Encyclopedia = document.getElementById('Encyclopedia');
+const Settings = document.getElementById('Settings');
 
 let chessboard;
 let currentPage = 1;
@@ -114,7 +115,7 @@ window.onload = () => {
         localStorage.removeItem('gameState')
     }
 
-    chessboard = new Chessboard(undefined, gameState, undefined, {"lootBoxAnimation": true});
+    chessboard = new Chessboard(undefined, gameState, undefined, { "lootBoxAnimation": true });
     sendToStore1.addEventListener('click', () => {
         localStorage.setItem('tokens', tokens)
         localStorage.setItem('gameState', JSON.stringify(chessboard.getGameState()))
@@ -164,6 +165,11 @@ window.onload = () => {
     Encyclopedia.addEventListener('click', () => {
         localStorage.setItem('gameState', JSON.stringify(chessboard.getGameState()))
         window.location.href = './encyclopedia';
+    });
+
+    Settings.addEventListener('click', () => {
+        localStorage.setItem('gameState', JSON.stringify(chessboard.getGameState()))
+        window.location.href = './settings';
     });
 
     // degugButton.addEventListener('click', () => {
