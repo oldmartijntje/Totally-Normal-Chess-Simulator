@@ -319,9 +319,24 @@ class Chessboard {
                 }
             }
         }
+        // strip all cords outside the BOARDSIZE
+        for (let index = 0; index < allMoves.length; index++) {
+            let [x, y] = allMoves[index].split(',');
+            x = parseInt(x);
+            y = parseInt(y);
+            if (y > BOARDSIZE - 1 || x > BOARDSIZE - 1 || y < 0 || x < 0) {
+                allMoves.splice(index, 1);
+                index--;
+            }
+        }
         for (let i = 0; i < allMoves.length; i++) {
             let [x, y] = allMoves[i].split(',');
-            if (this.boardState[x][y] && this.boardState[x][y].type && pieces[this.boardState[x][y].type].ignoresThings) {
+            x = parseInt(x);
+            y = parseInt(y);
+            if (this.boardState[x][y] == null) {
+                continue;
+            }
+            if (this.boardState[x][y].type && pieces[this.boardState[x][y].type].ignoresThings) {
                 if (pieces[this.boardState[x][y].type].ignoresThings.ignoreKill && this.boardState[x][y].color != this.activePlayer) {
                     allMoves.splice(i, 1);
                     i--;
