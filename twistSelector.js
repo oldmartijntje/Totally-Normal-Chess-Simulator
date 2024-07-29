@@ -128,10 +128,14 @@ function neutralizePiece(piece) {
 }
 
 function editChessBoard(activeGameState) {
+    let reveal = false;
     let colors = ['white', 'black'];
     for (let i = 0; i < colors.length; i++) {
         if (chosenTwists[colors[i]]) {
             let twist = chosenTwists[colors[i]]
+            if (twist.secret) {
+                reveal = true;
+            }
             switch (twist.id) {
                 case 0:
                     if (twist.options.Y === 'random') {
@@ -256,6 +260,10 @@ function editChessBoard(activeGameState) {
             }
         }
     }
+    if (reveal) {
+        alert(`The hidden twist is: ${chosenTwists['white'].oldData.text}`);
+
+    }
     return activeGameState;
 
 
@@ -272,14 +280,12 @@ function showOptions(player) {
 
 function selectOption(player, option) {
     chosenTwists[player] = option;
-    console.log(chosenTwists);
     document.getElementById(player + 'Options').style.display = 'none';
 
     if (player === 'white') {
         document.getElementById('blackConfirmation').style.display = 'block';
     } else {
         document.getElementById('optionsOverlay').style.display = 'none';
-        console.log('Game options selection completed');
         gameState = chessboard.getGameState();
         if (!gameState.modifiedGameData) {
             gameState.modifiedGameData = {};
@@ -292,7 +298,12 @@ function selectOption(player, option) {
 }
 
 function skipSelection() {
-    console.log('Selection skipped');
+    gameState = chessboard.getGameState();
+    if (!gameState.modifiedGameData) {
+        gameState.modifiedGameData = {};
+    }
+    gameState.modifiedGameData.didTwistSelecting = true;
+    createChessboard(gameState);
     document.getElementById('optionsOverlay').style.display = 'none';
 }
 
@@ -302,9 +313,17 @@ function generateOptions(player) {
 
     // shuffle order, but keep the last one as the last option
     let lastOption = twistsGenerated.pop();
+    if (!lastOption.oldData) {
+        lastOption.oldData = {
+            text: lastOption.text,
+            display: lastOption.display,
+            image: lastOption.image,
+        }
+    }
     lastOption.text = '???';
     lastOption.display = undefined;
     lastOption.image = 'https://i.imgur.com/L2QFLNn.png';
+    lastOption.secret = true;
     twistsGenerated.sort(() => Math.random() - 0.5);
     twistsGenerated.push(lastOption);
 

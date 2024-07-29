@@ -98,12 +98,15 @@
 
 .skip-button p {
     color: #f44336;
+    padding: 5px 10px;
+}
+
+.skip-button p,
+.options {
+    padding: 5px 10px;
     background: linear-gradient(to bottom, rgba(31, 31, 31, 0) 0%, rgba(31, 31, 31, 0.478) 50%, rgba(31, 31, 31, 0) 100%),
         linear-gradient(to right, rgba(31, 31, 31, 0) 0%, rgba(31, 31, 31, 0.478) 50%, rgba(31, 31, 31, 0) 100%);
     background-color: rgba(31, 31, 31, 0.478);
     /* Fallback color */
     background-blend-mode: multiply;
-    padding: 5px 10px;
-
-
 }
