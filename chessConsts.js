@@ -11,7 +11,7 @@ const STARTING_PLAYER = 'white';
 const LOOTBOX_RARITY_MODIFIER = 10;
 const AMOUNT_OF_TWISTS = 3;
 
-const winConditions = {
+const WIN_CONDITIONS = {
     slainTroops: {
         'king': 1,
         // 'pawn': 8 // funy

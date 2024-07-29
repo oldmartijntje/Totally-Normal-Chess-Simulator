@@ -475,8 +475,8 @@ class Chessboard {
                     if (this.boardState[location[0]][location[1]].carrying) {
                         this.lostPieces[this.boardState[location[0]][location[1]].color].push(this.boardState[location[0]][location[1]].carrying.type);
                     }
-                    for (let i = 0; i < Object.keys(winConditions['slainTroops']).length; i++) {
-                        if (this.lostPieces[this.boardState[location[0]][location[1]].color].filter(x => x == Object.keys(winConditions['slainTroops'])[i]).length >= winConditions['slainTroops'][Object.keys(winConditions['slainTroops'])[i]]) {
+                    for (let i = 0; i < Object.keys(WIN_CONDITIONS['slainTroops']).length; i++) {
+                        if (this.lostPieces[this.boardState[location[0]][location[1]].color].filter(x => x == Object.keys(WIN_CONDITIONS['slainTroops'])[i]).length >= WIN_CONDITIONS['slainTroops'][Object.keys(WIN_CONDITIONS['slainTroops'])[i]]) {
                             this.render();
                             let loser = this.boardState[location[0]][location[1]].color;
                             setTimeout(() => {
