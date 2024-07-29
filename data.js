@@ -41,7 +41,10 @@ const addedFeatures = [
     {
         length: 0.5,
         content: `<h2>5.Added a Twist selector.</h2>
-                    <img src="https://i.imgur.com/RluGWR9.png">
+                    <div class="option">
+            <div class="square"><img src="https://i.imgur.com/L2QFLNn.png" alt="???"></div>
+            <p style="color:black">???</p>
+        </div>
                     <p>A the start of the game, both players choose a secret twist.<br>This twist can be anything.<br>Both players have the same choices.</p>`,
 
 
