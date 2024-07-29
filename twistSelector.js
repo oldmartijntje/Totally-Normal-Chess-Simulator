@@ -261,7 +261,7 @@ function editChessBoard(activeGameState) {
         }
     }
     if (reveal) {
-        alert(`The hidden twist is: ${chosenTwists['white'].oldData.text}`);
+        alert(`The hidden twist is: ${chosenTwists['black'].oldData.text}`);
 
     }
     return activeGameState;
