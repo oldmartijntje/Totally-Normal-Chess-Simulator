@@ -3,11 +3,11 @@ const twists = [
         id: 0,
         name: "Change Piece",
         image: "https://i.imgur.com/5Tb1TzQ.png",
-        description: "Change a Zx X piece to Y.",
+        description: "Change Zx X piece to Y.",
         options: {
             X: ["pawn", "knight", "bishop", "rook", "queen"],
             Y: [Object.keys(pieces), "random"].flat(),
-            Z: [1, 1, 1, 1, 1, 1, 2, 2, 2, 3, 3, 4]
+            Z: [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 3, 3, 4, 5]
         },
         splice: { Y: 'X' }, // remove the item chosen in X out of the Y array
         random: Object.keys(pieces)
@@ -275,6 +275,7 @@ function selectOption(player, option) {
         gameState = chessboard.getGameState();
         gameState = editChessBoard(gameState);
         createChessboard(gameState);
+        updateWinConditionBox();
     }
 }
 

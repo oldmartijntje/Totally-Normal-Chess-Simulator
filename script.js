@@ -198,3 +198,57 @@ window.onload = () => {
     //     console.warn('Debugging button clicked')
     // })
 };
+
+let progress = {
+    white: { slainTroops: { king: 0 } },
+    black: { slainTroops: { king: 0 } }
+};
+
+function updateWinConditionBox() {
+    const box = document.getElementById('winConditionBox');
+    box.innerHTML = '<h2>Win Conditions</h2>';
+
+    ['white', 'black'].forEach(player => {
+        const playerSection = document.createElement('div');
+        playerSection.className = 'player-section';
+        playerSection.innerHTML = `<div class="player-title">${player.charAt(0).toUpperCase() + player.slice(1)} Player</div>`;
+
+        for (const [condition, piecesToKill] of Object.entries(WIN_CONDITIONS)) {
+            const conditionDiv = document.createElement('div');
+            conditionDiv.className = 'condition';
+            conditionDiv.innerHTML = `<div class="condition-title">${condition}</div>`;
+
+            for (const [piece, count] of Object.entries(piecesToKill)) {
+                const pieceDiv = document.createElement('div');
+                pieceDiv.className = 'piece-progress';
+                const currentProgress = progress[player][condition]?.[piece] || 0;
+                pieceDiv.innerHTML = `
+                    <div class="square">${pieces[piece].display[player]}</div>
+                    <span>${piece}:</span>
+                    <span class="progress-text">${currentProgress}/${count}</span>
+                `;
+
+                conditionDiv.appendChild(pieceDiv);
+            }
+
+            playerSection.appendChild(conditionDiv);
+        }
+
+        box.appendChild(playerSection);
+    });
+}
+
+function updateProgress(player, condition, piece, newValue) {
+    if (!progress[player][condition]) {
+        progress[player][condition] = {};
+    }
+    progress[player][condition][piece] = newValue;
+    updateWinConditionBox();
+}
+
+// Initial render
+updateWinConditionBox();
+
+// Example usage:
+// updateProgress('white', 'slainTroops', 'king', 1);
+// updateProgress('black', 'slainTroops', 'king', 1);

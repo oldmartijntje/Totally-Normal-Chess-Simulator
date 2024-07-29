@@ -42,10 +42,10 @@ const pieces = {
             ],
         },
         display: {
-            // white: '♖',
-            // black: '♜',
             white: '<img src="https://i.imgur.com/dzq4vtf.png">',
             black: '<img src="https://i.imgur.com/iQBNl18.png">',
+            // white: '♖',
+            // black: '♜',
         },
         mergability: {
             'rook': 'reversed-rook',

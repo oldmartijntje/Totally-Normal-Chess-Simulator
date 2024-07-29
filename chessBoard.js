@@ -2,8 +2,8 @@ class Chessboard {
     constructor(
         boardElementId = 'chessboard',
         gameState,
-        playerIndicators = { white: 'whitePlayer', black: 'blackPlayer', pieceInfoField: 'infoBox' },
-        boardData = { blockInteraction: false, lootBoxAnimation: false, sandboxChessBoard: false, ignoreUnlocks: false },
+        playerIndicators = { white: 'whitePlayer', black: 'blackPlayer', pieceInfoField: 'infoBox', winConditionsIndicator: 'winConditionBox' },
+        boardData = { blockInteraction: false, lootBoxAnimation: false, sandboxChessBoard: false, ignoreUnlocks: false, useWinConditionBoxFunction: true },
         loadedSettings = {
             boardOrientation: "1",
             aiOpponent: "1",
@@ -19,10 +19,7 @@ class Chessboard {
         }
 
         this.playerSettings = loadedSettings;
-        this.sandboxChessBoard = boardData.sandboxChessBoard;
-        this.staticBoard = boardData.blockInteraction;
-        this.lootBoxAnimation = boardData.lootBoxAnimation;
-        this.ignoreUnlocks = boardData.ignoreUnlocks;
+        this.boardDataSettings = boardData;
         this.playerIndicators = playerIndicators // the 2 elements that will be used to indicate the active player
 
         this.pieces = {
@@ -412,7 +409,7 @@ class Chessboard {
     }
 
     handleSquareClick(square) {
-        if (this.staticBoard) {
+        if (this.boardDataSettings.blockInteraction) {
             return;
         }
         if (!this.selectedPiece && square.getAttribute('piece-team') == 'neutral') {
@@ -431,7 +428,7 @@ class Chessboard {
                 return;
             }
             let discoveredPieces = localStorage.getItem('discoveredPieces') ? JSON.parse(localStorage.getItem('discoveredPieces')) : {}
-            if (this.cachedPieceData.pieceData.needsDiscovery && !discoveredPieces[this.cachedPieceData.boardData.type] && !this.ignoreUnlocks) {
+            if (this.cachedPieceData.pieceData.needsDiscovery && !discoveredPieces[this.cachedPieceData.boardData.type] && !this.boardDataSettings.ignoreUnlocks) {
                 discoveredPieces[this.cachedPieceData.boardData.type] = true
                 localStorage.setItem('discoveredPieces', JSON.stringify(discoveredPieces))
             }
@@ -452,7 +449,7 @@ class Chessboard {
                         placeOnOldLocation = { color: this.activePlayer, type: pieces[pieceType].summonOnBeingMerged, moved: true }
                     }
                     // unlock it in the encyclopedia
-                    if (pieces[pieceType].needsDiscovery && !discoveredPieces[pieceType] && !this.ignoreUnlocks) {
+                    if (pieces[pieceType].needsDiscovery && !discoveredPieces[pieceType] && !this.boardDataSettings.ignoreUnlocks) {
                         discoveredPieces[pieceType] = true
                         localStorage.setItem('discoveredPieces', JSON.stringify(discoveredPieces))
                     }
@@ -468,7 +465,7 @@ class Chessboard {
             if (capture) {
                 if (this.boardState[location[0]][location[1]].color == 'neutral') {
                     if (this.boardState[location[0]][location[1]].type == 'lootbox') {
-                        runLootBoxUnboxing(getLootboxPiece(this.cachedPieceData.boardData.type), this.cachedPieceData.boardData.color, this.boardState, JSON.parse(JSON.stringify(this.cachedPieceData)), this.lootBoxAnimation);
+                        runLootBoxUnboxing(getLootboxPiece(this.cachedPieceData.boardData.type), this.cachedPieceData.boardData.color, this.boardState, JSON.parse(JSON.stringify(this.cachedPieceData)), this.boardDataSettings.lootBoxAnimation);
                     }
                 } else {
                     this.lostPieces[this.boardState[location[0]][location[1]].color].push(this.boardState[location[0]][location[1]].type);
@@ -476,7 +473,7 @@ class Chessboard {
                         this.lostPieces[this.boardState[location[0]][location[1]].color].push(this.boardState[location[0]][location[1]].carrying.type);
                     }
                     for (let i = 0; i < Object.keys(WIN_CONDITIONS['slainTroops']).length; i++) {
-                        if (this.lostPieces[this.boardState[location[0]][location[1]].color].filter(x => x == Object.keys(WIN_CONDITIONS['slainTroops'])[i]).length >= WIN_CONDITIONS['slainTroops'][Object.keys(WIN_CONDITIONS['slainTroops'])[i]]) {
+                        if (this.reachedWinConditionCheck(this.boardState[location[0]][location[1]])) {
                             this.render();
                             let loser = this.boardState[location[0]][location[1]].color;
                             setTimeout(() => {
@@ -486,7 +483,7 @@ class Chessboard {
                     }
                 }
 
-                if (pieces[this.boardState[location[0]][location[1]].type].needsDiscovery && !discoveredPieces[this.boardState[location[0]][location[1]].type] && !this.ignoreUnlocks) {
+                if (pieces[this.boardState[location[0]][location[1]].type].needsDiscovery && !discoveredPieces[this.boardState[location[0]][location[1]].type] && !this.boardDataSettings.ignoreUnlocks) {
                     discoveredPieces[this.boardState[location[0]][location[1]].type] = true
                     localStorage.setItem('discoveredPieces', JSON.stringify(discoveredPieces))
                 }
@@ -513,7 +510,7 @@ class Chessboard {
                 if (pieces[placeOnOldLocation.type].neutralObject) {
                     placeOnOldLocation.color = 'neutral';
                 }
-                if (pieces[placeOnOldLocation.type].needsDiscovery && !discoveredPieces[placeOnOldLocation.type] && !this.ignoreUnlocks) {
+                if (pieces[placeOnOldLocation.type].needsDiscovery && !discoveredPieces[placeOnOldLocation.type] && !this.boardDataSettings.ignoreUnlocks) {
                     discoveredPieces[placeOnOldLocation.type] = true
                     localStorage.setItem('discoveredPieces', JSON.stringify(discoveredPieces))
                 }
@@ -555,6 +552,19 @@ class Chessboard {
         this.render();
     }
 
+    reachedWinConditionCheck(killedPiece) {
+        for (let index = 0; index < Object.keys(WIN_CONDITIONS['slainTroops']).length; index++) {
+            let amountOfThisPieceDied = this.lostPieces[killedPiece.color].filter(x => x == Object.keys(WIN_CONDITIONS['slainTroops'])[index]).length;
+            if (!this.playerIndicators.winConditionsIndicator || !this.boardDataSettings.useWinConditionBoxFunction) {
+                updateProgress(killedPiece.color, 'slainTroops', Object.keys(WIN_CONDITIONS['slainTroops'])[index], amountOfThisPieceDied);
+            }
+            if (amountOfThisPieceDied >= WIN_CONDITIONS['slainTroops'][Object.keys(WIN_CONDITIONS['slainTroops'])[index]]) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     generateLootBox(gameState, customPercentage = null) {
         // if empty space exists on the board, spawn a lootbox
         let emptySpaces = []
@@ -594,7 +604,7 @@ class Chessboard {
             nextPlayer = nextPlayer == 'white' ? 'black' : 'white';
         }
         this.activePlayer = nextPlayer;
-        if (!this.sandboxChessBoard) {
+        if (!this.boardDataSettings.sandboxChessBoard) {
             this.generateLootBox(gameState);
         }
         this.cacheMoveData();

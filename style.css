@@ -532,3 +532,80 @@ header {
         max-width: 90%;
     }
 }
+
+#winConditionBox {
+    background-color: #f0f0f0;
+    border: 2px solid #333;
+    border-radius: 10px;
+    padding: 10px;
+    max-width: 250px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    font-family: Arial, sans-serif;
+    margin: 20px auto;
+    font-size: 12px;
+}
+
+.player-section {
+    margin-bottom: 10px;
+}
+
+.player-title {
+    font-size: 14px;
+    font-weight: bold;
+    margin-bottom: 5px;
+    color: #333;
+    border-bottom: 2px solid #b58863;
+    padding-bottom: 3px;
+}
+
+.condition-title {
+    font-size: 13px;
+    font-weight: bold;
+    margin-bottom: 5px;
+    color: #555;
+}
+
+.piece-progress {
+    display: flex;
+    align-items: center;
+    margin-bottom: 5px;
+}
+
+.progress-bar {
+    flex-grow: 1;
+    height: 10px;
+    background-color: #e0e0e0;
+    border-radius: 5px;
+    overflow: hidden;
+}
+
+.progress {
+    height: 100%;
+    width: 0;
+    transition: width 0.3s ease;
+}
+
+.progress-white {
+    background-color: #4CAF50;
+}
+
+.progress-black {
+    background-color: #2196F3;
+}
+
+.progress-text {
+    margin-left: 5px;
+    font-size: 11px;
+    color: #555;
+}
+
+.winConditionIcon {
+    width: 20px;
+    height: 20px;
+    margin-right: 5px;
+}
+
+.winConditionIcon img {
+    width: 100%;
+    height: 100%;
+}
