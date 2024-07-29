@@ -116,7 +116,10 @@
             <h2>White Player</h2>
             <p>Are you ready to see your options?</p>
             <button onclick="showOptions('white')">Yes, I'm ready</button>
-            <button class="skip-button" onclick="skipSelection()">Skip Selection</button>
+            <div class="skip-button">
+                <button onclick="skipSelection()">Play without Twist</button>
+                <p>You can also toggle this in the settings.</p>
+            </div>
         </div>
         <div id="blackOptions" class="player-section" style="display: none;">
             <div class="options" id="blackOptionsContainer"></div>
