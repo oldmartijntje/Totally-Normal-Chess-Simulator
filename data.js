@@ -40,6 +40,15 @@ const editableRulebook = [
 const addedFeatures = [
     {
         length: 0.5,
+        content: `<h2>5.Added a Twist selector.</h2>
+                    <img src="https://i.imgur.com/RluGWR9.png">
+                    <p>A the start of the game, both players choose a secret twist.<br>This twist can be anything.</p>`,
+
+
+        commentLink: "https://www.reddit.com/r/AnarchyChess/comments/1edeyhi/comment/lf6gapg/?utm_source=share&utm_medium=web3x&utm_name=web3xcss&utm_term=1&utm_content=share_button"
+    },
+    {
+        length: 0.5,
         content: `<h2>4.Added piece Carrying.</h2>
                     <div class="square carrying-piece" piece-name="reversed-rook" piece-team="white"><img src="https://i.imgur.com/KiRlbQJ.png"><img src="https://i.imgur.com/vIA5kSR.png"></div>
                     <p>You can carry a piece with upside-down pieces.</p>

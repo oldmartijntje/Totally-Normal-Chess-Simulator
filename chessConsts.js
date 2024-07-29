@@ -18,10 +18,11 @@ const winConditions = {
 }
 
 const defaultSettings = {
-    boardOrientation: "1",
+    boardOrientation: "5",
     aiOpponent: "1",
     allowLootboxSummoning: "1",
-    checkmateDetection: "2"
+    checkmateDetection: "2",
+    twistSelector: "1"
 };
 
 const pieces = {

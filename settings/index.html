@@ -189,6 +189,14 @@
             </select>
         </div>
 
+        <div class="setting">
+            <label for="twistSelector">Twist selector:</label>
+            <select id="twistSelector">
+                <option value="1">Enabled</option>
+                <option value="2">Disabled</option>
+            </select>
+        </div>
+
         <button id="save-button" onclick="saveSettings()">Save Settings</button>
     </div>
 
@@ -205,7 +213,8 @@
             boardOrientation: "5",
             aiOpponent: "1",
             allowLootboxSummoning: "1",
-            checkmateDetection: "2"
+            checkmateDetection: "2",
+            twistSelector: "1"
         };
 
         let currentSettings = {};
@@ -215,10 +224,9 @@
             let settings = JSON.parse(localStorage.getItem('chessSettings')) || {};
             currentSettings = { ...defaultSettings, ...settings };
 
-            document.getElementById('boardOrientation').value = currentSettings.boardOrientation;
-            document.getElementById('aiOpponent').value = currentSettings.aiOpponent;
-            document.getElementById('allowLootboxSummoning').value = currentSettings.allowLootboxSummoning;
-            document.getElementById('checkmateDetection').value = currentSettings.checkmateDetection;
+            for (let index = 0; index < Object.keys(defaultSettings).length; index++) {
+                document.getElementById(Object.keys(defaultSettings)[index]).value = currentSettings[Object.keys(defaultSettings)[index]];
+            }
 
             if (!localStorage.getItem('chessSettings')) {
                 saveSettings();
@@ -238,12 +246,10 @@
         }
 
         function saveSettings() {
-            const settings = {
-                boardOrientation: document.getElementById('boardOrientation').value,
-                aiOpponent: document.getElementById('aiOpponent').value,
-                allowLootboxSummoning: document.getElementById('allowLootboxSummoning').value,
-                checkmateDetection: document.getElementById('checkmateDetection').value
-            };
+            const settings = {};
+            for (let index = 0; index < Object.keys(defaultSettings).length; index++) {
+                settings[Object.keys(defaultSettings)[index]] = document.getElementById(Object.keys(defaultSettings)[index]).value;
+            }
 
             localStorage.setItem('chessSettings', JSON.stringify(settings));
             currentSettings = settings;

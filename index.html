@@ -17,6 +17,7 @@
     <link rel="icon" href="https://i.imgur.com/Aznlxui.png" type="image/x-icon">
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="clipboard.css">
+    <link rel="stylesheet" href="twistStyling.css">
 </head>
 
 <body>
@@ -53,7 +54,6 @@
             <img src="https://i.imgur.com/5Tb1TzQ.png" alt="clipboard" class="symbol">
             <span>Settings</span>
         </div>
-        <!-- <button id="debugButton">DEBUG</button> -->
     </header>
     <div id="main">
         <div class="chessboard" id="chessboard"></div>
@@ -105,11 +105,33 @@
 
     <div id="debugBox"></div>
 
+    <!-- New Options Overlay -->
+    <div class="options-overlay" id="optionsOverlay">
+        <div id="blackConfirmation" class="confirmation" style="display: none;">
+            <h2>Black Player</h2>
+            <p>Are you ready to see your options?</p>
+            <button onclick="showOptions('black')">Yes, I'm ready</button>
+        </div>
+        <div id="whiteConfirmation" class="confirmation">
+            <h2>White Player</h2>
+            <p>Are you ready to see your options?</p>
+            <button onclick="showOptions('white')">Yes, I'm ready</button>
+            <button class="skip-button" onclick="skipSelection()">Skip Selection</button>
+        </div>
+        <div id="blackOptions" class="player-section" style="display: none;">
+            <div class="options" id="blackOptionsContainer"></div>
+        </div>
+        <div id="whiteOptions" class="player-section" style="display: none;">
+            <div class="options" id="whiteOptionsContainer"></div>
+        </div>
+    </div>
+
     <script src="data.js" defer></script>
     <script src="chessConsts.js" defer></script>
     <script src="lootbox.js" defer></script>
     <script src="chessBoard.js" defer></script>
     <script src="script.js" defer></script>
+    <script src="twistSelector.js" defer></script>
 </body>
 
 </html>

@@ -119,6 +119,10 @@ function hidePopup() {
     noLootboxPopup.style.display = 'none';
 }
 
+function createChessboard(givenGameState) {
+    chessboard = new Chessboard(undefined, givenGameState, undefined, { "lootBoxAnimation": true }, loadedSettings);
+}
+
 
 window.onload = () => {
     console.log(setupData)
@@ -128,10 +132,10 @@ window.onload = () => {
         localStorage.removeItem('gameState')
     }
 
-    chessboard = new Chessboard(undefined, gameState, undefined, { "lootBoxAnimation": true }, loadedSettings);
+    createChessboard(gameState);
     sendToStore1.addEventListener('click', () => {
         localStorage.setItem('tokens', tokens)
-        localStorage.setItem('gameState', JSON.stringify(chessboard.getGameState()))
+        localStorage.setItem('gameState', JSON.stringify(chessboard?.getGameState()))
         window.location.href = './store'
     })
 
@@ -145,7 +149,7 @@ window.onload = () => {
                 showPopup();
                 return;
             }
-            let success = chessboard.generateLootBox(chessboard.getGameState(), 100);
+            let success = chessboard?.generateLootBox(chessboard?.getGameState(), 100);
             if (success) {
                 lootboxes--;
                 lootboxesAmount.innerHTML = lootboxes;
@@ -165,28 +169,28 @@ window.onload = () => {
     });
 
     goToShopButton.addEventListener('click', () => {
-        localStorage.setItem('gameState', JSON.stringify(chessboard.getGameState()));
+        localStorage.setItem('gameState', JSON.stringify(chessboard?.getGameState()));
         window.location.href = './shop';
     });
 
     shopButton.addEventListener('click', () => {
-        localStorage.setItem('gameState', JSON.stringify(chessboard.getGameState()));
+        localStorage.setItem('gameState', JSON.stringify(chessboard?.getGameState()));
         window.location.href = './shop';
     });
 
     clipboardButton.addEventListener('click', () => {
-        localStorage.setItem('gameState', JSON.stringify(chessboard.getGameState()))
+        localStorage.setItem('gameState', JSON.stringify(chessboard?.getGameState()))
         clipboardOverlay.style.display = 'block';
         showPage(currentPage);
     });
 
     Encyclopedia.addEventListener('click', () => {
-        localStorage.setItem('gameState', JSON.stringify(chessboard.getGameState()))
+        localStorage.setItem('gameState', JSON.stringify(chessboard?.getGameState()))
         window.location.href = './encyclopedia';
     });
 
     Settings.addEventListener('click', () => {
-        localStorage.setItem('gameState', JSON.stringify(chessboard.getGameState()))
+        localStorage.setItem('gameState', JSON.stringify(chessboard?.getGameState()))
         window.location.href = './settings';
     });
 
