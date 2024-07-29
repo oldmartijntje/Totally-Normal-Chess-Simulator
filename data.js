@@ -1,7 +1,7 @@
 const setupData = {
     votingUrl: 'https://www.reddit.com/r/AnarchyChess/comments/1edeyhi/5_added_carrying_of_pieces_to_my_totally_accurate/',
     githubRepo: 'https://github.com/oldmartijntje/Totally-Normal-Chess-Simulator',
-    version: 4
+    version: 5 // This is the X amount of vote added / in development.
 }
 
 const editableRulebook = [
