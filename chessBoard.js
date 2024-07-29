@@ -51,6 +51,7 @@ class Chessboard {
             this.lostPieces = gameState.lostPieces ? gameState.lostPieces : { black: [], white: [] };
             this.activePlayer = gameState.activePlayer ? gameState.activePlayer : STARTING_PLAYER;
             this.lastPlayedMove = gameState.lastPlayedMove ? gameState.lastPlayedMove : [];
+            this.modifiedGameData = gameState.modifiedGameData ? gameState.modifiedGameData : {};
             if (gameState.selectedPiece) {
                 this.render(); // it has to render first to get the selected piece
                 this.selectedPiece = document.getElementById(gameState.selectedPiece);
@@ -221,7 +222,8 @@ class Chessboard {
             activePlayer: this.activePlayer,
             selectedPiece: this.selectedPiece?.id,
             cachedPieceData: this.cachedPieceData,
-            lastPlayedMove: this.lastPlayedMove
+            lastPlayedMove: this.lastPlayedMove,
+            modifiedGameData: this.modifiedGameData
         }
     }
 

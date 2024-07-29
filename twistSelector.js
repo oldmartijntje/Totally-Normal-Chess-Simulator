@@ -1,3 +1,4 @@
+const TWIST_SELECTOR_ID = 'twistSelector.js';
 const twists = [
     {
         id: 0,
@@ -70,11 +71,15 @@ let chosenTwists = {
     'white': undefined,
     'black': undefined
 }
-if (loadedSettings.twistSelector == "2") {
-    document.getElementById('optionsOverlay').style.display = 'none';
-} else {
-    generateTwistOptions()
-}
+
+allEvents.on('chessboardInit', TWIST_SELECTOR_ID, (gameState) => {
+    gameState = chessboard?.getGameState();
+    if (loadedSettings.twistSelector == "2" || gameState?.modifiedGameData?.didTwistSelecting) {
+        document.getElementById('optionsOverlay').style.display = 'none';
+    } else {
+        generateTwistOptions()
+    }
+});
 
 function generateTwistOptions() {
     for (let i = 0; i < AMOUNT_OF_TWISTS + 1; i++) {
@@ -273,6 +278,10 @@ function selectOption(player, option) {
         document.getElementById('optionsOverlay').style.display = 'none';
         console.log('Game options selection completed');
         gameState = chessboard.getGameState();
+        if (!gameState.modifiedGameData) {
+            gameState.modifiedGameData = {};
+        }
+        gameState.modifiedGameData.didTwistSelecting = true;
         gameState = editChessBoard(gameState);
         createChessboard(gameState);
         updateWinConditionBox();

@@ -133,6 +133,8 @@ window.onload = () => {
     }
 
     createChessboard(gameState);
+    gameState = chessboard.getGameState();
+    allEvents.emit('chessboardInit', gameState);
     sendToStore1.addEventListener('click', () => {
         localStorage.setItem('tokens', tokens)
         localStorage.setItem('gameState', JSON.stringify(chessboard?.getGameState()))
