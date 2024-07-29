@@ -3,7 +3,7 @@ const twists = [
     {
         id: 0,
         name: "Change Piece",
-        image: "https://i.imgur.com/5Tb1TzQ.png",
+        image: "https://i.imgur.com/cVr2dKE.png",
         description: "Change Zx X piece to Y.",
         options: {
             X: ["pawn", "knight", "bishop", "rook", "queen"],
@@ -11,22 +11,24 @@ const twists = [
             Z: [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 3, 3, 4, 5]
         },
         splice: { Y: 'X' }, // remove the item chosen in X out of the Y array
-        random: Object.keys(pieces)
+        random: Object.keys(pieces),
+        usePieceIcons: true
     },
     {
         id: 1,
         name: "Summon Piece",
-        image: "https://i.imgur.com/VjbJmAM.png",
+        image: "https://i.imgur.com/B7oFS1z.png",
         description: "Summon a X piece on a random empty square.",
         options: {
             X: [Object.keys(pieces), "random"].flat(),
         },
-        random: Object.keys(pieces)
+        random: Object.keys(pieces),
+        usePieceIcons: true
     },
     {
         id: 2,
         name: "Win Condition",
-        image: "https://i.imgur.com/TbxbWp9.png",
+        image: "https://i.imgur.com/qBUbzOY.png",
         description: "Add win condition: Capture X x Y.",
         options: {
             X: [1, 2, 2, 3, 3, 3, 4, 4, 5],
@@ -36,18 +38,19 @@ const twists = [
     {
         id: 3,
         name: "Upgrade Piece",
-        image: "https://i.imgur.com/5Tb1TzQ.png",
+        image: "https://i.imgur.com/PMotr8t.png",
         description: "Upgrade a X piece.",
         options: {
             X: ["pawn", "knight", "bishop", "rook", "queen", "random"]
 
         },
-        random: ["pawn", "knight", "bishop", "rook", "queen"]
+        random: ["pawn", "knight", "bishop", "rook", "queen"],
+        usePieceIcons: true
     },
     {
         id: 4,
         name: "Move Piece",
-        image: "https://i.imgur.com/5Tb1TzQ.png",
+        image: "https://i.imgur.com/rEstsd6.png",
         description: "Move a X piece to a random empty square.",
         options: {
             X: ["pawn", "knight", "bishop", "rook", "queen", "random", "king"],
@@ -57,8 +60,8 @@ const twists = [
     {
         id: 5,
         name: "Switch Pieces",
-        image: "https://i.imgur.com/5Tb1TzQ.png",
-        description: "Shuffle locations of X, Y pieces.",
+        image: "https://i.imgur.com/KGpx5Pb.png",
+        description: "Shuffle locations of X + Y pieces.",
         options: {
             X: ["pawn", "knight", "bishop", "rook", "queen", "king", "ALL"],
             Y: ["pawn", "knight", "bishop", "rook", "queen", "king", "ALL"],
@@ -96,7 +99,7 @@ function generateTwistOptions() {
             let selectedOption = randomSelectedTemplate.options[optionsKey][Math.floor(Math.random() * randomSelectedTemplate.options[optionsKey].length)];
             randomSelectedTemplate.options[optionsKey] = selectedOption;
             randomSelectedTemplate.description = randomSelectedTemplate.description.replace(optionsKey, selectedOption);
-            if (pieces[selectedOption]) {
+            if (pieces[selectedOption] && randomSelectedTemplate.usePieceIcons) {
                 randomSelectedTemplate.display = JSON.parse(JSON.stringify(pieces[selectedOption].display));
                 randomSelectedTemplate.display.pieceName = selectedOption;
             }
