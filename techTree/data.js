@@ -1,9 +1,9 @@
 const techTree = [
-    { id: 0, cost: 0, name: "The Beginning", connections: [1, 4, 5, 7, 15, 16], description: "This is the beginning of the tech tree.", image: "" },
+    { id: 0, cost: 0, name: "The Beginning", connections: [1, 4, 5, 7, 15], description: "This is the beginning of the tech tree.", image: "" },
     { id: 1, cost: 250, name: "Tiny Bonus", connections: [2, 8], description: "Bonus credits on purchase is 5%.", image: "" },
     { id: 2, cost: 1000, name: "Small Bonus", connections: [3, 6], description: "Bonus credits on purchase is 10%.", image: "", x: 613, y: 200 },
     { id: 3, cost: 4500, name: "Medium Bonus", connections: [], description: "Bonus credits on purchase is 15%.", image: "" },
-    { id: 4, cost: 4500, name: "Pawntection", connections: [12, 14], description: "When someone attacks your pawn, have a 5% chance of escaping it by moving backwards.", image: "" },
+    { id: 4, cost: 4500, name: "Pawntection", connections: [12, 14, 16], description: "When someone attacks your pawn, have a 5% chance of escaping it by moving backwards.", image: "" },
     { id: 5, cost: 1000, name: "Small Bonus", connections: [], description: "Bonus credits on purchase is 10%.", image: "" },
     { id: 6, cost: 3000, name: "Auto-box", connections: [11], description: "Automatically refill your lootboxes when you reach 0 and have enough credits.", image: "" },
     { id: 7, cost: 2000, name: "Midas", connections: [], description: "When capturing a piece, 10% chance of getting 1 gold.", image: "" },
@@ -15,6 +15,8 @@ const techTree = [
     { id: 13, cost: 1500, name: "Spy", connections: [], description: "If a pawn gets 5 kills, It'll alert the government.", image: "" },
     { id: 14, cost: 1000, name: "Pawnvenge", connections: [], description: "If your pawn gets captured, it will give you 1 stone.", image: "" },
     { id: 15, cost: 1000, name: "Getting an upgrade", connections: [], description: "You start the game with 1 Iron ingot.", image: "" },
-    { id: 16, cost: 1000, name: "Debug", connections: [], description: "Debug", image: "" },
+    { id: 16, cost: 10000, name: "Procket Science", connections: [17], description: "Instead of 2 pawns merging into 1 Pawned, they merge into Procket.", image: "" },
+    { id: 17, cost: 10000, name: "Procket Engineer", connections: [18], description: "Prockets ALWAYS move forwards.", hiddenDescription: true, image: "" },
+    { id: 18, cost: 10000, name: "Big Boom", connections: [], description: "Prockets ALWAYS move forwards.", hiddenDescription: true, hiddenTitle: true, image: "" },
 
 ];

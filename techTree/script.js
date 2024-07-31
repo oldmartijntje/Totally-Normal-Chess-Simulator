@@ -20,9 +20,8 @@ function generateCoordinates() {
     const parentClusters = {}; // Store nodes by parent
     const floaterNodes = []; // Store nodes that have no parents
     const radius = 150; // Distance from the parent
-    const angleIncrement = 35; // Fixed angle increment
-    const angleIncrementRoot = 45; // Fixed angle increment for the root node
-    const fullCircle = 360; // Full circle in degrees
+    const maxAngleIncrement = 45; // Maximum angle increment
+    const maxRootAngleIncrement = 180; // Maximum angle increment for the root node
 
     function assignClusters() {
         // Assign children to parent node clusters
@@ -48,20 +47,20 @@ function generateCoordinates() {
         const children = parentClusters[node.id];
         const numChildren = children.length;
 
-        // Determine the start angle for the first child
-        let startAngle;
+        // Determine the increment angle for the first child
+        let incrementPerKid
         if (!node.parents.length == 0) {
-            startAngle = parentAngle - (angleIncrement * (numChildren - 1) / 2);
+            incrementPerKid = maxAngleIncrement * 2 / numChildren;
         } else {
-            startAngle = parentAngle - (angleIncrementRoot * (numChildren - 1) / 2);
+            incrementPerKid = maxRootAngleIncrement * 2 / numChildren;
         }
 
         children.forEach((childNode, idx) => {
             let angle;
             if (!node.parents.length == 0) {
-                angle = startAngle + angleIncrement * idx;
+                angle = parentAngle - maxAngleIncrement + (incrementPerKid * idx) + incrementPerKid / 2;
             } else {
-                angle = startAngle + angleIncrementRoot * idx;
+                angle = parentAngle - maxRootAngleIncrement + (incrementPerKid * idx) + incrementPerKid / 2;
             }
             const angleRad = angle * Math.PI / 180;
             childNode.x = node.x + radius * Math.cos(angleRad);
@@ -249,7 +248,7 @@ function draw() {
 
         // Draw text with background and wrap if necessary
         ctx.save();
-        const text = tech.name;
+        const text = getTitle(tech);
         const fontSize = 12;
         const maxWidth = 100; // Maximum width before wrapping
         ctx.font = `${fontSize}px Arial`;
@@ -312,14 +311,50 @@ function handleClick(e) {
     });
 }
 
+function getDescription(tech) {
+    if (!tech.hiddenDescription || !tech.parents) {
+        return tech.description;
+    }
+    let unlockParents = [];
+    for (let index = 0; index < tech.parents.length; index++) {
+        if (!isUnlocked(tech.parents[index])) {
+            unlockParents.push(tech.parents[index]);
+        }
+    }
+    if (unlockParents.length > 0) {
+        return `First unlock the parent nodes: ${unlockParents.join(', ')}`;
+    } else {
+        return tech.description;
+    }
+
+}
+
+function getTitle(tech) {
+    if (!tech.hiddenTitle || !tech.parents) {
+        return tech.name;
+    }
+    let unlockParents = [];
+    for (let index = 0; index < tech.parents.length; index++) {
+        if (!isUnlocked(tech.parents[index])) {
+            unlockParents.push(tech.parents[index]);
+        }
+    }
+    if (unlockParents.length > 0) {
+        return `???`;
+    } else {
+        return tech.name;
+    }
+
+}
+
 function showNodeInfo(node) {
     infoOverlay.innerHTML = `
-                <h3>${node.name}</h3>
+                <h3>${getTitle(node)}</h3>
                 <p>ID: ${node.id}</p>
                 <p>Requires: ${node.parents.join(', ') || 'None'}</p>
                 <p>Unlocks: ${node.connections.join(', ') || 'None'}</p>
                 <p>Cost: ${node.cost}</p>
-                <p>${node.description}</p>
+                <p>${getDescription(node)}</p>
             `;
     infoOverlay.style.display = 'block';
 }
