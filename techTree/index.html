@@ -119,17 +119,23 @@
             // Start from the root node (assumed to be the first node in the array)
             assignLevel(techTree[0], 0);
 
-            // Assign x and y coordinates
+            // Fixed spacing and position calculation
+            const verticalSpacing = 150; // Vertical spacing between levels
+            const horizontalSpacing = 150; // Horizontal spacing between nodes in a level
+
+            // Calculate x and y positions for each node
             Object.keys(levels).forEach(level => {
                 const nodes = levels[level];
-                const y = 100 + level * 200;
-                const spacing = canvas.width / (nodes.length + 1);
+                const y = 100 + level * verticalSpacing;
+                const startX = (canvas.width - ((nodes.length - 1) * horizontalSpacing)) / 2;
+
                 nodes.forEach((node, index) => {
-                    node.x = (index + 1) * spacing;
+                    node.x = startX + index * horizontalSpacing;
                     node.y = y;
                 });
             });
         }
+
 
         function resizeCanvas() {
             canvas.width = container.clientWidth;
