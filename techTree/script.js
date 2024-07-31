@@ -41,7 +41,6 @@ function generateCoordinates() {
     assignClusters();
 
     function computeCoordinatesForNode(node, parentAngle, index) {
-        console.log(index, node.id, parentClusters[node.id])
         if (!parentClusters[node.id]) {
             return;
         }
@@ -55,8 +54,6 @@ function generateCoordinates() {
         } else {
             startAngle = parentAngle - (90 * (numChildren - 1) / 2);
         }
-
-        console.log('startAngle', startAngle)
 
         children.forEach((childNode, idx) => {
             let angle;
@@ -115,6 +112,7 @@ async function preloadImages() {
         await loadImageTryCatch(tech.id, tech.image);
     }
     // await loadImageTryCatch('background_image_url_here', 'https://i.imgur.com/4CxLIex.png');
+    await loadImageTryCatch('404', 'https://i.imgur.com/AJIngxt.png');
     draw(); // Initial draw after images are preloaded
 }
 
@@ -184,6 +182,9 @@ function draw() {
     techTree.forEach(tech => {
         tech.connections.forEach(connId => {
             const connTech = techTree.find(t => t.id === connId);
+            if (!connTech) {
+                return;
+            }
 
             // Check if the current tech is unlocked
             if (isUnlocked(tech.id)) {
@@ -207,7 +208,11 @@ function draw() {
         ctx.arc(tech.x, tech.y, radius, 0, 2 * Math.PI);
         ctx.stroke();
 
-        const img = images[tech.id];
+        let img = images[tech.id];
+        if (!img) {
+            // Fallback image if not loaded
+            img = images['404'];
+        }
         if (img) {
             ctx.save();
             ctx.beginPath();
@@ -312,6 +317,8 @@ function showNodeInfo(node) {
                 <p>ID: ${node.id}</p>
                 <p>Requires: ${node.parents.join(', ') || 'None'}</p>
                 <p>Unlocks: ${node.connections.join(', ') || 'None'}</p>
+                <p>Cost: ${node.cost}</p>
+                <p>${node.description}</p>
             `;
     infoOverlay.style.display = 'block';
 }
