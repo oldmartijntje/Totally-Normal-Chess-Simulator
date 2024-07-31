@@ -177,6 +177,7 @@
 
 
         function isUnlocked(id) {
+            return id < 15
             // return false;
             return Math.random() < 0.5;
         }
@@ -191,17 +192,25 @@
             // Apply the translation only for the tech tree content
             ctx.translate(translateX, translateY);
 
-            // Draw connections with thicker lines
-            ctx.beginPath();
-            ctx.lineWidth = 4; // Set line thickness
+            // Draw connections with conditional line colors
             techTree.forEach(tech => {
                 tech.connections.forEach(connId => {
                     const connTech = techTree.find(t => t.id === connId);
+
+                    // Check if the current tech is unlocked
+                    if (isUnlocked(tech.id)) {
+                        ctx.strokeStyle = 'yellow'; // Set line color to yellow for unlocked nodes
+                    } else {
+                        ctx.strokeStyle = 'black'; // Default color for locked nodes
+                    }
+
+                    ctx.beginPath();
+                    ctx.lineWidth = 4; // Set line thickness
                     ctx.moveTo(tech.x, tech.y);
                     ctx.lineTo(connTech.x, connTech.y);
+                    ctx.stroke();
                 });
             });
-            ctx.stroke();
 
             // Draw nodes with circular images
             for (const tech of techTree) {
