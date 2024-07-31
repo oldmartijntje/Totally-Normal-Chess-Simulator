@@ -20,7 +20,8 @@ function generateCoordinates() {
     const parentClusters = {}; // Store nodes by parent
     const floaterNodes = []; // Store nodes that have no parents
     const radius = 150; // Distance from the parent
-    const angleIncrement = 45; // Fixed angle increment
+    const angleIncrement = 35; // Fixed angle increment
+    const angleIncrementRoot = 45; // Fixed angle increment for the root node
     const fullCircle = 360; // Full circle in degrees
 
     function assignClusters() {
@@ -52,7 +53,7 @@ function generateCoordinates() {
         if (!node.parents.length == 0) {
             startAngle = parentAngle - (angleIncrement * (numChildren - 1) / 2);
         } else {
-            startAngle = parentAngle - (90 * (numChildren - 1) / 2);
+            startAngle = parentAngle - (angleIncrementRoot * (numChildren - 1) / 2);
         }
 
         children.forEach((childNode, idx) => {
@@ -60,7 +61,7 @@ function generateCoordinates() {
             if (!node.parents.length == 0) {
                 angle = startAngle + angleIncrement * idx;
             } else {
-                angle = startAngle + 90 * idx;
+                angle = startAngle + angleIncrementRoot * idx;
             }
             const angleRad = angle * Math.PI / 180;
             childNode.x = node.x + radius * Math.cos(angleRad);
