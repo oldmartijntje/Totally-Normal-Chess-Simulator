@@ -62,8 +62,10 @@
             { id: 3, name: "Biology", x: 300, y: 400, connections: [6], requires: [], image: "https://i.imgur.com/AJIngxt.png" },
             { id: 4, name: "Quantum Mechanics", x: 500, y: 150, connections: [], requires: [], image: "https://i.imgur.com/AJIngxt.png" },
             { id: 5, name: "Relativity", x: 500, y: 250, connections: [], requires: [], image: "https://i.imgur.com/AJIngxt.png" },
-            { id: 6, name: "Genetics", x: 500, y: 400, connections: [], requires: [], image: "https://i.imgur.com/AJIngxt.png" }
+            { id: 6, name: "Genetics", x: 500, y: 400, connections: [], image: "https://i.imgur.com/AJIngxt.png" }
         ];
+
+        const images = {};
 
         function autoFillRequirements() {
             techTree.forEach(tech => {
@@ -88,7 +90,18 @@
             });
         }
 
-        async function draw() {
+        async function preloadImages() {
+            for (const tech of techTree) {
+                try {
+                    images[tech.id] = await loadImage(tech.image);
+                } catch (error) {
+                    console.error('Error loading image:', error);
+                }
+            }
+            draw(); // Initial draw after images are preloaded
+        }
+
+        function draw() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             ctx.save();
             ctx.translate(translateX, translateY);
@@ -111,8 +124,8 @@
                 ctx.arc(tech.x, tech.y, radius, 0, 2 * Math.PI);
                 ctx.stroke();
 
-                try {
-                    const img = await loadImage(tech.image);
+                const img = images[tech.id];
+                if (img) {
                     ctx.save();
                     ctx.beginPath();
                     ctx.arc(tech.x, tech.y, radius, 0, 2 * Math.PI);
@@ -137,8 +150,6 @@
                         drawHeight
                     );
                     ctx.restore();
-                } catch (error) {
-                    console.error('Error loading image:', error);
                 }
 
                 ctx.fillStyle = 'black';
@@ -238,8 +249,9 @@
         window.addEventListener('resize', resizeCanvas);
 
         // Initialize
-        autoFillRequirements();
         resizeCanvas();
+        autoFillRequirements();
+        preloadImages();
     </script>
 </body>
 
