@@ -56,41 +56,41 @@
         let startX, startY, translateX = 0, translateY = 0;
 
         const techTree = [
-            { id: 0, name: "Basic Science", connections: [2, 3, 7, 9], requires: [], image: "https://i.imgur.com/AJIngxt.png" },
-            { id: 2, name: "Physics", connections: [4, 5], requires: [], image: "https://i.imgur.com/AJIngxt.png" },
-            { id: 3, name: "Biology", connections: [6], requires: [], image: "https://i.imgur.com/AJIngxt.png" },
-            { id: 4, name: "Quantum Mechanics", connections: [31], requires: [], image: "https://i.imgur.com/AJIngxt.png" },
-            { id: 5, name: "Relativity", connections: [16], requires: [], image: "https://i.imgur.com/AJIngxt.png" },
+            { id: 0, name: "Basic Science", connections: [2, 3, 7, 9], image: "https://i.imgur.com/AJIngxt.png" },
+            { id: 2, name: "Physics", connections: [4, 5], image: "https://i.imgur.com/AJIngxt.png" },
+            { id: 3, name: "Biology", connections: [6], image: "https://i.imgur.com/AJIngxt.png" },
+            { id: 4, name: "Quantum Mechanics", connections: [31], image: "https://i.imgur.com/AJIngxt.png" },
+            { id: 5, name: "Relativity", connections: [16], image: "https://i.imgur.com/AJIngxt.png" },
             { id: 6, name: "Genetics", connections: [15], image: "https://i.imgur.com/AJIngxt.png" },
-            { id: 7, name: "Chemistry", connections: [8], requires: [], image: "https://i.imgur.com/AJIngxt.png" },
-            { id: 8, name: "Organic Chemistry", connections: [11, 12], requires: [], image: "https://i.imgur.com/AJIngxt.png" },
-            { id: 9, name: "Mathematics", connections: [10], requires: [], image: "https://i.imgur.com/AJIngxt.png" },
-            { id: 10, name: "Calculus", connections: [13, 14], requires: [], image: "https://i.imgur.com/AJIngxt.png" },
-            { id: 11, name: "Biochemistry", connections: [18, 34, 35], requires: [], image: "https://i.imgur.com/AJIngxt.png" },
-            { id: 12, name: "Inorganic Chemistry", connections: [19, 20], requires: [], image: "https://i.imgur.com/AJIngxt.png" },
-            { id: 13, name: "Differential Calculus", connections: [17], requires: [], image: "https://i.imgur.com/AJIngxt.png" },
-            { id: 14, name: "Integral Calculus", connections: [21], requires: [], image: "https://i.imgur.com/AJIngxt.png" },
-            { id: 15, name: "Genetic Engineering", connections: [22, 25, 30, 34], requires: [], image: "https://i.imgur.com/AJIngxt.png" },
-            { id: 16, name: "Astrophysics", connections: [17], requires: [], image: "https://i.imgur.com/AJIngxt.png" },
-            { id: 17, name: "Black Holes", connections: [23, 32], requires: [], image: "https://i.imgur.com/AJIngxt.png" },
-            { id: 18, name: "Proteins", connections: [], requires: [], image: "https://i.imgur.com/AJIngxt.png" },
-            { id: 19, name: "Periodic Table", connections: [25], requires: [], image: "https://i.imgur.com/AJIngxt.png" },
-            { id: 20, name: "Coordination Compounds", connections: [26], requires: [], image: "https://i.imgur.com/AJIngxt.png" },
-            { id: 21, name: "Differential Equations", connections: [27, 28], requires: [], image: "https://i.imgur.com/AJIngxt.png" },
-            { id: 22, name: "Cloning", connections: [24, 25, 32], requires: [], image: "https://i.imgur.com/AJIngxt.png" },
-            { id: 23, name: "Wormholes", connections: [29, 33], requires: [], image: "https://i.imgur.com/AJIngxt.png" },
-            { id: 24, name: "Stem Cells", connections: [], requires: [], image: "https://i.imgur.com/AJIngxt.png" },
-            { id: 25, name: "Chemical Reactions", connections: [26, 29], requires: [], image: "https://i.imgur.com/AJIngxt.png" },
-            { id: 26, name: "Transition Metals", connections: [], requires: [], image: "https://i.imgur.com/AJIngxt.png" },
-            { id: 27, name: "Laplace Transforms", connections: [], requires: [], image: "https://i.imgur.com/AJIngxt.png" },
-            { id: 28, name: "Fourier Transforms", connections: [], requires: [], image: "https://i.imgur.com/AJIngxt.png" },
-            { id: 29, name: "Nuclear Reactions", connections: [30, 31, 32, 33, 34, 35], requires: [], image: "https://i.imgur.com/AJIngxt.png" },
-            { id: 30, name: "CRISPR", connections: [], requires: [], image: "https://i.imgur.com/AJIngxt.png" },
-            { id: 31, name: "Quantum Computing", connections: [], requires: [], image: "https://i.imgur.com/AJIngxt.png" },
-            { id: 32, name: "Time Travel", connections: [], requires: [], image: "https://i.imgur.com/AJIngxt.png" },
-            { id: 33, name: "Parallel Universes", connections: [], requires: [], image: "https://i.imgur.com/AJIngxt.png" },
-            { id: 34, name: "Vaccines", connections: [], requires: [], image: "https://i.imgur.com/AJIngxt.png" },
-            { id: 35, name: "Antibiotics", connections: [], requires: [], image: "https://i.imgur.com/AJIngxt.png" },
+            { id: 7, name: "Chemistry", connections: [8], image: "https://i.imgur.com/AJIngxt.png" },
+            { id: 8, name: "Organic Chemistry", connections: [11, 12], image: "https://i.imgur.com/AJIngxt.png" },
+            { id: 9, name: "Mathematics", connections: [10], image: "https://i.imgur.com/AJIngxt.png" },
+            { id: 10, name: "Calculus", connections: [13, 14], image: "https://i.imgur.com/AJIngxt.png" },
+            { id: 11, name: "Biochemistry", connections: [18, 34, 35], image: "https://i.imgur.com/AJIngxt.png" },
+            { id: 12, name: "Inorganic Chemistry", connections: [19, 20], image: "https://i.imgur.com/AJIngxt.png" },
+            { id: 13, name: "Differential Calculus", connections: [17], image: "https://i.imgur.com/AJIngxt.png" },
+            { id: 14, name: "Integral Calculus", connections: [21], image: "https://i.imgur.com/AJIngxt.png" },
+            { id: 15, name: "Genetic Engineering", connections: [22, 25, 30, 34], image: "https://i.imgur.com/AJIngxt.png" },
+            { id: 16, name: "Astrophysics", connections: [17], image: "https://i.imgur.com/AJIngxt.png" },
+            { id: 17, name: "Black Holes", connections: [23, 32], image: "https://i.imgur.com/AJIngxt.png" },
+            { id: 18, name: "Proteins", connections: [], image: "https://i.imgur.com/AJIngxt.png" },
+            { id: 19, name: "Periodic Table", connections: [25], image: "https://i.imgur.com/AJIngxt.png" },
+            { id: 20, name: "Coordination Compounds", connections: [26], image: "https://i.imgur.com/AJIngxt.png" },
+            { id: 21, name: "Differential Equations", connections: [27, 28], image: "https://i.imgur.com/AJIngxt.png" },
+            { id: 22, name: "Cloning", connections: [24, 25, 32], image: "https://i.imgur.com/AJIngxt.png" },
+            { id: 23, name: "Wormholes", connections: [29, 33], image: "https://i.imgur.com/AJIngxt.png" },
+            { id: 24, name: "Stem Cells", connections: [], image: "https://i.imgur.com/AJIngxt.png" },
+            { id: 25, name: "Chemical Reactions", connections: [26, 29], image: "https://i.imgur.com/AJIngxt.png" },
+            { id: 26, name: "Transition Metals", connections: [], image: "https://i.imgur.com/AJIngxt.png" },
+            { id: 27, name: "Laplace Transforms", connections: [], image: "https://i.imgur.com/AJIngxt.png" },
+            { id: 28, name: "Fourier Transforms", connections: [], image: "https://i.imgur.com/AJIngxt.png" },
+            { id: 29, name: "Nuclear Reactions", connections: [30, 31, 32, 33, 34, 35], image: "https://i.imgur.com/AJIngxt.png" },
+            { id: 30, name: "CRISPR", connections: [], image: "https://i.imgur.com/AJIngxt.png" },
+            { id: 31, name: "Quantum Computing", connections: [], image: "https://i.imgur.com/AJIngxt.png" },
+            { id: 32, name: "Time Travel", connections: [], image: "https://i.imgur.com/AJIngxt.png" },
+            { id: 33, name: "Parallel Universes", connections: [], image: "https://i.imgur.com/AJIngxt.png" },
+            { id: 34, name: "Vaccines", connections: [], image: "https://i.imgur.com/AJIngxt.png" },
+            { id: 35, name: "Antibiotics", connections: [], image: "https://i.imgur.com/AJIngxt.png" },
 
         ];
 
@@ -98,7 +98,7 @@
 
         function autoFillRequirements() {
             techTree.forEach(tech => {
-                tech.requires = techTree
+                tech.parents = techTree
                     .filter(t => t.connections.includes(tech.id))
                     .map(t => t.id);
             });
@@ -130,20 +130,33 @@
             console.log(JSON.parse(JSON.stringify(techTree)));
 
             function computeCoordinatesForNode(node, parentAngle, index) {
+                console.log(index, node.id)
                 const children = parentClusters[node.id];
                 const numChildren = children.length;
 
                 // Determine the start angle for the first child
-                const startAngle = parentAngle - (angleIncrement * (numChildren - 1) / 2);
+                let startAngle;
+                if (!node.parents.length == 0) {
+                    startAngle = parentAngle - (angleIncrement * (numChildren - 1) / 2);
+                } else {
+                    startAngle = parentAngle - (90 * (numChildren - 1) / 2);
+                }
+
+                console.log('startAngle', startAngle)
 
                 children.forEach((childNode, idx) => {
-                    const angle = startAngle + angleIncrement * idx;
+                    let angle;
+                    if (!node.parents.length == 0) {
+                        angle = startAngle + angleIncrement * idx;
+                    } else {
+                        angle = startAngle + 90 * idx;
+                    }
                     const angleRad = angle * Math.PI / 180;
                     childNode.x = node.x + radius * Math.cos(angleRad);
                     childNode.y = node.y + radius * Math.sin(angleRad);
 
                     // Recursively compute coordinates for children
-                    computeCoordinatesForNode(childNode, angle, idx);
+                    computeCoordinatesForNode(childNode, angle, index + 1);
                 });
             }
 
@@ -372,6 +385,7 @@
                 const dy = tech.y - clickY;
                 if (dx * dx + dy * dy <= 900) { // 30^2, where 30 is the radius
                     showNodeInfo(tech);
+                    console.log(tech);
                 }
             });
         }
@@ -380,7 +394,7 @@
             infoOverlay.innerHTML = `
                 <h3>${node.name}</h3>
                 <p>ID: ${node.id}</p>
-                <p>Requires: ${node.requires.join(', ') || 'None'}</p>
+                <p>Requires: ${node.parents.join(', ') || 'None'}</p>
                 <p>Unlocks: ${node.connections.join(', ') || 'None'}</p>
             `;
             infoOverlay.style.display = 'block';
