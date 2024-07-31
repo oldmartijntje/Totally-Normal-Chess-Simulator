@@ -10,6 +10,16 @@ const FORCE_PLAYER_TURNS = true;
 const STARTING_PLAYER = 'white';
 const LOOTBOX_RARITY_MODIFIER = 10;
 const AMOUNT_OF_TWISTS = 3;
+const EXPERIENCE_POINTS = {
+    "merging": 75,
+    "capturing": 25,
+    "carrying": 5,
+    "discovering": 250,
+    "moving": 1,
+    "convertion": 10,
+    "winning": 125,
+    "losing": 50,
+}
 
 const WIN_CONDITIONS = {
     slainTroops: {
