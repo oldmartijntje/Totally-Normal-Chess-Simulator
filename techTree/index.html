@@ -119,22 +119,24 @@
             // Start from the root node (assumed to be the first node in the array)
             assignLevel(techTree[0], 0);
 
-            // Fixed spacing and position calculation
-            const verticalSpacing = 150; // Vertical spacing between levels
-            const horizontalSpacing = 150; // Horizontal spacing between nodes in a level
+            // Fixed parameters for circular arrangement
+            const radiusStep = 150; // Distance between circular levels
+            const angleStep = 2 * Math.PI; // Full circle in radians
 
             // Calculate x and y positions for each node
             Object.keys(levels).forEach(level => {
                 const nodes = levels[level];
-                const y = 100 + level * verticalSpacing;
-                const startX = (canvas.width - ((nodes.length - 1) * horizontalSpacing)) / 2;
+                const radius = level * radiusStep;
+                const angleIncrement = angleStep / nodes.length;
 
                 nodes.forEach((node, index) => {
-                    node.x = startX + index * horizontalSpacing;
-                    node.y = y;
+                    const angle = index * angleIncrement;
+                    node.x = canvas.width / 2 + radius * Math.cos(angle);
+                    node.y = canvas.height / 2 + radius * Math.sin(angle);
                 });
             });
         }
+
 
 
         function resizeCanvas() {
