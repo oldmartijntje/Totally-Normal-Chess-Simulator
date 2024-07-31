@@ -129,12 +129,14 @@ function neutralizePiece(piece) {
 
 function editChessBoard(activeGameState) {
     let reveal = false;
+    let revealColor = '';
     let colors = ['white', 'black'];
     for (let i = 0; i < colors.length; i++) {
         if (chosenTwists[colors[i]]) {
             let twist = chosenTwists[colors[i]]
             if (twist.secret) {
                 reveal = true;
+                revealColor = colors[i];
             }
             switch (twist.id) {
                 case 0:
@@ -261,7 +263,7 @@ function editChessBoard(activeGameState) {
         }
     }
     if (reveal) {
-        alert(`The hidden twist is: ${chosenTwists['black'].oldData.text}`);
+        alert(`The hidden twist is: ${chosenTwists[revealColor].oldData.text}`);
 
     }
     return activeGameState;
