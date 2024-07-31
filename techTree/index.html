@@ -106,21 +106,28 @@
 
         function generateCoordinates() {
             const parentClusters = {}; // Store nodes by parent
+            const assignedNodes = {}; // Store nodes that have been assigned coordinates
             const radius = 150; // Distance from the parent
             const angleIncrement = 45; // Fixed angle increment
             const fullCircle = 360; // Full circle in degrees
 
             function assignClusters(node) {
                 if (!parentClusters[node.id]) parentClusters[node.id] = [];
+                // Assign children to the parent node
                 node.connections.forEach(connId => {
                     const connNode = techTree.find(t => t.id === connId);
-                    parentClusters[node.id].push(connNode);
-                    assignClusters(connNode);
+                    if (!assignedNodes[connNode.id]) {
+                        parentClusters[node.id].push(connNode);
+                        assignedNodes[connNode.id] = true;
+                        assignClusters(connNode);
+                    }
                 });
             }
 
             // Start clustering from the root node
             assignClusters(techTree[0]);
+            console.log(JSON.parse(JSON.stringify(parentClusters)));
+            console.log(JSON.parse(JSON.stringify(techTree)));
 
             function computeCoordinatesForNode(node, parentAngle, index) {
                 const children = parentClusters[node.id];
