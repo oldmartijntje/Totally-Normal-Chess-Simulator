@@ -61,12 +61,10 @@ const twists = [
         id: 5,
         name: "Switch Pieces",
         image: "https://i.imgur.com/KGpx5Pb.png",
-        description: "Shuffle locations of X + Y pieces.",
+        description: "Shuffle locations All pieces except for X(s).",
         options: {
-            X: ["pawn", "knight", "bishop", "rook", "queen", "king", "ALL"],
-            Y: ["pawn", "knight", "bishop", "rook", "queen", "king", "ALL"],
-        },
-        splice: { Y: 'X' }
+            X: ["pawn", "knight", "bishop", "rook", "queen", "king", "nothing"],
+        }
     }
 ]
 let twistsGenerated = [];
@@ -226,24 +224,11 @@ function editChessBoard(activeGameState) {
                     break;
 
                 case 5:
-                    let test = [twist.options.Y, twist.options.X]
-                    for (let index = 0; index < test.length; index++) {
-                        if (test[index] === 'random') {
-                            test[index] = twist.random[Math.floor(Math.random() * twist.random.length)];
-                        } else if (test[index] === "ALL") {
-                            test[index] = Object.keys(pieces)
-                        } else {
-                            test[index] = [test[index]];
-                        }
-
-
-                    }
-                    let piecesToLookFor = test.flat();
                     let foundPositionsOfPieces = [];
                     let foundPiecesTotal = [];
                     activeGameState.boardState.forEach((row, rowIndex) => {
                         row.forEach((square, squareIndex) => {
-                            if (square && (piecesToLookFor.includes(square.type)) && square.color === colors[i]) {
+                            if (square && (square.type != twist.options.X) && square.color === colors[i]) {
                                 foundPositionsOfPieces.push([rowIndex, squareIndex]);
                                 foundPiecesTotal.push(square);
                             }
