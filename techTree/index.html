@@ -163,12 +163,41 @@
         }
 
         function drawBackground() {
+            // Draw the static background image
             const backgroundImage = images['background_image_url_here'];
+
             if (backgroundImage) {
-                // Draw the background image at (0, 0), which is the top-left corner of the canvas
-                ctx.drawImage(backgroundImage, 0, 0, canvas.width, canvas.height);
+                // Calculate aspect ratios
+                const imageAspectRatio = backgroundImage.width / backgroundImage.height;
+                const canvasAspectRatio = canvas.width / canvas.height;
+
+                let drawWidth, drawHeight;
+
+                let xDiff = canvas.width - backgroundImage.width;
+                let yDiff = canvas.height - backgroundImage.height;
+
+                // keep the original image aspect ratio, but fit it to the canvas
+                if (xDiff >= 0 && yDiff >= 0) {
+                    drawWidth = backgroundImage.width;
+                    drawHeight = backgroundImage.height;
+                } else {
+                    if (canvasAspectRatio > imageAspectRatio) {
+                        drawWidth = canvas.width;
+                        drawHeight = canvas.width / imageAspectRatio;
+                    } else {
+                        drawHeight = canvas.height;
+                        drawWidth = canvas.height * imageAspectRatio;
+                    }
+                }
+
+                // Calculate positions to center the image
+                const xOffset = (canvas.width - drawWidth) / 2;
+                const yOffset = (canvas.height - drawHeight) / 2;
+
+                // Draw the image
+                ctx.drawImage(backgroundImage, xOffset, yOffset, drawWidth, drawHeight);
             } else {
-                // If no background image, use a solid color
+                // Fallback background color if image not loaded
                 ctx.fillStyle = 'lightblue';
                 ctx.fillRect(0, 0, canvas.width, canvas.height);
             }
@@ -183,6 +212,9 @@
         }
 
         function draw() {
+
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
             // Draw the static background first
             drawBackground();
 
