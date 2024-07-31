@@ -146,29 +146,54 @@
             });
         }
 
+        async function loadImageTryCatch(title, imageSrc) {
+            try {
+                images[title] = await loadImage(imageSrc);
+            } catch (error) {
+                console.error('Error loading image:', error);
+            }
+        }
+
         async function preloadImages() {
             for (const tech of techTree) {
-                try {
-                    images[tech.id] = await loadImage(tech.image);
-                } catch (error) {
-                    console.error('Error loading image:', error);
-                }
+                await loadImageTryCatch(tech.id, tech.image);
             }
+            await loadImageTryCatch('background_image_url_here', 'https://i.imgur.com/4CxLIex.png');
             draw(); // Initial draw after images are preloaded
         }
 
+        function drawBackground() {
+            const backgroundImage = images['background_image_url_here'];
+            if (backgroundImage) {
+                // Draw the background image at (0, 0), which is the top-left corner of the canvas
+                ctx.drawImage(backgroundImage, 0, 0, canvas.width, canvas.height);
+            } else {
+                // If no background image, use a solid color
+                ctx.fillStyle = 'lightblue';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+            }
+        }
+
+
+
         function isUnlocked(id) {
-            return false;
+            // return false;
             return Math.random() < 0.5;
         }
 
         function draw() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            // Draw the static background first
+            drawBackground();
+
+            // Save the current state
             ctx.save();
+
+            // Apply the translation only for the tech tree content
             ctx.translate(translateX, translateY);
 
-            // Draw connections
+            // Draw connections with thicker lines
             ctx.beginPath();
+            ctx.lineWidth = 4; // Set line thickness
             techTree.forEach(tech => {
                 tech.connections.forEach(connId => {
                     const connTech = techTree.find(t => t.id === connId);
@@ -219,15 +244,55 @@
                     ctx.restore();
                 }
 
-                ctx.fillStyle = 'black';
-                ctx.font = '12px Arial';
+                // Draw text with background and wrap if necessary
+                ctx.save();
+                const text = tech.name;
+                const fontSize = 12;
+                const maxWidth = 100; // Maximum width before wrapping
+                ctx.font = `${fontSize}px Arial`;
                 ctx.textAlign = 'center';
                 ctx.textBaseline = 'middle';
-                ctx.fillText(tech.name, tech.x, tech.y + 45);
+
+                // Wrap text
+                const words = text.split(' ');
+                let line = '';
+                const lines = [];
+                words.forEach(word => {
+                    const testLine = line + (line ? ' ' : '') + word;
+                    const metrics = ctx.measureText(testLine);
+                    if (metrics.width > maxWidth) {
+                        lines.push(line);
+                        line = word;
+                    } else {
+                        line = testLine;
+                    }
+                });
+                lines.push(line);
+
+                // Measure text height
+                const textHeight = fontSize * 1.2;
+                const textWidth = Math.max(...lines.map(line => ctx.measureText(line).width));
+                const textPadding = 4; // Padding around the text
+
+                // Draw background rectangles
+                lines.forEach((line, index) => {
+                    ctx.fillStyle = 'white'; // Background color
+                    ctx.fillRect(tech.x - textWidth / 2 - textPadding, tech.y + 45 + index * textHeight - textHeight / 2 - textPadding, textWidth + textPadding * 2, textHeight + textPadding * 2);
+                });
+
+                // Draw text
+                ctx.fillStyle = 'black'; // Text color
+                lines.forEach((line, index) => {
+                    ctx.fillText(line, tech.x, tech.y + 45 + index * textHeight);
+                });
+                ctx.restore();
             }
 
+            // Restore the previous state
             ctx.restore();
         }
+
+
 
         function handleClick(e) {
             const rect = canvas.getBoundingClientRect();
