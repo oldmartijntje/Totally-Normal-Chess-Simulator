@@ -56,7 +56,7 @@
         let startX, startY, translateX = 0, translateY = 0;
 
         const techTree = [
-            { id: 1, name: "Basic Science", connections: [2, 3, 7, 9], requires: [], image: "https://i.imgur.com/AJIngxt.png" },
+            { id: 0, name: "Basic Science", connections: [2, 3, 7, 9], requires: [], image: "https://i.imgur.com/AJIngxt.png" },
             { id: 2, name: "Physics", connections: [4, 5], requires: [], image: "https://i.imgur.com/AJIngxt.png" },
             { id: 3, name: "Biology", connections: [6], requires: [], image: "https://i.imgur.com/AJIngxt.png" },
             { id: 4, name: "Quantum Mechanics", connections: [31], requires: [], image: "https://i.imgur.com/AJIngxt.png" },
@@ -105,37 +105,49 @@
         }
 
         function generateCoordinates() {
-            const levels = {};
+            const parentClusters = {}; // Store nodes by parent
+            const radius = 150; // Distance from the parent
+            const angleIncrement = 45; // Fixed angle increment
+            const fullCircle = 360; // Full circle in degrees
 
-            function assignLevel(node, level) {
-                if (!levels[level]) levels[level] = [];
-                if (!levels[level].includes(node)) levels[level].push(node);
+            function assignClusters(node) {
+                if (!parentClusters[node.id]) parentClusters[node.id] = [];
                 node.connections.forEach(connId => {
                     const connNode = techTree.find(t => t.id === connId);
-                    assignLevel(connNode, level + 1);
+                    parentClusters[node.id].push(connNode);
+                    assignClusters(connNode);
                 });
             }
 
-            // Start from the root node (assumed to be the first node in the array)
-            assignLevel(techTree[0], 0);
+            // Start clustering from the root node
+            assignClusters(techTree[0]);
 
-            // Fixed parameters for circular arrangement
-            const radiusStep = 150; // Distance between circular levels
-            const angleStep = 2 * Math.PI; // Full circle in radians
+            function computeCoordinatesForNode(node, parentAngle, index) {
+                const children = parentClusters[node.id];
+                const numChildren = children.length;
 
-            // Calculate x and y positions for each node
-            Object.keys(levels).forEach(level => {
-                const nodes = levels[level];
-                const radius = level * radiusStep;
-                const angleIncrement = angleStep / nodes.length;
+                // Determine the start angle for the first child
+                const startAngle = parentAngle - (angleIncrement * (numChildren - 1) / 2);
 
-                nodes.forEach((node, index) => {
-                    const angle = index * angleIncrement;
-                    node.x = canvas.width / 2 + radius * Math.cos(angle);
-                    node.y = canvas.height / 2 + radius * Math.sin(angle);
+                children.forEach((childNode, idx) => {
+                    const angle = startAngle + angleIncrement * idx;
+                    const angleRad = angle * Math.PI / 180;
+                    childNode.x = node.x + radius * Math.cos(angleRad);
+                    childNode.y = node.y + radius * Math.sin(angleRad);
+
+                    // Recursively compute coordinates for children
+                    computeCoordinatesForNode(childNode, angle, idx);
                 });
-            });
+            }
+
+            // Place the root node at the center of the canvas
+            techTree[0].x = canvas.width / 2;
+            techTree[0].y = canvas.height / 2;
+            computeCoordinatesForNode(techTree[0], 0, 0); // Root node with no angle
         }
+
+
+
 
 
 
