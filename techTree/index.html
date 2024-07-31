@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Tech Tree</title>
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+        #canvas-container {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            cursor: move;
+        }
+        canvas {
+            background-color: #f0f0f0;
+        }
+    </style>
+</head>
+<body>
+    <div id="canvas-container">
+        <canvas id="techTreeCanvas"></canvas>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('techTreeCanvas');
+        const ctx = canvas.getContext('2d');
+        const container = document.getElementById('canvas-container');
+
+        let isDragging = false;
+        let startX, startY, translateX = 0, translateY = 0;
+
+        // Tech tree data
+        const techTree = [
+            { id: 1, name: "Basic Science", x: 100, y: 300, connections: [2, 3], requires: [] },
+            { id: 2, name: "Physics", x: 300, y: 200, connections: [4, 5], requires: [] },
+            { id: 3, name: "Biology", x: 300, y: 400, connections: [6], requires: [] },
+            { id: 4, name: "Quantum Mechanics", x: 500, y: 150, connections: [], requires: [] },
+            { id: 5, name: "Relativity", x: 500, y: 250, connections: [], requires: [] },
+            { id: 6, name: "Genetics", x: 500, y: 400, connections: [], requires: [] }
+        ];
+
+        function autoFillRequirements() {
+            techTree.forEach(tech => {
+                tech.requires = techTree
+                    .filter(t => t.connections.includes(tech.id))
+                    .map(t => t.id);
+            });
+        }
+
+        function resizeCanvas() {
+            canvas.width = container.clientWidth;
+            canvas.height = container.clientHeight;
+            draw();
+        }
+
+        function draw() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.save();
+            ctx.translate(translateX, translateY);
+
+            // Draw connections
+            ctx.beginPath();
+            techTree.forEach(tech => {
+                tech.connections.forEach(connId => {
+                    const connTech = techTree.find(t => t.id === connId);
+                    ctx.moveTo(tech.x, tech.y);
+                    ctx.lineTo(connTech.x, connTech.y);
+                });
+            });
+            ctx.stroke();
+
+            // Draw nodes
+            techTree.forEach(tech => {
+                ctx.beginPath();
+                ctx.arc(tech.x, tech.y, 30, 0, 2 * Math.PI);
+                ctx.fillStyle = 'white';
+                ctx.fill();
+                ctx.stroke();
+
+                ctx.fillStyle = 'black';
+                ctx.font = '12px Arial';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillText(tech.name, tech.x, tech.y);
+            });
+
+            ctx.restore();
+        }
+
+        function handleClick(e) {
+            const rect = canvas.getBoundingClientRect();
+            const clickX = (e.clientX || e.touches[0].clientX) - rect.left - translateX;
+            const clickY = (e.clientY || e.touches[0].clientY) - rect.top - translateY;
+
+            techTree.forEach(tech => {
+                const dx = tech.x - clickX;
+                const dy = tech.y - clickY;
+                if (dx * dx + dy * dy <= 900) { // 30^2, where 30 is the radius
+                    console.log('Node clicked:', tech);
+                }
+            });
+        }
+
+        let dragStartTime;
+
+        container.addEventListener('mousedown', (e) => {
+            isDragging = true;
+            startX = e.clientX - translateX;
+            startY = e.clientY - translateY;
+            dragStartTime = new Date().getTime();
+        });
+
+        container.addEventListener('mousemove', (e) => {
+            if (isDragging) {
+                translateX = e.clientX - startX;
+                translateY = e.clientY - startY;
+                draw();
+            }
+        });
+
+        container.addEventListener('mouseup', (e) => {
+            const dragEndTime = new Date().getTime();
+            const dragDuration = dragEndTime - dragStartTime;
+
+            if (dragDuration < 200 && Math.abs(translateX - (e.clientX - startX)) < 5 && Math.abs(translateY - (e.clientY - startY)) < 5) {
+                handleClick(e);
+            }
+            isDragging = false;
+        });
+
+        container.addEventListener('touchstart', (e) => {
+            if (e.touches.length === 1) {
+                isDragging = true;
+                startX = e.touches[0].clientX - translateX;
+                startY = e.touches[0].clientY - translateY;
+                dragStartTime = new Date().getTime();
+            }
+        });
+
+        container.addEventListener('touchmove', (e) => {
+            if (isDragging && e.touches.length === 1) {
+                translateX = e.touches[0].clientX - startX;
+                translateY = e.touches[0].clientY - startY;
+                draw();
+            }
+        });
+
+        container.addEventListener('touchend', (e) => {
+            const dragEndTime = new Date().getTime();
+            const dragDuration = dragEndTime - dragStartTime;
+
+            if (dragDuration < 200) {
+                handleClick(e);
+            }
+            isDragging = false;
+        });
+
+        container.addEventListener('mouseleave', () => {
+            isDragging = false;
+        });
+
+        window.addEventListener('resize', resizeCanvas);
+
+        // Initialize
+        autoFillRequirements();
+        resizeCanvas();
+
+        console.log('Tech tree with requirements:', techTree);
+    </script>
+</body>
+</html>
