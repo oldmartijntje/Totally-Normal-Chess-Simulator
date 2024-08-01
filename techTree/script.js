@@ -236,13 +236,9 @@ function draw() {
         ctx.beginPath();
         ctx.arc(tech.x, tech.y, radius, 0, 2 * Math.PI);
 
-        // Check if the node is unlocked but not enabled and set the outline color to green
-        if (isUnlocked(tech.id)) {
-            if (!isEnabled(tech.id)) {
-                ctx.strokeStyle = '#c82333';
-            } else {
-                ctx.strokeStyle = '#218838';
-            }
+        // Check if the node is unlocked but not enabled and set the outline color to yelow
+        if (isUnlocked(tech.id) && isEnabled(tech.id)) {
+            ctx.strokeStyle = 'yellow';
         } else {
             ctx.strokeStyle = 'black';
         }
