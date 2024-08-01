@@ -43,3 +43,6 @@ if (includes(4)) {
     pieces['pawn'].captureFlee.percentageChance = 5;
     pieces['pawned'].captureFlee.percentageChance = 5;
 }
+if (includes(5)) {
+    pieces['experience_orb'].spawnChance = 5;
+}

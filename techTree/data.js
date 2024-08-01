@@ -3,7 +3,7 @@ const techTree = [
     { id: 1, cost: 250, name: "Tiny Bonus", connections: [2, 8], description: "Bonus credits on purchase is 5%.", image: "" },
     { id: 2, cost: 500, name: "Small Bonus", connections: [3, 6], description: "Bonus credits on purchase is 10%.", image: "", x: 613, y: 200 },
     { id: 3, cost: 1500, name: "Medium Bonus", connections: [], description: "Bonus credits on purchase is 15%.", image: "" },
-    { id: 4, cost: 1000, name: "Pawntection", connections: [12, 14, 16], description: "When someone attacks your pawn, have a 5% chance of escaping it by moving backwards.", image: "" },
+    { id: 4, cost: 1000, name: "Pawntection", connections: [12, 14, 16], description: "When someone attacks your pawn / pawned, have a 5% chance of escaping it by moving backwards. (if possible)", image: "" },
     { id: 5, cost: 2500, name: "Orb", connections: [28], description: "Have a 5% chance of spawning an Orb after your turn.", image: "" },
     { id: 6, cost: 1500, name: "Auto-box", connections: [11, 25], description: "Automatically refill your lootboxes when you reach 0 and have enough credits.", image: "" },
     { id: 7, cost: 2222, name: "Midas", connections: [], description: "When capturing a piece, 10% chance of getting 1 gold.", image: "" },

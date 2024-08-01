@@ -142,7 +142,7 @@ class Chessboard {
 
     createBoard() {
         this.setupInitialPosition();
-        this.generateLootBox(this.getGameState(), 10);
+        this.generateLootBox(this.getGameState(), 'lootbox', 10);
         this.render()
     }
 
@@ -477,6 +477,9 @@ class Chessboard {
             }
 
             if (capture) {
+                if (pieces[this.boardState[location[0]][location[1]].type].experiencePointsGainType) {
+                    this.gainExperiencePoints(pieces[this.boardState[location[0]][location[1]].type].experiencePointsGainType);
+                }
                 if (this.boardState[location[0]][location[1]].color == 'neutral') {
                     if (this.boardState[location[0]][location[1]].type == 'lootbox') {
                         runLootBoxUnboxing(getLootboxPiece(this.cachedPieceData.boardData.type), this.cachedPieceData.boardData.color, this.boardState, JSON.parse(JSON.stringify(this.cachedPieceData)), this.boardDataSettings.lootBoxAnimation);
@@ -601,7 +604,7 @@ class Chessboard {
         return false;
     }
 
-    generateLootBox(gameState, customPercentage = null) {
+    generateLootBox(gameState, pieceName = 'lootbox', customPercentage = null) {
         // if empty space exists on the board, spawn a lootbox
         let emptySpaces = []
         for (let i = 0; i < gameState.boardState.length; i++) {
@@ -611,11 +614,14 @@ class Chessboard {
                 }
             }
         }
-        if (emptySpaces.length > 0 && percentageRandomiser(customPercentage ? customPercentage : LOOTBOX_SPAWN_PERCENTAGE)) {
+        if (emptySpaces.length > 0 && percentageRandomiser(customPercentage ? customPercentage : pieces[pieceName].spawnChance)) {
             let randomIndex = Math.floor(Math.random() * emptySpaces.length);
             let [x, y] = emptySpaces[randomIndex];
-            console.log('Lootbox spawned at:', x, y);
-            gameState.boardState[x][y] = { color: 'neutral', type: 'lootbox' };
+            if (pieces[pieceName].neutralObject) {
+                gameState.boardState[x][y] = { color: 'neutral', type: pieceName };
+            } else {
+                gameState.boardState[x][y] = { color: this.activePlayer, type: pieceName };
+            }
             return true;
         }
         return false;
@@ -642,7 +648,9 @@ class Chessboard {
         }
         this.activePlayer = nextPlayer;
         if (!this.boardDataSettings.sandboxChessBoard) {
-            this.generateLootBox(gameState);
+            for (let index = 0; index < RANDOM_SPAWNING_PIECES.length; index++) {
+                this.generateLootBox(gameState, RANDOM_SPAWNING_PIECES[index]);
+            }
         }
         this.cacheMoveData();
         this.render();

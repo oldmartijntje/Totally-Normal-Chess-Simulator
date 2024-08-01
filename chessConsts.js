@@ -3,9 +3,8 @@ const INFINITE = BOARDSIZE * BOARDSIZE
 const friendlyFire = false;
 const UNLOCK_MOVEMENT = false;
 const INVERTED_LOGIC = false;
-let LOOTBOX_SPAWN_PERCENTAGE = 5
 const LOOTBOX_CAPTURING_PIECE_WEIGHT = 5
-const DEBUG_MODE = false;
+const DEBUG_MODE = true;
 const FORCE_PLAYER_TURNS = true;
 const STARTING_PLAYER = 'white';
 const LOOTBOX_RARITY_MODIFIER = 10;
@@ -21,6 +20,9 @@ const EXPERIENCE_POINTS = {
     "lootbox_opening": 0,
     "orb_capture": 1000
 }
+
+const RANDOM_SPAWNING_PIECES = ['lootbox', 'experience_orb'];
+
 let EXPERIENCE_POINTS_MODIFIER = 1;
 
 let CREDIT_PURCHASE_BONUS_MULTIPLIER = 1;
@@ -253,7 +255,21 @@ const pieces = {
   <div class="latch"></div>
   </div>
 </div>`,
-        }
+        },
+        spawnChance: 5,
+    },
+    'experience_orb': {
+        lootbox: {
+            weight: 0.01,
+        },
+        neutralObject: true,
+        needsDiscovery: true,
+        description: "<p>Once captured, you will get 1K XP.</p>",
+        display: {
+            neutral: `<img src="https://i.imgur.com/v3ahgYA.png">`,
+        },
+        experiencePointsGainType: "orb_capture",
+        spawnChance: 0,
     },
     'reversed-rook': {
         lootbox: {
