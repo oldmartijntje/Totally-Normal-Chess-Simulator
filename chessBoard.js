@@ -54,6 +54,10 @@ class Chessboard {
             this.activePlayer = gameState.activePlayer ? gameState.activePlayer : STARTING_PLAYER;
             this.lastPlayedMove = gameState.lastPlayedMove ? gameState.lastPlayedMove : [];
             this.modifiedGameData = gameState.modifiedGameData ? gameState.modifiedGameData : {};
+            this.inventory = gameState.inventory ? gameState.inventory : {
+                black: {},
+                white: {}
+            };
             if (gameState.selectedPiece) {
                 this.render(); // it has to render first to get the selected piece
                 this.selectedPiece = document.getElementById(gameState.selectedPiece);
@@ -231,7 +235,8 @@ class Chessboard {
             selectedPiece: this.selectedPiece?.id,
             cachedPieceData: this.cachedPieceData,
             lastPlayedMove: this.lastPlayedMove,
-            modifiedGameData: this.modifiedGameData
+            modifiedGameData: this.modifiedGameData,
+            inventory: this.inventory
         }
     }
 
@@ -418,6 +423,19 @@ class Chessboard {
         localStorage.setItem('gameState', JSON.stringify(this.getGameState()));
     }
 
+    gainItem(itemPossibillitiesDict, player) {
+        const list = Object.keys(itemPossibillitiesDict);
+        for (let i = 0; i < list.length; i++) {
+            if (percentageRandomiser(itemPossibillitiesDict[list[i]].chance)) {
+                if (!this.inventory[player][list[i]]) {
+                    this.inventory[player][list[i]] = 0;
+                }
+                this.inventory[player][list[i]] += itemPossibillitiesDict[list[i]].amount;
+                this.saveGameState();
+            }
+        }
+    }
+
     handleSquareClick(square) {
         if (this.boardDataSettings.blockInteraction) {
             return;
@@ -458,7 +476,9 @@ class Chessboard {
                     this.gainExperiencePoints('merging');
                     this.boardState[this.cachedPieceData.location[0]][this.cachedPieceData.location[1]].type = pieceType;
                     if (pieces[pieceType].summonOnBeingMerged) {
-                        placeOnOldLocation = { color: this.activePlayer, type: pieces[pieceType].summonOnBeingMerged, moved: true }
+                        if (percentageRandomiser(pieces[pieceType].summonOnBeingMerged.chance)) {
+                            placeOnOldLocation = { color: this.activePlayer, type: pieces[pieceType].summonOnBeingMerged.type, moved: true }
+                        }
                     }
                     // unlock it in the encyclopedia
                     if (pieces[pieceType].needsDiscovery && !discoveredPieces[pieceType] && !this.boardDataSettings.ignoreUnlocks) {
@@ -486,6 +506,7 @@ class Chessboard {
                     }
                 } else {
                     this.gainExperiencePoints('capturing');
+                    this.gainItem(ON_CAPTURE_GAIN_MATERIALS, this.activePlayer);
                     let saved = false;
                     if (pieces[this.boardState[location[0]][location[1]].type].captureFlee != undefined) {
                         let yDirection = this.boardState[location[0]][location[1]].color == 'black' ? -1 : 1;
@@ -499,6 +520,20 @@ class Chessboard {
                         }
                     }
                     if (!saved) {
+                        if (pieces[this.boardState[location[0]][location[1]].type].itemGain && pieces[this.boardState[location[0]][location[1]].type].itemGain.onDeath) {
+                            this.gainItem(pieces[this.boardState[location[0]][location[1]].type].itemGain.onDeath, this.boardState[location[0]][location[1]].color);
+                        }
+                        if (this.cachedPieceData.pieceData.itemGain && this.cachedPieceData.pieceData.itemGain.onDeath) {
+                            this.gainItem(this.cachedPieceData.pieceData.itemGain.onKill, this.activePlayer);
+                        }
+                        if (!this.boardState[this.cachedPieceData.location[0]][this.cachedPieceData.location[1]].kills) {
+                            this.boardState[this.cachedPieceData.location[0]][this.cachedPieceData.location[1]].kills = 0;
+                        }
+                        this.boardState[this.cachedPieceData.location[0]][this.cachedPieceData.location[1]].kills += 1;
+                        let kills = this.boardState[this.cachedPieceData.location[0]][this.cachedPieceData.location[1]].kills;
+                        if (this.cachedPieceData.pieceData.killSpree && this.cachedPieceData.pieceData.killSpree[kills]) {
+                            this.cachedPieceData.pieceData.killSpree[kills].function()
+                        }
                         this.lostPieces[this.boardState[location[0]][location[1]].color].push(this.boardState[location[0]][location[1]].type);
                         if (this.boardState[location[0]][location[1]].carrying) {
                             this.lostPieces[this.boardState[location[0]][location[1]].color].push(this.boardState[location[0]][location[1]].carrying.type);

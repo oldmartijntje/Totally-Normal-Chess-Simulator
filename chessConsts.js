@@ -21,6 +21,12 @@ const EXPERIENCE_POINTS = {
     "lootbox_opening": 0,
     "orb_capture": 1000
 }
+const ON_CAPTURE_GAIN_MATERIALS = {
+    "gold": {
+        "chance": 0,
+        "amount": 1
+    }
+}
 
 const RANDOM_SPAWNING_PIECES = ['lootbox', 'experience_orb'];
 
@@ -222,11 +228,25 @@ const pieces = {
                 }
             ],
         },
+        killSpree: {
+
+        },
         display: {
             // white: '♙',
             // black: '♟',
             white: '<img src="https://i.imgur.com/wJM6aPc.png">',
             black: '<img src="https://i.imgur.com/1TN3hWU.png">',
+        },
+        itemGain: {
+            onKill: {
+                'gold': {
+                    chance: 0,
+                    amount: 0
+                }
+            },
+            onDeath: {
+
+            }
         },
         description: "<p>First move can move 2 spaces forward instead of 1<br>Attacks diagonally forward.<br>Transforms into a queen once you reach the opposite side of the board.<br>Black moves in the opposite direction.</p><p><a href=\"https://en.wikipedia.org/wiki/En_passant\" target=\"_blank\">En passant</a> is not a thing.</p>",
         convertion: {
@@ -422,8 +442,11 @@ const pieces = {
         },
         captureFlee: {
             percentageChance: 0
+        },
+        summonOnBeingMerged: {
+            'type': 'brick',
+            'chance': 0,
         }
-        // summonOnBeingMerged: 'brick', <- add this to the piece if you want to summon a piece when merging
     },
     'queened': {
         lootbox: {
