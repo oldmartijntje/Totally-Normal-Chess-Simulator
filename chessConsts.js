@@ -20,7 +20,9 @@ const EXPERIENCE_POINTS = {
     "winning": 125,
     "lootbox_opening": 0
 }
-let EXPERIENCE_POINTS_MODIFIER = 2;
+let EXPERIENCE_POINTS_MODIFIER = 1;
+
+let CREDIT_PURCHASE_BONUS_MULTIPLIER = 1;
 
 const WIN_CONDITIONS = {
     slainTroops: {
