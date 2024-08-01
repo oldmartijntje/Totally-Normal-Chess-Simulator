@@ -3,13 +3,13 @@ const INFINITE = BOARDSIZE * BOARDSIZE
 const friendlyFire = false;
 const UNLOCK_MOVEMENT = false;
 const INVERTED_LOGIC = false;
-const LOOTBOX_SPAWN_PERCENTAGE = 5
+let LOOTBOX_SPAWN_PERCENTAGE = 5
 const LOOTBOX_CAPTURING_PIECE_WEIGHT = 5
 const DEBUG_MODE = false;
 const FORCE_PLAYER_TURNS = true;
 const STARTING_PLAYER = 'white';
 const LOOTBOX_RARITY_MODIFIER = 10;
-const AMOUNT_OF_TWISTS = 3;
+let AMOUNT_OF_TWISTS = 3;
 const EXPERIENCE_POINTS = {
     "merging": 75,
     "capturing": 25,
@@ -17,8 +17,7 @@ const EXPERIENCE_POINTS = {
     "discovering": 250,
     "moving": 1,
     "convertion": 10,
-    "winning": 125,
-    "losing": 50,
+    "winning": 125
 }
 
 const WIN_CONDITIONS = {

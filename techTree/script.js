@@ -176,6 +176,17 @@ function isUnlocked(id) {
     return techTreeCache[id]?.unlocked;
 }
 
+function isEnabled(id) {
+    if (!isUnlocked(id)) {
+        return false;
+    }
+    if (techTreeCache[id]?.enabled == undefined) {
+        techTreeCache[id].enabled = true;
+        localStorage.setItem('techTreeProgression', JSON.stringify(techTreeCache));
+    }
+    return techTreeCache[id]?.enabled;
+}
+
 function step(id) {
     cacheProgression();
     setTimeout(() => {
@@ -224,6 +235,14 @@ function draw() {
         const radius = 30;
         ctx.beginPath();
         ctx.arc(tech.x, tech.y, radius, 0, 2 * Math.PI);
+
+        // Check if the node is unlocked but not enabled and set the outline color to green
+        if (isUnlocked(tech.id) && !isEnabled(tech.id)) {
+            ctx.strokeStyle = 'lime';
+        } else {
+            ctx.strokeStyle = 'black';
+        }
+
         ctx.stroke();
 
         let img = images[tech.id];
@@ -397,6 +416,30 @@ function showNodeInfo(node) {
         buttonContainer.appendChild(button);
         if (filteredParents.length > 0) {
             button.disabled = true;
+        }
+    } else {
+        if (isEnabled(node.id)) {
+            const buttonContainer = document.getElementById('button-container');
+            const button = document.createElement('button');
+            button.textContent = 'Disable';
+            button.onclick = () => {
+                techTreeCache[node.id].enabled = false;
+                localStorage.setItem('techTreeProgression', JSON.stringify(techTreeCache));
+                draw();
+                showNodeInfo(node);
+            };
+            buttonContainer.appendChild(button);
+        } else {
+            const buttonContainer = document.getElementById('button-container');
+            const button = document.createElement('button');
+            button.textContent = 'Enable';
+            button.onclick = () => {
+                techTreeCache[node.id].enabled = true;
+                localStorage.setItem('techTreeProgression', JSON.stringify(techTreeCache));
+                draw();
+                showNodeInfo(node);
+            };
+            buttonContainer.appendChild(button);
         }
     }
     infoOverlay.style.display = 'block';
