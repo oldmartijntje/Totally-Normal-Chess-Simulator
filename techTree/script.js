@@ -599,6 +599,41 @@ container.addEventListener('touchmove', (e) => {
     }
 });
 
+container.addEventListener('touchend', (e) => {
+    if (e.touches.length < 2) {
+        lastTouchDistance = 0;
+    }
+});
+
+container.addEventListener('touchstart', (e) => {
+    if (e.touches.length === 1) {
+        isDragging = true;
+        startX = e.touches[0].clientX - translateX;
+        startY = e.touches[0].clientY - translateY;
+        dragStartTime = new Date().getTime();
+    }
+});
+
+container.addEventListener('touchmove', (e) => {
+    if (isDragging && e.touches.length === 1) {
+        translateX = e.touches[0].clientX - startX;
+        translateY = e.touches[0].clientY - startY;
+        draw();
+    }
+});
+
+container.addEventListener('touchend', (e) => {
+    const dragEndTime = new Date().getTime();
+    const dragDuration = dragEndTime - dragStartTime;
+
+    if (dragDuration < 200) {
+        handleClick({
+            touches: [{ clientX: startX + translateX, clientY: startY + translateY }]
+        });
+    }
+    isDragging = false;
+});
+
 container.addEventListener('wheel', (e) => {
     e.preventDefault();
     const rect = canvas.getBoundingClientRect();
@@ -622,11 +657,6 @@ function zoomCanvas(zoomFactor, centerX, centerY) {
     }
 }
 
-container.addEventListener('touchend', (e) => {
-    if (e.touches.length < 2) {
-        lastTouchDistance = 0;
-    }
-});
 
 container.addEventListener('mouseleave', () => {
     isDragging = false;
