@@ -160,7 +160,7 @@ function drawBackground() {
 
 
 function isUnlocked(id) {
-    return id < 15
+    return id <= 15
     // return false;
     return Math.random() < 0.5;
 }
@@ -348,11 +348,12 @@ function getTitle(tech) {
 }
 
 function showNodeInfo(node) {
+    let filteredParents = node.parents.filter(x => !isUnlocked(x));
+    let requires = filteredParents?.length > 0 ? `Requires: ${filteredParents.join(', ')}` : '';
     infoOverlay.innerHTML = `
                 <h3>${getTitle(node)}</h3>
                 <p>ID: ${node.id}</p>
-                <p>Requires: ${node.parents.join(', ') || 'None'}</p>
-                <p>Unlocks: ${node.connections.join(', ') || 'None'}</p>
+                ${requires}
                 <p>Cost: ${node.cost}</p>
                 <p>${getDescription(node)}</p>
             `;
