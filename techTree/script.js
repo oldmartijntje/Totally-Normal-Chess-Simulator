@@ -37,7 +37,7 @@ let isZoomLimitReached = false;
 let isDragging = false;
 let startX, startY, translateX = 0, translateY = 0;
 
-const MIN_SCALE = 0.5;
+const MIN_SCALE = 0.25;
 const MAX_SCALE = 3;
 const ZOOM_SENSITIVITY = 0.0005;
 
