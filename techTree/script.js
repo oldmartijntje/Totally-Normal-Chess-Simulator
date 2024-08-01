@@ -6,6 +6,11 @@ const resetButton = document.getElementById('resetButton');
 const alertOverlay = document.getElementById('alertOverlay');
 const confirmResetButton = document.getElementById('confirmReset');
 const cancelResetButton = document.getElementById('cancelReset');
+const resetZoom = document.getElementById('resetZoomButton')
+
+if (resetZoom) {
+    resetZoom.addEventListener('click', resetZoomAndTranslation);
+}
 
 resetButton.addEventListener('click', function () {
     alertOverlay.style.display = 'block';
@@ -690,8 +695,33 @@ container.addEventListener('mouseleave', () => {
     isDragging = false;
 });
 
-// document.getElementById('resetZoomButton').addEventListener('click', resetZoomAndTranslation);
+
 window.addEventListener('resize', resizeCanvas);
+
+function resetZoomAndTranslation() {
+    scale = 1;
+    translateX = 0;
+    translateY = 0;
+    draw();
+    updateResetZoomButtonVisibility()
+}
+
+// Show/hide reset zoom button based on zoom level
+function updateResetZoomButtonVisibility() {
+    if (scale !== 1) { // window.innerWidth < 768 && 
+        resetZoomButton.style.display = (scale !== 1 || translateX !== 0 || translateY !== 0) ? 'flex' : 'none';
+    } else {
+        resetZoomButton.style.display = 'none';
+    }
+}
+
+// Update visibility after zoom/pan operations
+container.addEventListener('wheel', updateResetZoomButtonVisibility);
+container.addEventListener('touchend', updateResetZoomButtonVisibility);
+container.addEventListener('mouseup', updateResetZoomButtonVisibility);
+
+// Initial visibility check
+updateResetZoomButtonVisibility();
 
 // Initialize
 resizeCanvas();

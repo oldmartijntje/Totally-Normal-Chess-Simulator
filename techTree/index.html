@@ -263,6 +263,34 @@
         .dismiss-button:hover {
             color: #ccc;
         }
+
+        #resetZoomButton {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background-color: rgba(0, 0, 0, 0.5);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            font-size: 20px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background-color 0.3s ease;
+        }
+
+        #resetZoomButton:hover {
+            background-color: rgba(0, 0, 0, 0.7);
+        }
+
+        @media (min-width: 768px) {
+            #resetZoomButton {
+                display: none;
+            }
+        }
     </style>
 </head>
 
@@ -275,6 +303,7 @@
     </header>
     <div id="canvas-container">
         <canvas id="techTreeCanvas"></canvas>
+        <button id="resetZoomButton" aria-label="Reset Zoom">&#8634;</button>
         <div id="info-overlay"></div>
     </div>
 
