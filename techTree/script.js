@@ -6,6 +6,7 @@ const infoOverlay = document.getElementById('info-overlay');
 const URL404 = 'https://i.imgur.com/xgsFaaa.png'
 BACKGROUND_URL = ''
 
+let experiencePointsCache = 0;
 let techTreeCache = {
     0: {
         unocked: true,
@@ -124,6 +125,17 @@ async function preloadImages() {
     draw(); // Initial draw after images are preloaded
 }
 
+function setXpCounter() {
+    // <div class="xp-counter" id="xpCounter">XP: 15000</div>
+    const xpCounter = document.getElementById('xpCounter');
+    if (!xpCounter) {
+        return;
+    }
+    xpCounter.textContent = `XP: ${experiencePointsCache}`;
+
+}
+
+
 function drawBackground() {
     // Draw the static background image
     const backgroundImage = images['background_image'];
@@ -170,6 +182,23 @@ function cacheProgression() {
     if (!localStorage.getItem('techTreeProgression')) {
         localStorage.setItem('techTreeProgression', JSON.stringify(techTreeCache));
     }
+    const chessPlayerData = JSON.parse(localStorage.getItem('chessPlayerData'));
+    experiencePointsCache = chessPlayerData?.playerXP || 0;
+    if (!localStorage.getItem('chessPlayerData')) {
+        localStorage.setItem('chessPlayerData', JSON.stringify({ playerXP: 0 }));
+    } else if (!chessPlayerData.playerXP) {
+        chessPlayerData.playerXP = 0;
+        localStorage.setItem('chessPlayerData', JSON.stringify(chessPlayerData));
+    }
+    setXpCounter();
+}
+
+function setExperiencePoints(xp) {
+    experiencePointsCache = xp;
+    const chessPlayerData = JSON.parse(localStorage.getItem('chessPlayerData'));
+    chessPlayerData.playerXP = xp;
+    localStorage.setItem('chessPlayerData', JSON.stringify(chessPlayerData));
+    setXpCounter();
 }
 
 function isUnlocked(id) {
@@ -200,6 +229,7 @@ function draw() {
 
     // Draw the static background first
     drawBackground();
+    setXpCounter();
 
     // Save the current state
     ctx.save();
@@ -390,6 +420,11 @@ function unlockNode(stringifiedNode) {
     if (filteredParents.length > 0) {
         return;
     }
+    if (experiencePointsCache < node.cost) {
+        return;
+    }
+    experiencePointsCache -= node.cost;
+    setExperiencePoints(experiencePointsCache);
     techTreeCache[node.id] = { unlocked: true };
     localStorage.setItem('techTreeProgression', JSON.stringify(techTreeCache));
     draw();
@@ -428,7 +463,7 @@ function showNodeInfo(node) {
             `;
     const buttonContainer = document.getElementById('button-container');
     if (!isUnlocked(node.id)) {
-        const button = createButton('Unlock', () => unlockNode(JSON.stringify(node)), filteredParents.length > 0);
+        const button = createButton('Unlock', () => unlockNode(JSON.stringify(node)), filteredParents.length > 0 || experiencePointsCache < node.cost);
         buttonContainer.appendChild(button);
     } else {
         const isNodeEnabled = isEnabled(node.id);
