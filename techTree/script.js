@@ -23,7 +23,6 @@ cancelResetButton.addEventListener('click', function () {
 const URL404 = 'https://i.imgur.com/xgsFaaa.png'
 BACKGROUND_URL = ''
 
-const ZOOM_SENSITIVITY = 0.0005;
 
 let scale = 1;
 let lastTouchDistance = 0;
@@ -33,8 +32,14 @@ let techTreeCache = {
         unocked: true,
     }
 }
+
+let isZoomLimitReached = false;
 let isDragging = false;
 let startX, startY, translateX = 0, translateY = 0;
+
+const MIN_SCALE = 0.5;
+const MAX_SCALE = 3;
+const ZOOM_SENSITIVITY = 0.0005;
 
 const images = {};
 
@@ -570,6 +575,11 @@ container.addEventListener('touchstart', (e) => {
 });
 
 container.addEventListener('touchmove', (e) => {
+    if (isZoomLimitReached) {
+        e.preventDefault();
+        return;
+    }
+
     if (e.touches.length === 2) {
         e.preventDefault();
         const touch1 = e.touches[0];
@@ -583,28 +593,43 @@ container.addEventListener('touchmove', (e) => {
             const zoomFactor = currentTouchDistance / lastTouchDistance;
             const newScale = scale * zoomFactor;
 
-            // Check if the new scale is within the allowed range
-            if (newScale >= 0.5 && newScale <= 3) {
+            if (newScale >= MIN_SCALE && newScale <= MAX_SCALE) {
                 scale = newScale;
 
-                // Adjust translation to zoom towards the center of the pinch
                 const centerX = (touch1.clientX + touch2.clientX) / 2;
                 const centerY = (touch1.clientY + touch2.clientY) / 2;
                 translateX = centerX - (centerX - translateX) * zoomFactor;
                 translateY = centerY - (centerY - translateY) * zoomFactor;
 
                 draw();
+            } else {
+                isZoomLimitReached = true;
             }
         }
 
         lastTouchDistance = currentTouchDistance;
+    } else if (e.touches.length === 1 && isDragging) {
+        translateX = e.touches[0].clientX - startX;
+        translateY = e.touches[0].clientY - startY;
+        draw();
     }
 });
 
 container.addEventListener('touchend', (e) => {
     if (e.touches.length < 2) {
         lastTouchDistance = 0;
+        isZoomLimitReached = false; // Reset the flag when touch ends
     }
+
+    const dragEndTime = new Date().getTime();
+    const dragDuration = dragEndTime - dragStartTime;
+
+    if (dragDuration < 200 && !isZoomLimitReached) {
+        handleClick({
+            touches: [{ clientX: startX + translateX, clientY: startY + translateY }]
+        });
+    }
+    isDragging = false;
 });
 
 container.addEventListener('touchstart', (e) => {
@@ -638,6 +663,7 @@ container.addEventListener('touchend', (e) => {
 
 container.addEventListener('wheel', (e) => {
     e.preventDefault();
+    isZoomLimitReached = false; // Reset the flag on wheel event
     const rect = canvas.getBoundingClientRect();
     const mouseX = e.clientX - rect.left;
     const mouseY = e.clientY - rect.top;
@@ -649,13 +675,13 @@ container.addEventListener('wheel', (e) => {
 function zoomCanvas(zoomFactor, centerX, centerY) {
     const newScale = scale * zoomFactor;
 
-    // Limit the scale to a reasonable range (e.g., 0.5 to 3)
-    if (newScale >= 0.5 && newScale <= 3) {
-        // Adjust translation to zoom towards the center point
+    if (newScale >= MIN_SCALE && newScale <= MAX_SCALE) {
         translateX = centerX - (centerX - translateX) * zoomFactor;
         translateY = centerY - (centerY - translateY) * zoomFactor;
         scale = newScale;
         draw();
+    } else {
+        isZoomLimitReached = true;
     }
 }
 
