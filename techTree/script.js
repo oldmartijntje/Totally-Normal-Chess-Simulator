@@ -476,13 +476,14 @@ function showNodeInfo(node) {
     let filteredParents = node.parents.filter(x => !isUnlocked(x));
     let requires = filteredParents?.length > 0 ? `Requires: ${filteredParents.join(', ')}` : '';
     let cost = !isUnlocked(node.id) ? `<p>Cost: ${node.cost} XP</p>` : '';
-    infoOverlay.innerHTML = `
+    infoOverlay.innerHTML = `<div class="info-overlay">
                 <h3>${getTitle(node)}</h3>
                 <p>ID: ${node.id}</p>
                 ${requires}
                 ${cost}
                 <p>${getDescription(node)}</p>
                 <div id="button-container"></div>
+            </div>
             `;
     const buttonContainer = document.getElementById('button-container');
     if (!isUnlocked(node.id)) {
@@ -495,7 +496,16 @@ function showNodeInfo(node) {
         });
         buttonContainer.appendChild(button);
     }
-    infoOverlay.style.display = 'block';
+    // Add the "Close" button
+    const closeButtonDiv = document.createElement('div');
+    const closeButton = createButton('×', () => {
+        infoOverlay.style.display = 'none';
+    });
+    closeButton.classList.add('dismiss-button');
+    closeButtonDiv.appendChild(closeButton);
+    infoOverlay.appendChild(closeButtonDiv);
+
+    infoOverlay.style.display = 'flex';
 }
 
 function resetTechTree() {
