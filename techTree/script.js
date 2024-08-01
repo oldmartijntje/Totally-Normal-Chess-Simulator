@@ -26,65 +26,35 @@ function autoFillRequirements() {
 }
 
 function generateCoordinates() {
-    const parentClusters = {}; // Store nodes by parent
-    const floaterNodes = []; // Store nodes that have no parents
-    const radius = 150; // Distance from the parent
-    const maxAngleIncrement = 45; // Maximum angle increment
-    const maxRootAngleIncrement = 180; // Maximum angle increment for the root node
+    const levels = {};
 
-    function assignClusters() {
-        // Assign children to parent node clusters
-        techTree.forEach(allNodesNode => {
-            if (allNodesNode.parents.length == 0) {
-                floaterNodes.push(allNodesNode);
-            } else {
-                if (!parentClusters[allNodesNode.parents[0]]) {
-                    parentClusters[allNodesNode.parents[0]] = [];
-                }
-                parentClusters[allNodesNode.parents[0]].push(allNodesNode);
-            }
+    function assignLevel(node, level) {
+        if (!levels[level]) levels[level] = [];
+        if (!levels[level].includes(node)) levels[level].push(node);
+        node.connections.forEach(connId => {
+            const connNode = techTree.find(t => t.id === connId);
+            assignLevel(connNode, level + 1);
         });
     }
 
-    // Start clustering from the root node
-    assignClusters();
+    // Start from the root node (assumed to be the first node in the array)
+    assignLevel(techTree[0], 0);
 
-    function computeCoordinatesForNode(node, parentAngle, index) {
-        if (!parentClusters[node.id]) {
-            return;
-        }
-        const children = parentClusters[node.id];
-        const numChildren = children.length;
+    // Fixed parameters for circular arrangement
+    const radiusStep = 150; // Distance between circular levels
+    const angleStep = 2 * Math.PI; // Full circle in radians
 
-        // Determine the increment angle for the first child
-        let incrementPerKid
-        if (!node.parents.length == 0) {
-            incrementPerKid = maxAngleIncrement * 2 / numChildren;
-        } else {
-            incrementPerKid = maxRootAngleIncrement * 2 / numChildren;
-        }
+    // Calculate x and y positions for each node
+    Object.keys(levels).forEach(level => {
+        const nodes = levels[level];
+        const radius = level * radiusStep;
+        const angleIncrement = angleStep / nodes.length;
 
-        children.forEach((childNode, idx) => {
-            let angle;
-            if (!node.parents.length == 0) {
-                angle = parentAngle - maxAngleIncrement + (incrementPerKid * idx) + incrementPerKid / 2;
-            } else {
-                angle = parentAngle - maxRootAngleIncrement + (incrementPerKid * idx) + incrementPerKid / 2;
-            }
-            const angleRad = angle * Math.PI / 180;
-            childNode.x = node.x + radius * Math.cos(angleRad);
-            childNode.y = node.y + radius * Math.sin(angleRad);
-
-            // Recursively compute coordinates for children
-            computeCoordinatesForNode(childNode, angle, index + 1);
+        nodes.forEach((node, index) => {
+            const angle = index * angleIncrement;
+            node.x = canvas.width / 2 + radius * Math.cos(angle);
+            node.y = canvas.height / 2 + radius * Math.sin(angle);
         });
-    }
-
-    // Place the root node at the center of the canvas
-    techTree[0].x = canvas.width / 2;
-    techTree[0].y = canvas.height / 2;
-    floaterNodes.forEach((floaterNode, index) => {
-        computeCoordinatesForNode(floaterNode, 0, index);
     });
 }
 
