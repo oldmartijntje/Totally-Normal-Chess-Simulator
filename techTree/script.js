@@ -2,10 +2,36 @@ const canvas = document.getElementById('techTreeCanvas');
 const ctx = canvas.getContext('2d');
 const container = document.getElementById('canvas-container');
 const infoOverlay = document.getElementById('info-overlay');
+const resetButton = document.getElementById('resetButton');
+const alertOverlay = document.getElementById('alertOverlay');
+const confirmResetButton = document.getElementById('confirmReset');
+const cancelResetButton = document.getElementById('cancelReset');
+
+resetButton.addEventListener('click', function () {
+    alertOverlay.style.display = 'block';
+});
+
+confirmResetButton.addEventListener('click', function () {
+    alertOverlay.style.display = 'none';
+    resetTechTree();
+});
+
+cancelResetButton.addEventListener('click', function () {
+    alertOverlay.style.display = 'none';
+});
 
 const URL404 = 'https://i.imgur.com/xgsFaaa.png'
 BACKGROUND_URL = ''
-
+const LOCALSTORAGE_NAMES = {
+    DEBUG: {
+        TECH_TREE: 'DEBUG_TECH_TREE',
+        CHESS_PLAYER: 'DEBUG_CHESS_PLAYER_DATA',
+    },
+    DEFAULT: {
+        TECH_TREE: 'techTreeProgression',
+        CHESS_PLAYER: 'chessPlayerData',
+    }
+}
 let experiencePointsCache = 0;
 let techTreeCache = {
     0: {
@@ -87,11 +113,6 @@ function generateCoordinates() {
         computeCoordinatesForNode(floaterNode, 0, index);
     });
 }
-
-
-
-
-
 
 function resizeCanvas() {
     canvas.width = container.clientWidth;
@@ -178,31 +199,38 @@ function drawBackground() {
 }
 
 function cacheProgression() {
-    techTreeCache = JSON.parse(localStorage.getItem('techTreeProgression')) || { 0: { unlocked: true, } };
-    if (!localStorage.getItem('techTreeProgression')) {
-        localStorage.setItem('techTreeProgression', JSON.stringify(techTreeCache));
+    techTreeCache = JSON.parse(localStorage.getItem(getCorrectLocalStorageName('TECH_TREE'))) || { 0: { unlocked: true, } };
+    if (!localStorage.getItem(getCorrectLocalStorageName('TECH_TREE'))) {
+        localStorage.setItem(getCorrectLocalStorageName('TECH_TREE'), JSON.stringify(techTreeCache));
     }
-    const chessPlayerData = JSON.parse(localStorage.getItem('chessPlayerData'));
+    const chessPlayerData = JSON.parse(localStorage.getItem(getCorrectLocalStorageName('CHESS_PLAYER')));
     experiencePointsCache = chessPlayerData?.playerXP || 0;
-    if (!localStorage.getItem('chessPlayerData')) {
-        localStorage.setItem('chessPlayerData', JSON.stringify({ playerXP: 0 }));
+    if (!localStorage.getItem(getCorrectLocalStorageName('CHESS_PLAYER'))) {
+        localStorage.setItem(getCorrectLocalStorageName('CHESS_PLAYER'), JSON.stringify({ playerXP: 0 }));
     } else if (!chessPlayerData.playerXP) {
         chessPlayerData.playerXP = 0;
-        localStorage.setItem('chessPlayerData', JSON.stringify(chessPlayerData));
+        localStorage.setItem(getCorrectLocalStorageName('CHESS_PLAYER'), JSON.stringify(chessPlayerData));
     }
     setXpCounter();
 }
 
 function setExperiencePoints(xp) {
     experiencePointsCache = xp;
-    const chessPlayerData = JSON.parse(localStorage.getItem('chessPlayerData'));
+    const chessPlayerData = JSON.parse(localStorage.getItem(getCorrectLocalStorageName('CHESS_PLAYER')));
     chessPlayerData.playerXP = xp;
-    localStorage.setItem('chessPlayerData', JSON.stringify(chessPlayerData));
+    localStorage.setItem(getCorrectLocalStorageName('CHESS_PLAYER'), JSON.stringify(chessPlayerData));
     setXpCounter();
 }
 
 function isUnlocked(id) {
     return techTreeCache[id]?.unlocked;
+}
+
+function getCorrectLocalStorageName(type) {
+    if (DEBUG_MODE) {
+        return LOCALSTORAGE_NAMES.DEBUG[type];
+    }
+    return LOCALSTORAGE_NAMES.DEFAULT[type];
 }
 
 function isEnabled(id) {
@@ -211,7 +239,7 @@ function isEnabled(id) {
     }
     if (techTreeCache[id]?.enabled == undefined) {
         techTreeCache[id].enabled = true;
-        localStorage.setItem('techTreeProgression', JSON.stringify(techTreeCache));
+        localStorage.setItem(getCorrectLocalStorageName('TECH_TREE'), JSON.stringify(techTreeCache));
     }
     return techTreeCache[id]?.enabled;
 }
@@ -417,21 +445,24 @@ function getTitle(tech) {
 function unlockNode(stringifiedNode) {
     const node = JSON.parse(stringifiedNode);
     let filteredParents = node.parents.filter(x => !isUnlocked(x));
-    if (filteredParents.length > 0) {
+    if (filteredParents.length > 0 && !DEBUG_MODE) {
         return;
     }
-    if (experiencePointsCache < node.cost) {
+    if (experiencePointsCache < node.cost && !DEBUG_MODE) {
         return;
     }
     experiencePointsCache -= node.cost;
     setExperiencePoints(experiencePointsCache);
     techTreeCache[node.id] = { unlocked: true };
-    localStorage.setItem('techTreeProgression', JSON.stringify(techTreeCache));
+    localStorage.setItem(getCorrectLocalStorageName('TECH_TREE'), JSON.stringify(techTreeCache));
     draw();
     showNodeInfo(node);
 }
 
 function createButton(text, onClickHandler, isDisabled = false) {
+    if (DEBUG_MODE) {
+        isDisabled = false;
+    }
     const button = document.createElement('button');
     button.textContent = text;
     button.onclick = onClickHandler;
@@ -444,7 +475,8 @@ function createButton(text, onClickHandler, isDisabled = false) {
 
 function updateTechTreeCache(nodeId, isEnabled, node) {
     techTreeCache[nodeId].enabled = isEnabled;
-    localStorage.setItem('techTreeProgression', JSON.stringify(techTreeCache));
+
+    localStorage.setItem(getCorrectLocalStorageName('TECH_TREE'), JSON.stringify(techTreeCache));
     draw();
     showNodeInfo(node);
 }
@@ -473,6 +505,22 @@ function showNodeInfo(node) {
         buttonContainer.appendChild(button);
     }
     infoOverlay.style.display = 'block';
+}
+
+function resetTechTree() {
+    let experience = 0;
+    for (let i = 0; i < techTree.length; i++) {
+        if (isUnlocked(techTree[i].id)) {
+            experience += techTree[i].cost;
+        }
+    }
+    console.log(experience);
+    experience = Math.floor((experience / 4) * 3);
+    experience += experiencePointsCache;
+    techTreeCache = { 0: { unlocked: true } };
+    localStorage.removeItem(getCorrectLocalStorageName('TECH_TREE'));
+    setExperiencePoints(experience)
+    draw();
 }
 
 let dragStartTime;
