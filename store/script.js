@@ -62,8 +62,18 @@ function updateCart() {
         `;
         cartItems.appendChild(li);
     });
+    if (Object.entries(cart).length > 0) {
+        const li = document.createElement('li');
+        li.className = 'flex justify-between items-center';
+        li.innerHTML = `
+            <span>${Math.ceil((amountOfShopping * CREDIT_PURCHASE_BONUS_MULTIPLIER)) - (amountOfShopping)} Credits - Free Bonus!</span>
+        `;
+        cartItems.appendChild(li);
+
+    }
     balanceCurrent.textContent = localStorage.getItem('tokens');
-    balanceNext.textContent = (parseInt(localStorage.getItem('tokens')) + amountOfShopping);
+    balanceNext.textContent = Math.ceil((parseInt(localStorage.getItem('tokens')) + (amountOfShopping * CREDIT_PURCHASE_BONUS_MULTIPLIER)));
+
     tempTokens = amountOfShopping;
 
 
@@ -105,10 +115,11 @@ function checkout() {
         cart,
         totalCost: total,
         amountOfShopping,
+        bonus: Math.ceil((amountOfShopping * CREDIT_PURCHASE_BONUS_MULTIPLIER)) - (amountOfShopping),
         fullName: [document.querySelector('input[placeholder="First name"]').value, document.querySelector('input[placeholder="Last name"]').value],
         balanceBefore: parseInt(localStorage.getItem('tokens')),
     }));
-    localStorage.setItem('tokens', (parseInt(localStorage.getItem('tokens')) + amountOfShopping));
+    localStorage.setItem('tokens', (parseInt(localStorage.getItem('tokens')) + (amountOfShopping * CREDIT_PURCHASE_BONUS_MULTIPLIER)));
     localStorage.setItem('mail', document.querySelector('input[type="email"]').value);
     alert('Thank you for your purchase!');
     cart = {};
