@@ -396,6 +396,21 @@ function unlockNode(stringifiedNode) {
     showNodeInfo(node);
 }
 
+function createButton(text, onClickHandler, isDisabled = false) {
+    const button = document.createElement('button');
+    button.textContent = text;
+    button.onclick = onClickHandler;
+    button.disabled = isDisabled;
+    return button;
+}
+
+function updateTechTreeCache(nodeId, isEnabled, node) {
+    techTreeCache[nodeId].enabled = isEnabled;
+    localStorage.setItem('techTreeProgression', JSON.stringify(techTreeCache));
+    draw();
+    showNodeInfo(node);
+}
+
 function showNodeInfo(node) {
     let filteredParents = node.parents.filter(x => !isUnlocked(x));
     let requires = filteredParents?.length > 0 ? `Requires: ${filteredParents.join(', ')}` : '';
@@ -408,39 +423,16 @@ function showNodeInfo(node) {
                 <p>${getDescription(node)}</p>
                 <div id="button-container"></div>
             `;
+    const buttonContainer = document.getElementById('button-container');
     if (!isUnlocked(node.id)) {
-        const buttonContainer = document.getElementById('button-container');
-        const button = document.createElement('button');
-        button.textContent = 'Unlock';
-        button.onclick = () => unlockNode(JSON.stringify(node));
+        const button = createButton('Unlock', () => unlockNode(JSON.stringify(node)), filteredParents.length > 0);
         buttonContainer.appendChild(button);
-        if (filteredParents.length > 0) {
-            button.disabled = true;
-        }
     } else {
-        if (isEnabled(node.id)) {
-            const buttonContainer = document.getElementById('button-container');
-            const button = document.createElement('button');
-            button.textContent = 'Disable';
-            button.onclick = () => {
-                techTreeCache[node.id].enabled = false;
-                localStorage.setItem('techTreeProgression', JSON.stringify(techTreeCache));
-                draw();
-                showNodeInfo(node);
-            };
-            buttonContainer.appendChild(button);
-        } else {
-            const buttonContainer = document.getElementById('button-container');
-            const button = document.createElement('button');
-            button.textContent = 'Enable';
-            button.onclick = () => {
-                techTreeCache[node.id].enabled = true;
-                localStorage.setItem('techTreeProgression', JSON.stringify(techTreeCache));
-                draw();
-                showNodeInfo(node);
-            };
-            buttonContainer.appendChild(button);
-        }
+        const isNodeEnabled = isEnabled(node.id);
+        const button = createButton(isNodeEnabled ? 'Disable' : 'Enable', () => {
+            updateTechTreeCache(node.id, !isNodeEnabled, node);
+        });
+        buttonContainer.appendChild(button);
     }
     infoOverlay.style.display = 'block';
 }
