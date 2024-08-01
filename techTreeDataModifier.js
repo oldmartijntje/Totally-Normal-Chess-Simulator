@@ -46,3 +46,6 @@ if (includes(4)) {
 if (includes(5)) {
     pieces['experience_orb'].spawnChance = 5;
 }
+if (includes(6)) {
+    AUTO_BUY_BOXES = 25;
+}

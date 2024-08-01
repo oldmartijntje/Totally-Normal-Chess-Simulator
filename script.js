@@ -1,5 +1,5 @@
 const tokenAmount = document.getElementById('tokenAmount')
-let tokens = localStorage.getItem('tokens') ? localStorage.getItem('tokens') : 100
+let tokens = localStorage.getItem('tokens') ? localStorage.getItem('tokens') : 0
 tokenAmount.innerHTML = tokens
 localStorage.setItem('tokens', tokens)
 const lootboxesAmount = document.getElementById('lootboxesAmount')
@@ -151,11 +151,17 @@ window.onload = () => {
         lootBoxIcon.addEventListener('click', () => {
             lootboxes = localStorage.getItem('lootboxes') ? localStorage.getItem('lootboxes') : 0
             if (lootboxes <= 0) {
-                console.warn('No lootboxes left');
-                showPopup();
-                return;
+                if (AUTO_BUY_BOXES && tokens >= AUTO_BUY_BOXES) {
+                    lootboxes = 1
+                    tokens -= AUTO_BUY_BOXES
+                    localStorage.setItem('tokens', tokens)
+                } else {
+                    console.warn('No lootboxes left');
+                    showPopup();
+                    return;
+                }
             }
-            let success = chessboard?.generateLootBox(chessboard?.getGameState(), 100);
+            let success = chessboard?.generateLootBox(chessboard?.getGameState(), 'lootbox', 100);
             if (success) {
                 lootboxes--;
                 lootboxesAmount.innerHTML = lootboxes;

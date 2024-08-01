@@ -9,6 +9,7 @@ const FORCE_PLAYER_TURNS = true;
 const STARTING_PLAYER = 'white';
 const LOOTBOX_RARITY_MODIFIER = 10;
 let AMOUNT_OF_TWISTS = 3;
+let AUTO_BUY_BOXES = null;
 const EXPERIENCE_POINTS = {
     "merging": 100,
     "capturing": 45,
@@ -480,7 +481,7 @@ const pieces = {
     },
     'experience_orb': {
         lootbox: {
-            weight: 0.01,
+            weight: 0.05,
         },
         neutralObject: true,
         needsDiscovery: true,
