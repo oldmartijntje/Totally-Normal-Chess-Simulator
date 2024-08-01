@@ -483,26 +483,40 @@ class Chessboard {
                     }
                 } else {
                     this.gainExperiencePoints('capturing');
-                    this.lostPieces[this.boardState[location[0]][location[1]].color].push(this.boardState[location[0]][location[1]].type);
-                    if (this.boardState[location[0]][location[1]].carrying) {
-                        this.lostPieces[this.boardState[location[0]][location[1]].color].push(this.boardState[location[0]][location[1]].carrying.type);
+                    let saved = false;
+                    if (pieces[this.boardState[location[0]][location[1]].type].captureFlee != undefined) {
+                        let yDirection = this.boardState[location[0]][location[1]].color == 'black' ? -1 : 1;
+                        if (this.boardState[location[0] + yDirection][location[1]] == null) {
+                            if (percentageRandomiser(pieces[this.boardState[location[0]][location[1]].type].captureFlee.percentageChance)) {
+                                saved = true;
+                                this.boardState[location[0] + yDirection][location[1]] = this.boardState[location[0]][location[1]];
+                                this.boardState[location[0] + yDirection][location[1]].moved = true;
+                                this.boardState[location[0]][location[1]] = null;
+                            }
+                        }
                     }
-                    if (!this.boardDataSettings.sandboxChessBoard) {
-                        for (let i = 0; i < Object.keys(WIN_CONDITIONS['slainTroops']).length; i++) {
-                            if (this.reachedWinConditionCheck(this.boardState[location[0]][location[1]])) {
-                                this.render();
-                                let loser = this.boardState[location[0]][location[1]].color;
-                                setTimeout(() => {
-                                    alert(`${loser} has been slain!`);
-                                    this.gainExperiencePoints('winning');
-                                    this.boardDataSettings.sandboxChessBoard = true;
-                                }, 1);
+                    if (!saved) {
+                        this.lostPieces[this.boardState[location[0]][location[1]].color].push(this.boardState[location[0]][location[1]].type);
+                        if (this.boardState[location[0]][location[1]].carrying) {
+                            this.lostPieces[this.boardState[location[0]][location[1]].color].push(this.boardState[location[0]][location[1]].carrying.type);
+                        }
+                        if (!this.boardDataSettings.sandboxChessBoard) {
+                            for (let i = 0; i < Object.keys(WIN_CONDITIONS['slainTroops']).length; i++) {
+                                if (this.reachedWinConditionCheck(this.boardState[location[0]][location[1]])) {
+                                    this.render();
+                                    let loser = this.boardState[location[0]][location[1]].color;
+                                    setTimeout(() => {
+                                        alert(`${loser} has been slain!`);
+                                        this.gainExperiencePoints('winning');
+                                        this.boardDataSettings.sandboxChessBoard = true;
+                                    }, 1);
+                                }
                             }
                         }
                     }
                 }
 
-                if (pieces[this.boardState[location[0]][location[1]].type].needsDiscovery && !discoveredPieces[this.boardState[location[0]][location[1]].type] && !this.boardDataSettings.ignoreUnlocks) {
+                if (this.boardState[location[0]][location[1]] && pieces[this.boardState[location[0]][location[1]].type].needsDiscovery && !discoveredPieces[this.boardState[location[0]][location[1]].type] && !this.boardDataSettings.ignoreUnlocks) {
                     discoveredPieces[this.boardState[location[0]][location[1]].type] = true
                     this.gainExperiencePoints('discovering');
                     localStorage.setItem('discoveredPieces', JSON.stringify(discoveredPieces))

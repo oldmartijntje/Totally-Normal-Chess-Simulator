@@ -39,3 +39,7 @@ if (includes(2)) {
 if (includes(3)) {
     CREDIT_PURCHASE_BONUS_MULTIPLIER = 1.15;
 }
+if (includes(4)) {
+    pieces['pawn'].captureFlee.percentageChance = 5;
+    pieces['pawned'].captureFlee.percentageChance = 5;
+}

@@ -232,6 +232,9 @@ const pieces = {
         },
         mergability: {
             'pawn': 'pawned',
+        },
+        captureFlee: {
+            percentageChance: 0
         }
     },
     'lootbox': {
@@ -412,6 +415,9 @@ const pieces = {
             collumns: [0, 1, 2, 3, 4, 5, 6, 7],
             convertsTo: 'queened',
         },
+        captureFlee: {
+            percentageChance: 0
+        }
         // summonOnBeingMerged: 'brick', <- add this to the piece if you want to summon a piece when merging
     },
     'queened': {

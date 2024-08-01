@@ -1,7 +1,7 @@
 const setupData = {
     votingUrl: 'https://www.reddit.com/r/AnarchyChess/comments/1ef67en/6_added_a_choosable_optional_random_secret_twist/',
     githubRepo: 'https://github.com/oldmartijntje/Totally-Normal-Chess-Simulator',
-    version: 5 // This is the X amount of vote added / in development.
+    version: 6 // This is the X amount of vote added / in development.
 }
 
 const editableRulebook = [
@@ -146,6 +146,9 @@ function debugMessage(message) {
 }
 
 function percentageRandomiser(percent) {
+    if (percent == 0 || percent == null || percent == undefined) {
+        return false
+    }
     let x = percent / 100
     let y = Math.random()
     return y <= x
