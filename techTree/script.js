@@ -37,9 +37,15 @@ const images = {};
 
 function autoFillRequirements() {
     techTree.forEach(tech => {
-        tech.parents = techTree
+        tech.parents = tech.parents ? tech.parents : [];
+        let parents = techTree
             .filter(t => t.connections.includes(tech.id))
             .map(t => t.id);
+        parents.forEach(parent => {
+            if (!tech.parents.includes(parent)) {
+                tech.parents.push(parent);
+            }
+        });
     });
 }
 

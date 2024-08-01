@@ -11,14 +11,15 @@ const STARTING_PLAYER = 'white';
 const LOOTBOX_RARITY_MODIFIER = 10;
 let AMOUNT_OF_TWISTS = 3;
 const EXPERIENCE_POINTS = {
-    "merging": 75,
-    "capturing": 25,
-    "carrying": 5,
-    "discovering": 250,
+    "merging": 100,
+    "capturing": 45,
+    "carrying": 15,
+    "discovering": 400,
     "moving": 1,
-    "converting": 10,
-    "winning": 125,
-    "lootbox_opening": 0
+    "converting": 125,
+    "winning": 375,
+    "lootbox_opening": 0,
+    "orb_capture": 1000
 }
 let EXPERIENCE_POINTS_MODIFIER = 1;
 
