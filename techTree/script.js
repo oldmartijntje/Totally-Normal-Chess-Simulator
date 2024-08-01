@@ -23,7 +23,10 @@ cancelResetButton.addEventListener('click', function () {
 const URL404 = 'https://i.imgur.com/xgsFaaa.png'
 BACKGROUND_URL = ''
 
+const ZOOM_SENSITIVITY = 0.0005;
 
+let scale = 1;
+let lastTouchDistance = 0;
 let experiencePointsCache = 0;
 let techTreeCache = {
     0: {
@@ -243,18 +246,13 @@ function step(id) {
 }
 
 function draw() {
-
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-    // Draw the static background first
     drawBackground();
     setXpCounter();
 
-    // Save the current state
     ctx.save();
-
-    // Apply the translation only for the tech tree content
     ctx.translate(translateX, translateY);
+    ctx.scale(scale, scale);
 
     // Draw connections with conditional line colors
     techTree.forEach(tech => {
@@ -384,8 +382,8 @@ function draw() {
 
 function handleClick(e) {
     const rect = canvas.getBoundingClientRect();
-    const clickX = (e.clientX || e.touches[0].clientX) - rect.left - translateX;
-    const clickY = (e.clientY || e.touches[0].clientY) - rect.top - translateY;
+    const clickX = ((e.clientX || e.touches[0].clientX) - rect.left - translateX) / scale;
+    const clickY = ((e.clientY || e.touches[0].clientY) - rect.top - translateY) / scale;
 
     techTree.forEach(tech => {
         const dx = tech.x - clickX;
@@ -395,6 +393,14 @@ function handleClick(e) {
             console.log(tech);
         }
     });
+}
+
+// Add a function to reset zoom and translation
+function resetZoomAndTranslation() {
+    scale = 1;
+    translateX = 0;
+    translateY = 0;
+    draw();
 }
 
 function getDescription(tech) {
@@ -552,38 +558,81 @@ container.addEventListener('mouseup', (e) => {
 });
 
 container.addEventListener('touchstart', (e) => {
-    if (e.touches.length === 1) {
-        isDragging = true;
-        startX = e.touches[0].clientX - translateX;
-        startY = e.touches[0].clientY - translateY;
-        dragStartTime = new Date().getTime();
+    if (e.touches.length === 2) {
+        e.preventDefault();
+        const touch1 = e.touches[0];
+        const touch2 = e.touches[1];
+        lastTouchDistance = Math.hypot(
+            touch2.clientX - touch1.clientX,
+            touch2.clientY - touch1.clientY
+        );
     }
 });
 
 container.addEventListener('touchmove', (e) => {
-    if (isDragging && e.touches.length === 1) {
-        translateX = e.touches[0].clientX - startX;
-        translateY = e.touches[0].clientY - startY;
-        draw();
+    if (e.touches.length === 2) {
+        e.preventDefault();
+        const touch1 = e.touches[0];
+        const touch2 = e.touches[1];
+        const currentTouchDistance = Math.hypot(
+            touch2.clientX - touch1.clientX,
+            touch2.clientY - touch1.clientY
+        );
+
+        if (lastTouchDistance > 0) {
+            const zoomFactor = currentTouchDistance / lastTouchDistance;
+            scale *= zoomFactor;
+
+            // Limit the scale to a reasonable range (e.g., 0.5 to 3)
+            scale = Math.max(0.5, Math.min(scale, 3));
+
+            // Adjust translation to zoom towards the center of the pinch
+            const centerX = (touch1.clientX + touch2.clientX) / 2;
+            const centerY = (touch1.clientY + touch2.clientY) / 2;
+            translateX = centerX - (centerX - translateX) * zoomFactor;
+            translateY = centerY - (centerY - translateY) * zoomFactor;
+
+            draw();
+        }
+
+        lastTouchDistance = currentTouchDistance;
     }
 });
 
-container.addEventListener('touchend', (e) => {
-    const dragEndTime = new Date().getTime();
-    const dragDuration = dragEndTime - dragStartTime;
+container.addEventListener('wheel', (e) => {
+    e.preventDefault();
+    const rect = canvas.getBoundingClientRect();
+    const mouseX = e.clientX - rect.left;
+    const mouseY = e.clientY - rect.top;
+    const zoomFactor = 1 - e.deltaY * ZOOM_SENSITIVITY;
+    zoomCanvas(zoomFactor, mouseX, mouseY);
+});
 
-    if (dragDuration < 200) {
-        handleClick({
-            touches: [{ clientX: startX + translateX, clientY: startY + translateY }]
-        });
+// Function to handle zooming
+function zoomCanvas(zoomFactor, centerX, centerY) {
+    const newScale = scale * zoomFactor;
+
+    // Limit the scale to a reasonable range (e.g., 0.5 to 5)
+    if (newScale >= 0.5 && newScale <= 5) {
+        // Adjust translation to zoom towards the center point
+        translateX = centerX - (centerX - translateX) * zoomFactor;
+        translateY = centerY - (centerY - translateY) * zoomFactor;
+        scale = newScale;
+        draw();
     }
-    isDragging = false;
+}
+
+container.addEventListener('touchend', (e) => {
+    if (e.touches.length < 2) {
+        lastTouchDistance = 0;
+    }
 });
 
 container.addEventListener('mouseleave', () => {
     isDragging = false;
 });
 
+// document.getElementById('resetZoomButton').addEventListener('click', resetZoomAndTranslation);
 window.addEventListener('resize', resizeCanvas);
 
 // Initialize
