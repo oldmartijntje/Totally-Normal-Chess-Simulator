@@ -149,6 +149,9 @@ function percentageRandomiser(percent) {
     if (percent == 0 || percent == null || percent == undefined) {
         return false
     }
+    if (percent >= 100) {
+        return true
+    }
     let x = percent / 100
     let y = Math.random()
     return y <= x

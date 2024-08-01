@@ -28,6 +28,10 @@ const ON_CAPTURE_GAIN_MATERIALS = {
     }
 }
 
+const STARTING_INVENTORY = {
+    "gold": 0,
+}
+
 const RANDOM_SPAWNING_PIECES = ['lootbox', 'experience_orb'];
 
 let EXPERIENCE_POINTS_MODIFIER = 1;
@@ -514,6 +518,65 @@ const pieces = {
         },
         experiencePointsGainType: "orb_capture",
         spawnChance: 0,
+    },
+    'procket': {
+        lootbox: {
+            weight: 0.25,
+        },
+        patterns: {
+            movement: [
+                { direction: 'vertical', distance: 2, jump: false },
+                {
+                    area: [
+                        [null, 1, null],
+                        [null, null, null],
+                        [null, 0, null],
+                        [null, 1, null],
+                        [null, 1, null],
+                    ],
+                    unmoved: [
+                        [null, 0, null],
+                        [null, 1, null],
+                        [null, 1, null],
+                    ],
+                    exclude: true,
+                    flipForBlack: true,
+                }
+            ],
+            capture: [
+                {
+                    area: [
+                        [1, null, 1],
+                        [null, 0, null],
+                        [null, null, null],
+                    ],
+                    flipForBlack: true,
+                }
+            ],
+        },
+        autoMove: {
+            direction: -1,
+            chance: 15,
+            explodeOnImpact: {
+                chance: 0,
+                distance: 1,
+            }
+        },
+        display: {
+            white: '<img src="https://i.imgur.com/omB1u1i.png">',
+            black: '<img src="https://i.imgur.com/el6koO7.png">',
+        },
+        needsDiscovery: true,
+        description: "<p>First move can move 2 spaces instead of 1<br>Automatically Moves forwards sometimes.<br>Attacks diagonally.<br>It can carry other pieces.<br>Transforms into something once you reach the opposite side of the board.</p>",
+        convertion: {
+            rows: [0],
+            collumns: [0, 1, 2, 3, 4, 5, 6, 7],
+            convertsTo: 'queen',
+        },
+        summonOnBeingMerged: {
+            'type': 'brick',
+            'chance': 0,
+        }
     },
 }
 

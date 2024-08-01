@@ -55,8 +55,8 @@ class Chessboard {
             this.lastPlayedMove = gameState.lastPlayedMove ? gameState.lastPlayedMove : [];
             this.modifiedGameData = gameState.modifiedGameData ? gameState.modifiedGameData : {};
             this.inventory = gameState.inventory ? gameState.inventory : {
-                black: {},
-                white: {}
+                black: JSON.parse(JSON.stringify(STARTING_INVENTORY)),
+                white: JSON.parse(JSON.stringify(STARTING_INVENTORY))
             };
             if (gameState.selectedPiece) {
                 this.render(); // it has to render first to get the selected piece
@@ -431,7 +431,6 @@ class Chessboard {
                     this.inventory[player][list[i]] = 0;
                 }
                 this.inventory[player][list[i]] += itemPossibillitiesDict[list[i]].amount;
-                this.saveGameState();
             }
         }
     }
@@ -538,19 +537,8 @@ class Chessboard {
                         if (this.boardState[location[0]][location[1]].carrying) {
                             this.lostPieces[this.boardState[location[0]][location[1]].color].push(this.boardState[location[0]][location[1]].carrying.type);
                         }
-                        if (!this.boardDataSettings.sandboxChessBoard) {
-                            for (let i = 0; i < Object.keys(WIN_CONDITIONS['slainTroops']).length; i++) {
-                                if (this.reachedWinConditionCheck(this.boardState[location[0]][location[1]])) {
-                                    this.render();
-                                    let loser = this.boardState[location[0]][location[1]].color;
-                                    setTimeout(() => {
-                                        alert(`${loser} has been slain!`);
-                                        this.gainExperiencePoints('winning');
-                                        this.boardDataSettings.sandboxChessBoard = true;
-                                    }, 1);
-                                }
-                            }
-                        }
+                        this.checkForWinCondition(this.boardState[location[0]][location[1]])
+
                     }
                 }
 
@@ -667,8 +655,90 @@ class Chessboard {
         this.render();
     }
 
+    calculateDistance(x1, y1, x2, y2) {
+        let calc = Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));
+        return calc;
+    }
+
+    generateAllCoordinates() {
+        let allCoordinates = [];
+        for (let i = 0; i < this.boardState.length; i++) {
+            for (let j = 0; j < this.boardState[i].length; j++) {
+                allCoordinates.push([i, j]);
+            }
+        }
+        return allCoordinates;
+    }
+
+
+    checkAllPieces() {
+        let skipLocations = [];
+        let kills = []
+        for (let x = 0; x < this.boardState.length; x++) {
+            for (let y = 0; y < this.boardState[x].length; y++) {
+                if (skipLocations.includes(`${x},${y}`)) {
+                    continue;
+                }
+                if (this.boardState[x][y] && this.boardState[x][y].type && this.boardState[x][y].color == this.activePlayer) {
+                    if (pieces[this.boardState[x][y].type].autoMove) {
+                        let direction = pieces[this.boardState[x][y].type].autoMove.direction * (this.boardState[x][y].color == 'black' ? -1 : 1);
+                        console.log(direction, pieces[this.boardState[x][y].type].autoMove.direction);
+                        if (x + direction < 0 || x + direction >= BOARDSIZE) {
+                            continue;
+                        }
+                        if (this.boardState[x + direction][y]) {
+                            if (pieces[this.boardState[x][y].type].autoMove.explodeOnImpact && this.boardState[x][y].moved && percentageRandomiser(pieces[this.boardState[x][y].type].autoMove.explodeOnImpact.chance)) {
+                                let filtered = this.generateAllCoordinates().filter(pos => this.calculateDistance(pos[0], pos[1], x + direction, y) <= pieces[this.boardState[x][y].type].autoMove.explodeOnImpact.distance)
+                                for (let i = 0; i < filtered.length; i++) {
+                                    if (this.boardState[filtered[i][0]][filtered[i][1]]) {
+                                        kills.push({
+                                            type: this.boardState[filtered[i][0]][filtered[i][1]].type,
+                                            color: this.boardState[filtered[i][0]][filtered[i][1]].color,
+                                            location: [filtered[i][0], filtered[i][1]]
+                                        });
+                                        this.boardState[filtered[i][0]][filtered[i][1]] = null;
+                                    }
+                                }
+
+                                this.boardState[x][y] = null;
+                            }
+                        } else if (!this.boardState[x + direction][y] && percentageRandomiser(pieces[this.boardState[x][y].type].autoMove.chance)) {
+                            this.boardState[x + direction][y] = this.boardState[x][y];
+                            this.boardState[x][y] = null;
+                            this.boardState[x + direction][y].moved = true;
+                            skipLocations.push(`${x + direction},${y}`);
+                        }
+                    }
+                }
+            }
+        }
+        for (let i = 0; i < kills.length; i++) {
+            if (pieces[kills[i].type].itemGain && pieces[kills[i].type].itemGain.onDeath) {
+                this.gainItem(pieces[kills[i].type].itemGain.onDeath, kills[i].color);
+            }
+            this.lostPieces[kills[i].color].push(kills[i].type);
+            this.checkForWinCondition(kills[i]);
+        }
+    }
+
+    checkForWinCondition(locationData) {
+        if (!this.boardDataSettings.sandboxChessBoard) {
+            for (let i = 0; i < Object.keys(WIN_CONDITIONS['slainTroops']).length; i++) {
+                if (this.reachedWinConditionCheck(locationData)) {
+                    this.render();
+                    let loser = locationData.color;
+                    alert(`${loser} has been slain!`);
+                    this.gainExperiencePoints('winning');
+                    this.boardDataSettings.sandboxChessBoard = true;
+                }
+            }
+        }
+    }
+
+
     afterMove(gameState) {
         this.gainExperiencePoints('moving');
+        this.checkAllPieces();
         let nextPlayer = this.activePlayer == 'white' ? 'black' : 'white';
         let piecesLeftOfActivePlayer = 0;
         for (let i = 0; i < this.boardState.length; i++) {

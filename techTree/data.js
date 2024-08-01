@@ -15,8 +15,8 @@ const techTree = [
     { id: 13, cost: 23456, name: "Spy", connections: [], description: "If a pawn gets 5 kills, It'll alert the government.", image: "" },
     { id: 14, cost: 5000, name: "Pawnvenge", connections: [], description: "If your pawn gets captured, it will give you 1 stone.", image: "" },
     { id: 15, cost: 10101, name: "Getting an upgrade", connections: [19], description: "You start the game with 1 Iron ingot.", image: "" },
-    { id: 16, cost: 6900, name: "Procket Science", connections: [17], description: "Instead of 2 pawns merging into 1 Pawned, they merge into Procket.", image: "" },
-    { id: 17, cost: 10000, name: "Procket Engineer", connections: [18], description: "Prockets ALWAYS move forwards.", hiddenDescription: true, image: "" },
+    { id: 16, cost: 6900, name: "Procket Science", connections: [17, 18], description: "Instead of 2 pawns merging into 1 Pawned, they merge into Procket.", image: "" },
+    { id: 17, cost: 3500, name: "Procket Launcher", connections: [31], description: "Prockets move forwards more often.", image: "" },
     { id: 18, cost: 42000, name: "Big Boom", connections: [27], description: "Prockets have a chance to explode if they can't move forwards.", hiddenDescription: true, hiddenTitle: true, image: "" },
     { id: 19, cost: 12345, name: "Crafter", connections: [], description: "Unlock crafting.", hiddenDescription: true, hiddenTitle: true, image: "" },
     { id: 20, cost: 6000, name: "Xtra Twist", connections: [], description: "Start the game with 4 twists instead of 3.", image: "" },
@@ -26,10 +26,11 @@ const techTree = [
     { id: 24, cost: 12500, name: "Capture Understanding", connections: [], description: "Get twice the XP for capturing pieces. (combined with Capture Proficiency it's x4)", image: "" },
     { id: 25, cost: 1250, name: "XP Box", connections: [], description: "Opening a lootbox gives you XP.", image: "" },
     { id: 26, cost: 2500, name: "Box Hoarder", connections: [30], description: "Have a 5% chance of not consuming a lootbox when spawning a lootbox.", image: "" },
-    { id: 27, cost: 69420, name: "Bigger Boom", connections: [], description: "Prockets always explode if they can't move forwards.", hiddenDescription: true, hiddenTitle: true, image: "" },
+    { id: 27, cost: 69420, name: "Bigger Boom", connections: [], description: "Prockets ALWAYS explode if they can't move forwards.", hiddenDescription: true, hiddenTitle: true, image: "" },
     { id: 28, cost: 7500, name: "More Orb", connections: [], parents: [11], description: "Double the chance of getting a Orb spawn.", image: "" },
     { id: 29, cost: 12500, name: "Combined Mastery", connections: [], description: "Combine amount of XP you get for Capturing and Merging.", image: "" },
     { id: 30, cost: 3500, name: "Boxing", connections: [], description: "Have a 10% chance of not consuming a lootbox when spawning a lootbox.", image: "" },
+    { id: 31, cost: 10000, name: "Procket Engineer", connections: [], description: "Prockets ALWAYS move forwards.", hiddenDescription: true, image: "" },
 
 
 ];

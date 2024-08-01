@@ -88,3 +88,25 @@ if (includes(14)) {
         }
     }
 }
+if (includes(15)) {
+    STARTING_INVENTORY['iron'] = 1;
+}
+if (includes(16)) {
+    pieces['pawn'].mergability.pawn = 'procket';
+}
+if (includes(17)) {
+    pieces['procket'].autoMove.chance = 50;
+}
+if (includes(18)) {
+    pieces['procket'].autoMove.explodeOnImpact.chance = 25;
+}
+
+
+if (includes(27)) {
+    pieces['procket'].autoMove.explodeOnImpact.chance = 100;
+}
+
+
+if (includes(31)) {
+    pieces['procket'].autoMove.chance = 100;
+}
