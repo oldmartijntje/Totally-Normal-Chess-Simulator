@@ -581,18 +581,20 @@ container.addEventListener('touchmove', (e) => {
 
         if (lastTouchDistance > 0) {
             const zoomFactor = currentTouchDistance / lastTouchDistance;
-            scale *= zoomFactor;
+            const newScale = scale * zoomFactor;
 
-            // Limit the scale to a reasonable range (e.g., 0.5 to 3)
-            scale = Math.max(0.5, Math.min(scale, 3));
+            // Check if the new scale is within the allowed range
+            if (newScale >= 0.5 && newScale <= 3) {
+                scale = newScale;
 
-            // Adjust translation to zoom towards the center of the pinch
-            const centerX = (touch1.clientX + touch2.clientX) / 2;
-            const centerY = (touch1.clientY + touch2.clientY) / 2;
-            translateX = centerX - (centerX - translateX) * zoomFactor;
-            translateY = centerY - (centerY - translateY) * zoomFactor;
+                // Adjust translation to zoom towards the center of the pinch
+                const centerX = (touch1.clientX + touch2.clientX) / 2;
+                const centerY = (touch1.clientY + touch2.clientY) / 2;
+                translateX = centerX - (centerX - translateX) * zoomFactor;
+                translateY = centerY - (centerY - translateY) * zoomFactor;
 
-            draw();
+                draw();
+            }
         }
 
         lastTouchDistance = currentTouchDistance;
@@ -647,8 +649,8 @@ container.addEventListener('wheel', (e) => {
 function zoomCanvas(zoomFactor, centerX, centerY) {
     const newScale = scale * zoomFactor;
 
-    // Limit the scale to a reasonable range (e.g., 0.5 to 5)
-    if (newScale >= 0.5 && newScale <= 5) {
+    // Limit the scale to a reasonable range (e.g., 0.5 to 3)
+    if (newScale >= 0.5 && newScale <= 3) {
         // Adjust translation to zoom towards the center point
         translateX = centerX - (centerX - translateX) * zoomFactor;
         translateY = centerY - (centerY - translateY) * zoomFactor;
