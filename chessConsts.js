@@ -16,9 +16,11 @@ const EXPERIENCE_POINTS = {
     "carrying": 5,
     "discovering": 250,
     "moving": 1,
-    "convertion": 10,
-    "winning": 125
+    "converting": 10,
+    "winning": 125,
+    "lootbox_opening": 0
 }
+let EXPERIENCE_POINTS_MODIFIER = 2;
 
 const WIN_CONDITIONS = {
     slainTroops: {

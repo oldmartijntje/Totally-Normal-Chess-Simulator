@@ -402,7 +402,7 @@ function getDescription(tech) {
         }
     }
     if (unlockParents.length > 0) {
-        return `First unlock the parent nodes: ${unlockParents.join(', ')}`;
+        return `First unlock the parent nodes: ${unlockParents.join(', ')}${DEBUG_MODE ? ` (${tech.description})` : ''}`;
     } else {
         return tech.description;
     }

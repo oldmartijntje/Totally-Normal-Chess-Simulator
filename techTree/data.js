@@ -17,15 +17,16 @@ const techTree = [
     { id: 15, cost: 10101, name: "Getting an upgrade", connections: [19], description: "You start the game with 1 Iron ingot.", image: "" },
     { id: 16, cost: 10000, name: "Procket Science", connections: [17], description: "Instead of 2 pawns merging into 1 Pawned, they merge into Procket.", image: "" },
     { id: 17, cost: 10000, name: "Procket Engineer", connections: [18], description: "Prockets ALWAYS move forwards.", hiddenDescription: true, image: "" },
-    { id: 18, cost: 10000, name: "Big Boom", connections: [], description: "Prockets ALWAYS move forwards.", hiddenDescription: true, hiddenTitle: true, image: "" },
+    { id: 18, cost: 10000, name: "Big Boom", connections: [27], description: "Prockets have a chance to explode if they can't move forwards.", hiddenDescription: true, hiddenTitle: true, image: "" },
     { id: 19, cost: 6900, name: "Crafter", connections: [], description: "Unlock crafting.", hiddenDescription: true, hiddenTitle: true, image: "" },
     { id: 20, cost: 3000, name: "Xtra Twist", connections: [], description: "Start the game with 4 twists instead of 3.", image: "" },
     { id: 21, cost: 12500, name: "Capture Proficiency", connections: [22], description: "Get twice the XP for capturing pieces.", image: "" },
     { id: 22, cost: 12500, name: "Winner Competence", connections: [23], description: "Get triple the XP for winning.", image: "" },
     { id: 23, cost: 12500, name: "Merge Acquaintance", connections: [24], description: "Get triple the XP for merging pieces.", image: "" },
     { id: 24, cost: 12500, name: "Capture Understanding", connections: [], description: "Get twice the XP for capturing pieces. (combined with Capture Proficiency it's x4)", image: "" },
-    { id: 25, cost: 1250, name: "XP Box", connections: [], description: "Opening a lootbox gives you a random amount of XP.", image: "" },
+    { id: 25, cost: 1250, name: "XP Box", connections: [], description: "Opening a lootbox gives you XP.", image: "" },
     { id: 26, cost: 4000, name: "Box Hoarder", connections: [], description: "Have a 5% chance of not consuming a lootbox when spawning a lootbox.", image: "" },
+    { id: 27, cost: 10000, name: "Bigger Boom", connections: [], description: "Prockets always explode if they can't move forwards.", hiddenDescription: true, hiddenTitle: true, image: "" },
 
 
 ];

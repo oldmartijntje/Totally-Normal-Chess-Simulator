@@ -42,6 +42,7 @@ function runLootBoxUnboxing(piece, color, chessBoardState = null, cachedPieceDat
 }
 
 function spawnLootboxPiece(piece, color, chessBoardState, cachedPieceData) {
+    allEvents.emit('LOOTBOX_PICKUP', 'lootbox_opening')
     if (!cachedPieceData || !chessBoardState) {
         return;
     }

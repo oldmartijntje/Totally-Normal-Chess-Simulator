@@ -120,6 +120,10 @@ function hidePopup() {
 }
 
 function createChessboard(givenGameState) {
+    try {
+        chessboard.unsubscribe();
+    } catch (e) {
+    }
     chessboard = new Chessboard(undefined, givenGameState, undefined, { "lootBoxAnimation": true }, loadedSettings);
 }
 

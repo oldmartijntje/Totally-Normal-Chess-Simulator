@@ -11,6 +11,8 @@ class Chessboard {
             checkmateDetection: "2"
         }) {
 
+        // sandboxChessBoard -> no lootbox spawning, no XP gain
+
         // Binding the decorator to all methods of the class
         for (const key of Object.getOwnPropertyNames(Object.getPrototypeOf(this))) {
             if (typeof this[key] === 'function' && key !== 'constructor') {
@@ -75,6 +77,12 @@ class Chessboard {
         if (DEBUG_MODE) {
             console.log(this.boardState);
         }
+
+        allEvents.on('LOOTBOX_PICKUP', this, this.gainExperiencePoints);
+    }
+
+    unsubscribe() {
+        allEvents.unsubscribe(this);
     }
 
     getChessCoordinate(pos) {
@@ -432,6 +440,7 @@ class Chessboard {
             let discoveredPieces = localStorage.getItem('discoveredPieces') ? JSON.parse(localStorage.getItem('discoveredPieces')) : {}
             if (this.cachedPieceData.pieceData.needsDiscovery && !discoveredPieces[this.cachedPieceData.boardData.type] && !this.boardDataSettings.ignoreUnlocks) {
                 discoveredPieces[this.cachedPieceData.boardData.type] = true
+                this.gainExperiencePoints('discovering');
                 localStorage.setItem('discoveredPieces', JSON.stringify(discoveredPieces))
             }
             let capture;
@@ -446,6 +455,7 @@ class Chessboard {
                 }
                 if (this.boardState[location[0]][location[1]].color == this.activePlayer && this.isPieceMergable(this.cachedPieceData.boardData, this.boardState[location[0]][location[1]])) {
                     let pieceType = this.mergePieces(this.cachedPieceData.boardData, this.boardState[location[0]][location[1]].type)
+                    this.gainExperiencePoints('merging');
                     this.boardState[this.cachedPieceData.location[0]][this.cachedPieceData.location[1]].type = pieceType;
                     if (pieces[pieceType].summonOnBeingMerged) {
                         placeOnOldLocation = { color: this.activePlayer, type: pieces[pieceType].summonOnBeingMerged, moved: true }
@@ -453,6 +463,7 @@ class Chessboard {
                     // unlock it in the encyclopedia
                     if (pieces[pieceType].needsDiscovery && !discoveredPieces[pieceType] && !this.boardDataSettings.ignoreUnlocks) {
                         discoveredPieces[pieceType] = true
+                        this.gainExperiencePoints('discovering');
                         localStorage.setItem('discoveredPieces', JSON.stringify(discoveredPieces))
                     }
                 } else if (this.boardState[location[0]][location[1]].color == this.activePlayer && this.cachedPieceData.pieceData.carrying) {
@@ -460,6 +471,7 @@ class Chessboard {
                         placeOnOldLocation = this.cachedPieceData.boardData.carrying;
                     }
                     this.boardState[this.cachedPieceData.location[0]][this.cachedPieceData.location[1]].carrying = this.boardState[location[0]][location[1]];
+                    this.gainExperiencePoints('carrying');
                 }
 
             }
@@ -470,23 +482,29 @@ class Chessboard {
                         runLootBoxUnboxing(getLootboxPiece(this.cachedPieceData.boardData.type), this.cachedPieceData.boardData.color, this.boardState, JSON.parse(JSON.stringify(this.cachedPieceData)), this.boardDataSettings.lootBoxAnimation);
                     }
                 } else {
+                    this.gainExperiencePoints('capturing');
                     this.lostPieces[this.boardState[location[0]][location[1]].color].push(this.boardState[location[0]][location[1]].type);
                     if (this.boardState[location[0]][location[1]].carrying) {
                         this.lostPieces[this.boardState[location[0]][location[1]].color].push(this.boardState[location[0]][location[1]].carrying.type);
                     }
-                    for (let i = 0; i < Object.keys(WIN_CONDITIONS['slainTroops']).length; i++) {
-                        if (this.reachedWinConditionCheck(this.boardState[location[0]][location[1]])) {
-                            this.render();
-                            let loser = this.boardState[location[0]][location[1]].color;
-                            setTimeout(() => {
-                                alert(`${loser} has been slain!`);
-                            }, 1);
+                    if (!this.boardDataSettings.sandboxChessBoard) {
+                        for (let i = 0; i < Object.keys(WIN_CONDITIONS['slainTroops']).length; i++) {
+                            if (this.reachedWinConditionCheck(this.boardState[location[0]][location[1]])) {
+                                this.render();
+                                let loser = this.boardState[location[0]][location[1]].color;
+                                setTimeout(() => {
+                                    alert(`${loser} has been slain!`);
+                                    this.gainExperiencePoints('winning');
+                                    this.boardDataSettings.sandboxChessBoard = true;
+                                }, 1);
+                            }
                         }
                     }
                 }
 
                 if (pieces[this.boardState[location[0]][location[1]].type].needsDiscovery && !discoveredPieces[this.boardState[location[0]][location[1]].type] && !this.boardDataSettings.ignoreUnlocks) {
                     discoveredPieces[this.boardState[location[0]][location[1]].type] = true
+                    this.gainExperiencePoints('discovering');
                     localStorage.setItem('discoveredPieces', JSON.stringify(discoveredPieces))
                 }
             }
@@ -504,6 +522,7 @@ class Chessboard {
                 if (this.cachedPieceData.pieceData.convertion.collumns.includes(location[1])) {
                     if (this.cachedPieceData.pieceData.convertion.rows.includes(y)) {
                         this.boardState[location[0]][location[1]].type = this.cachedPieceData.pieceData.convertion.convertsTo;
+                        this.gainExperiencePoints('converting');
                     }
                 }
             }
@@ -514,6 +533,7 @@ class Chessboard {
                 }
                 if (pieces[placeOnOldLocation.type].needsDiscovery && !discoveredPieces[placeOnOldLocation.type] && !this.boardDataSettings.ignoreUnlocks) {
                     discoveredPieces[placeOnOldLocation.type] = true
+                    this.gainExperiencePoints('discovering');
                     localStorage.setItem('discoveredPieces', JSON.stringify(discoveredPieces))
                 }
                 this.boardState[this.cachedPieceData.location[0]][this.cachedPieceData.location[1]] = placeOnOldLocation;
@@ -593,6 +613,7 @@ class Chessboard {
     }
 
     afterMove(gameState) {
+        this.gainExperiencePoints('moving');
         let nextPlayer = this.activePlayer == 'white' ? 'black' : 'white';
         let piecesLeftOfActivePlayer = 0;
         for (let i = 0; i < this.boardState.length; i++) {
@@ -656,12 +677,35 @@ class Chessboard {
         return locations;
     }
 
-    setExperiencePoints(xp) {
-        experiencePointsCache = xp;
-        const chessPlayerData = JSON.parse(localStorage.getItem(getCorrectLocalStorageName('CHESS_PLAYER')));
-        chessPlayerData.playerXP = xp;
-        localStorage.setItem(getCorrectLocalStorageName('CHESS_PLAYER'), JSON.stringify(chessPlayerData));
+    gainExperiencePoints(action) {
+        if (this.boardDataSettings.sandboxChessBoard) {
+            return;
+        }
+        let experiencePointsCache = getExperiencePoints();
+        let amount = EXPERIENCE_POINTS[action];
+        amount = amount * EXPERIENCE_POINTS_MODIFIER;
+        if (amount) {
+            experiencePointsCache += amount;
+            setExperiencePoints(experiencePointsCache);
+        }
+        console.log(`Gained ${amount} experience points for:`, action);
     }
+}
+
+function setExperiencePoints(xp) {
+    experiencePointsCache = xp;
+    const chessPlayerData = JSON.parse(localStorage.getItem(getCorrectLocalStorageName('CHESS_PLAYER')));
+    chessPlayerData.playerXP = xp;
+    localStorage.setItem(getCorrectLocalStorageName('CHESS_PLAYER'), JSON.stringify(chessPlayerData));
+}
+
+function getExperiencePoints() {
+    const chessPlayerData = JSON.parse(localStorage.getItem(getCorrectLocalStorageName('CHESS_PLAYER')));
+    if (!chessPlayerData) {
+        localStorage.setItem(getCorrectLocalStorageName('CHESS_PLAYER'), JSON.stringify({ playerXP: 0 }));
+        return 0;
+    }
+    return chessPlayerData.playerXP;
 }
 
 
