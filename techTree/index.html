@@ -13,11 +13,37 @@
             width: 100%;
             height: 100%;
             overflow: hidden;
+            font-family: Arial, sans-serif;
+        }
+
+        header {
+            background-color: #333;
+            color: white;
+            padding: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        header h1 {
+            margin: 0;
+        }
+
+        header button {
+            background-color: #444;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+        }
+
+        header button:hover {
+            background-color: #555;
         }
 
         #canvas-container {
             width: 100%;
-            height: 100%;
+            height: calc(100% - 50px);
             overflow: hidden;
             cursor: move;
             position: relative;
@@ -28,19 +54,66 @@
         }
 
         #info-overlay {
+            user-select: none;
             position: absolute;
             bottom: 0;
             left: 0;
             right: 0;
-            background-color: rgba(0, 0, 0, 0.7);
+            background-color: rgba(0, 0, 0, 0.8);
             color: white;
-            padding: 10px;
+            padding: 20px;
             display: none;
+            font-size: 16px;
+        }
+
+        #info-overlay h3 {
+            margin-top: 0;
+        }
+
+        #button-container {
+            margin-top: 10px;
+        }
+
+        #button-container button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+        }
+
+        #button-container button:hover {
+            background-color: #0056b3;
+        }
+
+        #button-container button:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+        }
+
+        #button-container .enable {
+            background-color: #28a745;
+        }
+
+        #button-container .enable:hover {
+            background-color: #218838;
+        }
+
+        #button-container .disable {
+            background-color: #dc3545;
+        }
+
+        #button-container .disable:hover {
+            background-color: #c82333;
         }
     </style>
 </head>
 
 <body>
+    <header>
+        <h1>Chess Tech Tree</h1>
+        <a href="../"><button>Home</button></a>
+    </header>
     <div id="canvas-container">
         <canvas id="techTreeCanvas"></canvas>
         <div id="info-overlay"></div>

@@ -237,8 +237,12 @@ function draw() {
         ctx.arc(tech.x, tech.y, radius, 0, 2 * Math.PI);
 
         // Check if the node is unlocked but not enabled and set the outline color to green
-        if (isUnlocked(tech.id) && !isEnabled(tech.id)) {
-            ctx.strokeStyle = 'lime';
+        if (isUnlocked(tech.id)) {
+            if (!isEnabled(tech.id)) {
+                ctx.strokeStyle = '#c82333';
+            } else {
+                ctx.strokeStyle = '#218838';
+            }
         } else {
             ctx.strokeStyle = 'black';
         }
@@ -401,6 +405,9 @@ function createButton(text, onClickHandler, isDisabled = false) {
     button.textContent = text;
     button.onclick = onClickHandler;
     button.disabled = isDisabled;
+    if (text != 'Unlock') {
+        button.classList.add(text.toLowerCase());
+    }
     return button;
 }
 
