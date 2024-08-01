@@ -22,16 +22,8 @@ cancelResetButton.addEventListener('click', function () {
 
 const URL404 = 'https://i.imgur.com/xgsFaaa.png'
 BACKGROUND_URL = ''
-const LOCALSTORAGE_NAMES = {
-    DEBUG: {
-        TECH_TREE: 'DEBUG_TECH_TREE',
-        CHESS_PLAYER: 'DEBUG_CHESS_PLAYER_DATA',
-    },
-    DEFAULT: {
-        TECH_TREE: 'techTreeProgression',
-        CHESS_PLAYER: 'chessPlayerData',
-    }
-}
+
+
 let experiencePointsCache = 0;
 let techTreeCache = {
     0: {
@@ -224,13 +216,6 @@ function setExperiencePoints(xp) {
 
 function isUnlocked(id) {
     return techTreeCache[id]?.unlocked;
-}
-
-function getCorrectLocalStorageName(type) {
-    if (DEBUG_MODE) {
-        return LOCALSTORAGE_NAMES.DEBUG[type];
-    }
-    return LOCALSTORAGE_NAMES.DEFAULT[type];
 }
 
 function isEnabled(id) {

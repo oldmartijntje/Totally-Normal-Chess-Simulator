@@ -465,3 +465,21 @@ const pieces = {
         }
     },
 }
+
+const LOCALSTORAGE_NAMES = {
+    DEBUG: {
+        TECH_TREE: 'DEBUG_TECH_TREE',
+        CHESS_PLAYER: 'DEBUG_CHESS_PLAYER_DATA',
+    },
+    DEFAULT: {
+        TECH_TREE: 'techTreeProgression',
+        CHESS_PLAYER: 'chessPlayerData',
+    }
+}
+
+function getCorrectLocalStorageName(type) {
+    if (DEBUG_MODE) {
+        return LOCALSTORAGE_NAMES.DEBUG[type];
+    }
+    return LOCALSTORAGE_NAMES.DEFAULT[type];
+}

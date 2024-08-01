@@ -655,6 +655,13 @@ class Chessboard {
         }
         return locations;
     }
+
+    setExperiencePoints(xp) {
+        experiencePointsCache = xp;
+        const chessPlayerData = JSON.parse(localStorage.getItem(getCorrectLocalStorageName('CHESS_PLAYER')));
+        chessPlayerData.playerXP = xp;
+        localStorage.setItem(getCorrectLocalStorageName('CHESS_PLAYER'), JSON.stringify(chessPlayerData));
+    }
 }
 
 
