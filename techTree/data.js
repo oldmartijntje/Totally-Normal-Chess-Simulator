@@ -1,5 +1,5 @@
 const techTree = [
-    { id: 0, cost: 0, name: "The Beginning", connections: [1, 4, 7, 15, 20], description: "This is the beginning of the tech tree.", image: "" },
+    { id: 0, cost: 0, name: "The Beginning", connections: [1, 4, 7, 15, 20], description: "This is the beginning of the tech tree.", image: "https://i.imgur.com/xgsFaaa.png" },
     { id: 1, cost: 250, name: "Tiny Bonus", connections: [2, 8], description: "Bonus credits on purchase is 5%.", image: "" },
     { id: 2, cost: 1000, name: "Small Bonus", connections: [3, 6], description: "Bonus credits on purchase is 10%.", image: "", x: 613, y: 200 },
     { id: 3, cost: 4500, name: "Medium Bonus", connections: [], description: "Bonus credits on purchase is 15%.", image: "" },
@@ -14,7 +14,7 @@ const techTree = [
     { id: 12, cost: 4500, name: "Prick wall", connections: [13], description: "Merging 2 pawns has a chance of leaving behind a Brick.", image: "" },
     { id: 13, cost: 1500, name: "Spy", connections: [], description: "If a pawn gets 5 kills, It'll alert the government.", image: "" },
     { id: 14, cost: 1000, name: "Pawnvenge", connections: [], description: "If your pawn gets captured, it will give you 1 stone.", image: "" },
-    { id: 15, cost: 1000, name: "Getting an upgrade", connections: [19], description: "You start the game with 1 Iron ingot.", image: "" },
+    { id: 15, cost: 10101, name: "Getting an upgrade", connections: [19], description: "You start the game with 1 Iron ingot.", image: "" },
     { id: 16, cost: 10000, name: "Procket Science", connections: [17], description: "Instead of 2 pawns merging into 1 Pawned, they merge into Procket.", image: "" },
     { id: 17, cost: 10000, name: "Procket Engineer", connections: [18], description: "Prockets ALWAYS move forwards.", hiddenDescription: true, image: "" },
     { id: 18, cost: 10000, name: "Big Boom", connections: [], description: "Prockets ALWAYS move forwards.", hiddenDescription: true, hiddenTitle: true, image: "" },

@@ -3,6 +3,14 @@ const ctx = canvas.getContext('2d');
 const container = document.getElementById('canvas-container');
 const infoOverlay = document.getElementById('info-overlay');
 
+const URL404 = 'https://i.imgur.com/xgsFaaa.png'
+BACKGROUND_URL = ''
+
+let techTreeCache = {
+    0: {
+        unocked: true,
+    }
+}
 let isDragging = false;
 let startX, startY, translateX = 0, translateY = 0;
 
@@ -111,14 +119,14 @@ async function preloadImages() {
     for (const tech of techTree) {
         await loadImageTryCatch(tech.id, tech.image);
     }
-    // await loadImageTryCatch('background_image_url_here', 'https://i.imgur.com/4CxLIex.png');
-    await loadImageTryCatch('404', 'https://i.imgur.com/AJIngxt.png');
+    await loadImageTryCatch('background_image', BACKGROUND_URL);
+    await loadImageTryCatch('404', URL404);
     draw(); // Initial draw after images are preloaded
 }
 
 function drawBackground() {
     // Draw the static background image
-    const backgroundImage = images['background_image_url_here'];
+    const backgroundImage = images['background_image'];
 
     if (backgroundImage) {
         // Calculate aspect ratios
@@ -157,12 +165,22 @@ function drawBackground() {
     }
 }
 
-
+function cacheProgression() {
+    techTreeCache = JSON.parse(localStorage.getItem('techTreeProgression')) || { 0: { unlocked: true, } };
+    if (!localStorage.getItem('techTreeProgression')) {
+        localStorage.setItem('techTreeProgression', JSON.stringify(techTreeCache));
+    }
+}
 
 function isUnlocked(id) {
-    return id <= 15
-    // return false;
-    return Math.random() < 0.5;
+    return techTreeCache[id]?.unlocked;
+}
+
+function step(id) {
+    cacheProgression();
+    setTimeout(() => {
+        step(id + 1);
+    }, 5000);
 }
 
 function draw() {
@@ -347,16 +365,40 @@ function getTitle(tech) {
 
 }
 
+function unlockNode(stringifiedNode) {
+    const node = JSON.parse(stringifiedNode);
+    let filteredParents = node.parents.filter(x => !isUnlocked(x));
+    if (filteredParents.length > 0) {
+        return;
+    }
+    techTreeCache[node.id] = { unlocked: true };
+    localStorage.setItem('techTreeProgression', JSON.stringify(techTreeCache));
+    draw();
+    showNodeInfo(node);
+}
+
 function showNodeInfo(node) {
     let filteredParents = node.parents.filter(x => !isUnlocked(x));
     let requires = filteredParents?.length > 0 ? `Requires: ${filteredParents.join(', ')}` : '';
+    let cost = !isUnlocked(node.id) ? `<p>Cost: ${node.cost} XP</p>` : '';
     infoOverlay.innerHTML = `
                 <h3>${getTitle(node)}</h3>
                 <p>ID: ${node.id}</p>
                 ${requires}
-                <p>Cost: ${node.cost}</p>
+                ${cost}
                 <p>${getDescription(node)}</p>
+                <div id="button-container"></div>
             `;
+    if (!isUnlocked(node.id)) {
+        const buttonContainer = document.getElementById('button-container');
+        const button = document.createElement('button');
+        button.textContent = 'Unlock';
+        button.onclick = () => unlockNode(JSON.stringify(node));
+        buttonContainer.appendChild(button);
+        if (filteredParents.length > 0) {
+            button.disabled = true;
+        }
+    }
     infoOverlay.style.display = 'block';
 }
 
@@ -427,3 +469,4 @@ resizeCanvas();
 autoFillRequirements();
 generateCoordinates();
 preloadImages();
+step(0);
