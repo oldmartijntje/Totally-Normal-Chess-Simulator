@@ -258,19 +258,6 @@ const pieces = {
         },
         spawnChance: 5,
     },
-    'experience_orb': {
-        lootbox: {
-            weight: 0.01,
-        },
-        neutralObject: true,
-        needsDiscovery: true,
-        description: "<p>Once captured, you will get 1K XP.</p>",
-        display: {
-            neutral: `<img src="https://i.imgur.com/v3ahgYA.png">`,
-        },
-        experiencePointsGainType: "orb_capture",
-        spawnChance: 0,
-    },
     'reversed-rook': {
         lootbox: {
             weight: 1,
@@ -490,6 +477,19 @@ const pieces = {
             "ignoreCarry": false,
             "ignoreKill": true,
         }
+    },
+    'experience_orb': {
+        lootbox: {
+            weight: 0.01,
+        },
+        neutralObject: true,
+        needsDiscovery: true,
+        description: "<p>Once captured, you will get 1K XP.</p>",
+        display: {
+            neutral: `<img src="https://i.imgur.com/v3ahgYA.png">`,
+        },
+        experiencePointsGainType: "orb_capture",
+        spawnChance: 0,
     },
 }
 
