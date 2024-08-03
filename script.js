@@ -269,13 +269,55 @@ function updateProgress(player, condition, piece, newValue) {
 // Initial render
 updateWinConditionBox();
 
-// Example usage:
-// updateProgress('white', 'slainTroops', 'king', 1);
-// updateProgress('black', 'slainTroops', 'king', 1);
+const craftingOverlay = document.getElementById('craftingOverlay');
+const closeCrafting = document.getElementById('closeCrafting');
+const craftingList = document.getElementById('craftingList');
+const craftingHeader = document.querySelector('.crafting-header');
 
-// Example usage
-const exampleItems = [
-    { name: 'Diamond', image: 'https://static.wikia.nocookie.net/minecraft_gamepedia/images/a/ab/Diamond_JE3_BE3.png', count: 64 },
-    { name: 'Wood', image: 'https://gamepedia.cursecdn.com/minecraft_gamepedia/thumb/c/c5/Oak_Log_Axis_Y_JE5_BE3.png/150px-Oak_Log_Axis_Y_JE5_BE3.png', count: 32 },
-    // Add more items as needed
-];
+function showCraftingOverlay(player) {
+    craftingHeader.textContent = `${player} Player Crafting`;
+    craftingOverlay.style.display = 'block';
+    populateCraftingList(player);
+}
+
+closeCrafting.addEventListener('click', () => {
+    craftingOverlay.style.display = 'none';
+});
+
+function populateCraftingList(player) {
+    // This is a placeholder function. In a real implementation,
+    // you would fetch the available crafting options for the player
+    // and populate the list dynamically.
+
+
+    craftingList.innerHTML = '';
+
+    craftableItems.forEach(item => {
+        const itemElement = document.createElement('div');
+        itemElement.className = 'crafting-item';
+        itemElement.innerHTML = `
+                    <img src="${item.image}" alt="${item.name}">
+                    <div class="crafting-item-name">${item.name}</div>
+                    <div class="crafting-item-ingredients">${item.ingredients}</div>
+                `;
+        itemElement.addEventListener('click', () => craftItem(player, item));
+        craftingList.appendChild(itemElement);
+    });
+    const craftingListList = document.querySelector('.crafting-list');
+    if (craftableItems.length === 0) {
+        const itemElement = document.createElement('div');
+        itemElement.className = 'crafting-disclaimer';
+        itemElement.textContent = 'No items available for crafting';
+        craftingList.appendChild(itemElement);
+        craftingListList.style.display = 'block';
+    } else {
+        craftingListList.style.display = 'grid';
+    }
+}
+
+function craftItem(player, item) {
+    // This is a placeholder function. In a real implementation,
+    // you would handle the crafting logic here.
+    console.log(`${player} crafted: ${item.name}`);
+    // Add logic to update the player's inventory and the game state
+}

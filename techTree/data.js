@@ -18,7 +18,7 @@ const techTree = [
     { id: 16, cost: 6900, name: "Procket Science", connections: [17, 18], description: "Instead of 2 pawns merging into 1 Pawned, they merge into Procket.", image: "" },
     { id: 17, cost: 3500, name: "Procket Launcher", connections: [31], description: "Prockets move forwards more often.", image: "" },
     { id: 18, cost: 42000, name: "Big Boom", connections: [27], description: "Prockets have a chance to explode if they can't move forwards.", hiddenDescription: true, hiddenTitle: true, image: "" },
-    { id: 19, cost: 12345, name: "Crafter", connections: [], description: "Unlock crafting.", hiddenDescription: true, hiddenTitle: true, image: "" },
+    { id: 19, cost: 123456, name: "Crafter", connections: [], description: "Unlock crafting.", hiddenDescription: true, hiddenTitle: true, image: "" },
     { id: 20, cost: 6000, name: "Xtra Twist", connections: [], description: "Start the game with 4 twists instead of 3.", image: "" },
     { id: 21, cost: 12500, name: "Capture Proficiency", connections: [22], description: "Get twice the XP for capturing pieces.", image: "" },
     { id: 22, cost: 12500, name: "Winner Competence", connections: [23], description: "Get triple the XP for winning.", image: "" },

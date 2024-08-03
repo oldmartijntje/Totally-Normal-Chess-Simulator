@@ -10,6 +10,7 @@ const STARTING_PLAYER = 'white';
 const LOOTBOX_RARITY_MODIFIER = 10;
 let AMOUNT_OF_TWISTS = 3;
 let AUTO_BUY_BOXES = null;
+let ALLOW_CRAFTING = false;
 const EXPERIENCE_POINTS = {
     "merging": 100,
     "capturing": 45,
@@ -27,6 +28,13 @@ const ON_CAPTURE_GAIN_MATERIALS = {
         "amount": 1
     }
 }
+
+const craftableItems = [
+    // { name: 'Super Pawn', image: 'https://example.com/super_pawn.png', ingredients: '2x Pawn' },
+    // { name: 'Mega Knight', image: 'https://example.com/mega_knight.png', ingredients: '1x Knight, 1x Bishop' },
+    // { name: 'Rocket Rook', image: 'https://example.com/rocket_rook.png', ingredients: '1x Rook, 1x Pawn' },
+    // Add more craftable items as needed
+];
 
 const STARTING_INVENTORY = {
     "gold": 0,

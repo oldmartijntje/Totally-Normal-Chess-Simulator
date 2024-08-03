@@ -860,6 +860,12 @@ class Chessboard {
             fullBox.style.display = 'block';
         }
         const container = fullBox.querySelector('.slot-container');
+        const crafting = fullBox.querySelector('.crafting-button');
+        if (ALLOW_CRAFTING) {
+            crafting.style.display = 'block';
+        } else {
+            crafting.style.display = 'none';
+        }
         container.innerHTML = '';
 
 

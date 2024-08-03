@@ -61,7 +61,11 @@
     </header>
     <div id="main">
         <div class="inventory" id="inventoryBlack" style="display: none">
-            <h2>Inventory</h2>
+            <div class="flex-header">
+                <h2>Inventory</h2>
+                <img src="https://i.imgur.com/v4pcAmW.png" alt="Crafting Table" title="Crafting" style="display: none"
+                    class="crafting-button" onclick="showCraftingOverlay('Black')">
+            </div>
             <div class="slot-container"></div>
         </div>
         <div class="chessboard" id="chessboard"></div>
@@ -70,7 +74,11 @@
             <div class="player black" id="blackPlayer">Black</div>
         </div>
         <div class="inventory" id="inventoryWhite" style="display: none">
-            <h2>Inventory</h2>
+            <div class="flex-header">
+                <h2>Inventory</h2>
+                <img src="https://i.imgur.com/v4pcAmW.png" alt="Crafting Table" title="Crafting" style="display: none"
+                    class="crafting-button" onclick="showCraftingOverlay('White')">
+            </div>
             <div class="slot-container"></div>
         </div>
         <div id="infoBox" style="display:none">
@@ -113,6 +121,16 @@
 
                 </div>
             </div>
+        </div>
+    </div>
+
+    <div id="craftingOverlay">
+        <div class="crafting-content">
+            <h2 class="crafting-header">Player X Crafting</h2>
+            <div class="crafting-list" id="craftingList">
+                <!-- Crafting items will be dynamically added here -->
+            </div>
+            <button id="closeCrafting">&times;</button>
         </div>
     </div>
 

@@ -101,7 +101,7 @@ if (includes(18)) {
     pieces['procket'].autoMove.explodeOnImpact.chance = 25; // chance to explode if can't move forward
 }
 if (includes(19)) {
-    // Unlock crafting
+    ALLOW_CRAFTING = true;
 }
 if (includes(20)) {
     AMOUNT_OF_TWISTS = 4;
