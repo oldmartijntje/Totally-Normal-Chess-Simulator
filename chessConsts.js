@@ -31,6 +31,7 @@ const ON_CAPTURE_GAIN_MATERIALS = {
 const STARTING_INVENTORY = {
     "gold": 0,
 }
+let FREE_LOOTBOX_CHANCE = 0;
 
 const RANDOM_SPAWNING_PIECES = ['lootbox', 'experience_orb'];
 

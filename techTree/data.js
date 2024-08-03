@@ -30,7 +30,7 @@ const techTree = [
     { id: 28, cost: 7500, name: "More Orb", connections: [], parents: [11], description: "Double the chance of getting a Orb spawn.", image: "" },
     { id: 29, cost: 12500, name: "Combined Mastery", connections: [], description: "Combine amount of XP you get for Capturing and Merging.", image: "" },
     { id: 30, cost: 3500, name: "Boxing", connections: [], description: "Have a 10% chance of not consuming a lootbox when spawning a lootbox.", image: "" },
-    { id: 31, cost: 10000, name: "Procket Engineer", connections: [], description: "Prockets ALWAYS move forwards.", hiddenDescription: true, image: "" },
+    { id: 31, cost: 30000, name: "Procket Engineer", connections: [], description: "Prockets ALWAYS move forwards.", hiddenDescription: true, image: "" },
 
 
 ];

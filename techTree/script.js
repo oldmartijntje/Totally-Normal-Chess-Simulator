@@ -493,8 +493,7 @@ function showNodeInfo(node) {
     let requires = filteredParents?.length > 0 ? `Requires: ${filteredParents.join(', ')}` : '';
     let cost = !isUnlocked(node.id) ? `<p>Cost: ${node.cost} XP</p>` : '';
     infoOverlay.innerHTML = `<div class="info-overlay">
-                <h3>${getTitle(node)}</h3>
-                <p>ID: ${node.id}</p>
+                <h3>${node.id}.${getTitle(node)}</h3>
                 ${requires}
                 ${cost}
                 <p>${getDescription(node)}</p>

@@ -149,8 +149,9 @@ window.onload = () => {
         lootBoxIcon.style.display = 'none';
     } else {
         lootBoxIcon.addEventListener('click', () => {
+            let free_box = percentageRandomiser(FREE_LOOTBOX_CHANCE)
             lootboxes = localStorage.getItem('lootboxes') ? localStorage.getItem('lootboxes') : 0
-            if (lootboxes <= 0) {
+            if (lootboxes <= 0 && !free_box) {
                 if (AUTO_BUY_BOXES && tokens >= AUTO_BUY_BOXES) {
                     lootboxes = 1
                     tokens -= AUTO_BUY_BOXES
@@ -163,7 +164,9 @@ window.onload = () => {
             }
             let success = chessboard?.generateLootBox(chessboard?.getGameState(), 'lootbox', 100);
             if (success) {
-                lootboxes--;
+                if (!free_box) {
+                    lootboxes--;
+                }
                 lootboxesAmount.innerHTML = lootboxes;
                 render();
                 localStorage.setItem('lootboxes', lootboxes);

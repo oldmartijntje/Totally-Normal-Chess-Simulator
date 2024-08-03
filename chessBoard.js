@@ -810,7 +810,7 @@ class Chessboard {
         }
         let experiencePointsCache = getExperiencePoints();
         let amount = EXPERIENCE_POINTS[action];
-        amount = amount * EXPERIENCE_POINTS_MODIFIER;
+        amount = Math.round(amount * EXPERIENCE_POINTS_MODIFIER);
         if (amount) {
             experiencePointsCache += amount;
             setExperiencePoints(experiencePointsCache);
