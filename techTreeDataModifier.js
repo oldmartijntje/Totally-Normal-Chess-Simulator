@@ -44,7 +44,7 @@ if (includes(4)) {
     pieces['pawned'].captureFlee.percentageChance = 5;
 }
 if (includes(5)) {
-    pieces['experience_orb'].spawnChance = 5;
+    pieces['experience_orb'].spawnChance = 1;
 }
 if (includes(6)) {
     AUTO_BUY_BOXES = 25;
@@ -144,4 +144,7 @@ if (includes(29)) {
     let total = EXPERIENCE_POINTS['capturing'] + EXPERIENCE_POINTS['merging'];
     EXPERIENCE_POINTS['capturing'] = total;
     EXPERIENCE_POINTS['merging'] = total;
+}
+if (includes(32)) {
+    pieces['experience_orb'].spawnChance = pieces['experience_orb'].spawnChance * 2;
 }

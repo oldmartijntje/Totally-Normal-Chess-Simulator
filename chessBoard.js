@@ -2,7 +2,7 @@ class Chessboard {
     constructor(
         boardElementId = 'chessboard',
         gameState,
-        playerIndicators = { white: 'whitePlayer', black: 'blackPlayer', pieceInfoField: 'infoBox', winConditionsIndicator: 'winConditionBox' },
+        playerIndicators = { white: 'whitePlayer', black: 'blackPlayer', pieceInfoField: 'infoBox', winConditionsIndicator: 'winConditionBox', inventoryWhite: 'inventoryWhite', inventoryBlack: 'inventoryBlack' },
         boardData = { blockInteraction: false, lootBoxAnimation: false, sandboxChessBoard: false, ignoreUnlocks: false, useWinConditionBoxFunction: true },
         loadedSettings = {
             boardOrientation: "1",
@@ -58,6 +58,7 @@ class Chessboard {
                 black: JSON.parse(JSON.stringify(STARTING_INVENTORY)),
                 white: JSON.parse(JSON.stringify(STARTING_INVENTORY))
             };
+            this.updateInventories()
             if (gameState.selectedPiece) {
                 this.render(); // it has to render first to get the selected piece
                 this.selectedPiece = document.getElementById(gameState.selectedPiece);
@@ -424,15 +425,41 @@ class Chessboard {
     }
 
     gainItem(itemPossibillitiesDict, player) {
+        let changed = false;
         const list = Object.keys(itemPossibillitiesDict);
         for (let i = 0; i < list.length; i++) {
             if (percentageRandomiser(itemPossibillitiesDict[list[i]].chance)) {
+                changed = true;
                 if (!this.inventory[player][list[i]]) {
                     this.inventory[player][list[i]] = 0;
                 }
                 this.inventory[player][list[i]] += itemPossibillitiesDict[list[i]].amount;
             }
         }
+        if (changed) {
+            this.updateInventories()
+        }
+    }
+
+    updateInventories() {
+        if (this.playerIndicators && this.playerIndicators.inventoryWhite && this.playerIndicators.inventoryBlack) {
+            this.createInventory(this.playerIndicators.inventoryWhite, 3, 9, this.getInventoryJSON('white'))
+            this.createInventory(this.playerIndicators.inventoryBlack, 3, 9, this.getInventoryJSON('black'))
+        }
+    }
+
+    getInventoryJSON(player) {
+        let inventory = this.inventory[player];
+        let inventoryJSON = []
+        for (let i = 0; i < Object.keys(inventory).length; i++) {
+            inventoryJSON.push({ name: Object.keys(inventory)[i], amount: inventory[Object.keys(inventory)[i]], image: this.getInventoryItemImage(Object.keys(inventory)[i]) })
+        }
+        console.log(inventoryJSON);
+        return inventoryJSON;
+    }
+
+    getInventoryItemImage(item) {
+        return inventoryItemImages[item] ? inventoryItemImages[item] : inventoryItemImages['default'];
     }
 
     handleSquareClick(square) {
@@ -816,6 +843,50 @@ class Chessboard {
             setExperiencePoints(experiencePointsCache);
         }
         console.log(`Gained ${amount} experience points for:`, action);
+    }
+
+    createInventory(boxId, rows, columns, items) {
+        for (let index = 0; index < items.length; index++) {
+            if (items[index].amount == 0) {
+                items.splice(index, 1);
+                index--;
+            }
+        }
+        const fullBox = document.getElementById(boxId);
+        if (items.length == 0) {
+            fullBox.style.display = 'none';
+            return;
+        } else {
+            fullBox.style.display = 'block';
+        }
+        const container = fullBox.querySelector('.slot-container');
+        container.innerHTML = '';
+
+
+        for (let i = 0; i < rows * columns; i++) {
+            const slot = document.createElement('div');
+            slot.className = 'slot';
+            container.appendChild(slot);
+
+            if (items[i]) {
+                const item = document.createElement('div');
+                item.className = 'item';
+
+                const img = document.createElement('img');
+                img.src = items[i].image;
+                img.alt = items[i].name;
+                item.appendChild(img);
+
+                if (items[i].amount > 1) {
+                    const count = document.createElement('span');
+                    count.className = 'item-count';
+                    count.textContent = items[i].amount;
+                    item.appendChild(count);
+                }
+
+                slot.appendChild(item);
+            }
+        }
     }
 }
 

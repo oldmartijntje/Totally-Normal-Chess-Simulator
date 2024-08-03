@@ -272,3 +272,10 @@ updateWinConditionBox();
 // Example usage:
 // updateProgress('white', 'slainTroops', 'king', 1);
 // updateProgress('black', 'slainTroops', 'king', 1);
+
+// Example usage
+const exampleItems = [
+    { name: 'Diamond', image: 'https://static.wikia.nocookie.net/minecraft_gamepedia/images/a/ab/Diamond_JE3_BE3.png', count: 64 },
+    { name: 'Wood', image: 'https://gamepedia.cursecdn.com/minecraft_gamepedia/thumb/c/c5/Oak_Log_Axis_Y_JE5_BE3.png/150px-Oak_Log_Axis_Y_JE5_BE3.png', count: 32 },
+    // Add more items as needed
+];

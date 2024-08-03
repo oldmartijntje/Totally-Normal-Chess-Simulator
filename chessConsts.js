@@ -54,6 +54,13 @@ const defaultSettings = {
     twistSelector: "1"
 };
 
+const inventoryItemImages = {
+    'gold': 'https://i.imgur.com/xWyfNKH.png',
+    'stone': 'https://i.imgur.com/6HWzlD3.png',
+    'iron': 'https://i.imgur.com/PLzC29A.png',
+    'default': 'https://i.imgur.com/Xd2A7aq.png'
+}
+
 const pieces = {
     'rook': {
         lootbox: {
@@ -573,7 +580,7 @@ const pieces = {
             black: '<img src="https://i.imgur.com/el6koO7.png">',
         },
         needsDiscovery: true,
-        description: "<p>First move can move 2 spaces instead of 1<br>Automatically Moves forwards sometimes.<br>Attacks diagonally.<br>It can carry other pieces.<br>Transforms into something once you reach the opposite side of the board.</p>",
+        description: "<p>First move can move 2 spaces instead of 1, and attack diagonally.<br>Automatically Moves forwards sometimes.<br>Attacks sideways.<br>It might explode.<br>Transforms into something once you reach the opposite side of the board.</p>",
         convertion: {
             rows: [0],
             collumns: [0, 1, 2, 3, 4, 5, 6, 7],

@@ -4,7 +4,7 @@ const techTree = [
     { id: 2, cost: 500, name: "Small Bonus", connections: [3, 6], description: "Bonus credits on purchase is 10%.", image: "", x: 613, y: 200 },
     { id: 3, cost: 1500, name: "Medium Bonus", connections: [], description: "Bonus credits on purchase is 15%.", image: "" },
     { id: 4, cost: 1000, name: "Pawntection", connections: [12, 14, 16], description: "When someone attacks your pawn / pawned, have a 5% chance of escaping it by moving backwards. (if possible)", image: "" },
-    { id: 5, cost: 2500, name: "Orb", connections: [28], description: "Have a 5% chance of spawning an Orb after your turn.", image: "" },
+    { id: 5, cost: 2500, name: "Orb", connections: [28], description: "Have a 1% chance of spawning an Orb after your turn.", image: "" },
     { id: 6, cost: 1500, name: "Auto-box", connections: [11, 25], description: "Automatically refill your lootboxes when you reach 0 and have enough credits.", image: "" },
     { id: 7, cost: 2222, name: "Midas", connections: [], description: "When capturing a piece, 10% chance of getting 1 gold.", image: "" },
     { id: 8, cost: 1250, name: "Xtra Knowledge", connections: [9, 5], description: "Set bonus XP to 5%.", image: "" },
@@ -27,10 +27,11 @@ const techTree = [
     { id: 25, cost: 1250, name: "XP Box", connections: [], description: "Opening a lootbox gives you XP.", image: "" },
     { id: 26, cost: 2500, name: "Box Hoarder", connections: [30], description: "Have a 5% chance of not consuming a lootbox when spawning a lootbox.", image: "" },
     { id: 27, cost: 69420, name: "Bigger Boom", connections: [], description: "Prockets ALWAYS explode if they can't move forwards.", hiddenDescription: true, hiddenTitle: true, image: "" },
-    { id: 28, cost: 7500, name: "More Orb", connections: [], parents: [11], description: "Double the chance of getting a Orb spawn.", image: "" },
+    { id: 28, cost: 7500, name: "More Orb", connections: [32], parents: [11], description: "Double the chance of getting a Orb spawn.", image: "" },
     { id: 29, cost: 12500, name: "Combined Mastery", connections: [], description: "Combine amount of XP you get for Capturing and Merging.", image: "" },
     { id: 30, cost: 3500, name: "Boxing", connections: [], description: "Have a 10% chance of not consuming a lootbox when spawning a lootbox.", image: "" },
     { id: 31, cost: 30000, name: "Procket Engineer", connections: [], description: "Prockets ALWAYS move forwards.", hiddenDescription: true, image: "" },
+    { id: 32, cost: 27500, name: "Ooooooorb", connections: [], description: "Double the chance of getting a Orb spawn.", image: "" },
 
 
 ];
