@@ -546,8 +546,13 @@ const pieces = {
             capture: [
                 {
                     area: [
+                        [null, null, null],
+                        [1, 0, 1],
+                        [null, null, null],
+                    ],
+                    unmoved: [
                         [1, null, 1],
-                        [null, 0, null],
+                        [1, 0, 1],
                         [null, null, null],
                     ],
                     flipForBlack: true,
