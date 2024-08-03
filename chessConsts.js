@@ -4,7 +4,7 @@ const friendlyFire = false;
 const UNLOCK_MOVEMENT = false;
 const INVERTED_LOGIC = false;
 const LOOTBOX_CAPTURING_PIECE_WEIGHT = 5
-const DEBUG_MODE = true;
+const DEBUG_MODE = false;
 const FORCE_PLAYER_TURNS = true;
 const STARTING_PLAYER = 'white';
 const LOOTBOX_RARITY_MODIFIER = 10;
@@ -59,7 +59,8 @@ const defaultSettings = {
     aiOpponent: "1",
     allowLootboxSummoning: "1",
     checkmateDetection: "2",
-    twistSelector: "1"
+    twistSelector: "1",
+    techTree: "1"
 };
 
 const inventoryItemImages = {

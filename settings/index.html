@@ -197,6 +197,14 @@
             </select>
         </div>
 
+        <div class="setting">
+            <label for="techTree">Tech Tree effects:</label>
+            <select id="techTree">
+                <option value="1">Enabled</option>
+                <option value="2">Disabled (will still give XP, without tree bonuses)</option>
+            </select>
+        </div>
+
         <button id="save-button" onclick="saveSettings()">Save Settings</button>
     </div>
 
@@ -214,7 +222,8 @@
             aiOpponent: "1",
             allowLootboxSummoning: "1",
             checkmateDetection: "2",
-            twistSelector: "1"
+            twistSelector: "1",
+            techTree: "1"
         };
 
         let currentSettings = {};

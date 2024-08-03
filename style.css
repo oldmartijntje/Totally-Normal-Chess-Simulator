@@ -759,3 +759,8 @@ h2 {
     height: 30px;
     cursor: pointer;
 }
+
+.bigImageDisplay {
+    width: 300px;
+
+}

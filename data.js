@@ -39,6 +39,26 @@ const editableRulebook = [
 
 const addedFeatures = [
     {
+        length: 1,
+        content: `<h2>6.Added a Tech Tree.</h2>
+                    <img src="https://i.imgur.com/CGX3iQl.png" alt="Tech Tree" class="bigImageDisplay">
+        </div>
+                    <p>By playing chess, you gain XP points. These points can be spent unlocking the <a href="./techTree" target="_blank">Tech Tree</a><br>Once you have unlocked something, you can always Disable/Enable it.</p>
+                    <p>Some of the things you can unlock are:</p>
+                    <ul>
+                        <li>More XP gain</li>
+                        <li>More lootboxes</li>
+                        <li>Unlocking Orbs</li>
+                        <li>Unlocking Prockets</li>
+                        <li>Upgrading your pawns</li>
+                    </ul>
+                    
+                    `,
+
+
+        commentLink: "https://www.reddit.com/r/AnarchyChess/comments/1ef67en/comment/lfiuiui/?utm_source=share&utm_medium=web3x&utm_name=web3xcss&utm_term=1&utm_content=share_button"
+    },
+    {
         length: 0.5,
         content: `<h2>5.Added a Twist selector.</h2>
                     <div class="option">
