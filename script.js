@@ -23,6 +23,7 @@ const nextPage = document.getElementById('nextPage');
 const pageNumber = document.getElementById('pageNumber');
 const Encyclopedia = document.getElementById('Encyclopedia');
 const Settings = document.getElementById('Settings');
+const techTree = document.getElementById('TechTree');
 
 let chessboard;
 let currentPage = 1;
@@ -207,6 +208,10 @@ window.onload = () => {
     Settings.addEventListener('click', () => {
         localStorage.setItem('gameState', JSON.stringify(chessboard?.getGameState()))
         window.location.href = './settings';
+    });
+    techTree.addEventListener('click', () => {
+        localStorage.setItem('gameState', JSON.stringify(chessboard?.getGameState()))
+        window.location.href = './techTree';
     });
 
     // degugButton.addEventListener('click', () => {
