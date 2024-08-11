@@ -34,8 +34,9 @@ const techTree = [
     { id: 32, cost: 27500, name: "Ooooooorb", connections: [], description: "Double the chance of getting a Orb spawn.", image: "" },
     { id: 33, cost: 5000, name: "Prawned", connections: [34], description: "If you merge a pawn with a procket, it will leave behind a pawned on it's old position. Procket stays a procket.", image: "" },
     { id: 34, cost: 5500, name: "Pawnification", connections: [], description: "On merging of 2 pawns, Leave behind Pini on the old location.", image: "" },
-    { id: 35, cost: 7500, name: "Swordfight", connections: [36], priority: 2, description: "By attacking your own pawns with your king, they turn into Swordsman.", image: "" },
-    { id: 36, cost: 6500, name: "Chivalry", connections: [], description: "Merging a Swordsman and knight will become Chivalry.", image: "" },
+    { id: 35, cost: 1673, name: "Swordfight", connections: [36, 37], priority: 2, description: "By attacking your own pawns with your king, they turn into Swordsman.", image: "" },
+    { id: 36, cost: 7500, name: "Chivalry", connections: [], description: "Merging a Swordsman and knight will become Chivalry.", image: "" },
+    { id: 37, cost: 2739, name: "Tai-chi", connections: [], description: "Unlock a pawn varient that moves in funky patterns.", image: "" },
 
 
 ];

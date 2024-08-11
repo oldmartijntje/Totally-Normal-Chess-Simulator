@@ -167,6 +167,12 @@ if (loadedSetting['techTree'] == "2") {
             leaveBehind: 'horseshoe'
         }
     }
+    if (includes(37)) {
+        pieces['swordsman'].mergability.swordsman = {
+            type: 'pawninja',
+            leaveBehind: 'iron-ingot'
+        }
+    }
 
     // Latest changes
     if (includes(28)) {

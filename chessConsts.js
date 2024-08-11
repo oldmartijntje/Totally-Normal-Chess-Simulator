@@ -4,7 +4,7 @@ const friendlyFire = false;
 const UNLOCK_MOVEMENT = false;
 const INVERTED_LOGIC = false;
 const LOOTBOX_CAPTURING_PIECE_WEIGHT = 5
-const DEBUG_MODE = true;
+const DEBUG_MODE = false;
 const FORCE_PLAYER_TURNS_ON_DEBUG_MODE = false;
 const FORCE_PLAYER_TURNS = DEBUG_MODE ? FORCE_PLAYER_TURNS_ON_DEBUG_MODE : true;
 const STARTING_PLAYER = 'white';
@@ -793,6 +793,86 @@ const pieces = {
         description: "<p>Promoted Chivalry, can jump over pieces like a royal-queen</p>",
         needsDiscovery: true,
     },
+    'pawninja': {
+        lootbox: {
+            weight: 0.5,
+        },
+        patterns: {
+            movement: [
+                { direction: 'vertical', distance: 3, jump: false },
+                { direction: 'horizontal', distance: 3, jump: false },
+                { direction: 'diagonal/', distance: 3, jump: false },
+                { direction: 'diagonal\\', distance: 3, jump: false },
+                {
+                    area: [
+                        [null, 1, 1, 1, null],
+                        [1, 1, null, 1, 1],
+                        [1, null, 0, null, 1],
+                        [1, 1, null, 1, 1],
+                        [null, 1, 1, 1, null],
+                    ],
+                    exclude: true,
+                }
+            ],
+            capture: [
+                { direction: 'vertical', distance: 3, jump: false },
+                { direction: 'horizontal', distance: 3, jump: false },
+                { direction: 'diagonal/', distance: 3, jump: false },
+                { direction: 'diagonal\\', distance: 3, jump: false },
+                {
+                    area: [
+                        [null, 1, 1, 1, null],
+                        [1, 1, null, 1, 1],
+                        [1, null, 0, null, 1],
+                        [1, 1, null, 1, 1],
+                        [null, 1, 1, 1, null],
+                    ],
+                    exclude: true,
+                },
+                { direction: 'diagonal/', distance: 2, jump: true },
+                { direction: 'diagonal\\', distance: 2, jump: true },
+                {
+                    area: [
+                        [null, 1, 1, 1, null],
+                        [1, 1, null, 1, 1],
+                        [1, null, 0, null, 1],
+                        [1, 1, null, 1, 1],
+                        [null, 1, 1, 1, null],
+                    ],
+                    exclude: true,
+                },
+            ],
+        },
+        display: {
+            white: '<img src="https://i.imgur.com/Fn6l8LH.png">',
+            black: '<img src="https://i.imgur.com/0FcLveU.png">',
+        },
+        description: "<p>Unlocked by merging 2 swordsman.</p>",
+        needsDiscovery: true,
+    },
+    'iron-ingot': {
+        lootbox: {
+            weight: 0,
+        },
+        patterns: {
+
+        },
+        display: {
+            neutral: '<img src="https://i.imgur.com/PLzC29A.png">',
+        },
+        description: "<p>Can be used to craft items. Dropped when creating a Pawninja.</p>",
+        needsDiscovery: true,
+        neutralObject: true,
+        itemGain: {
+            onKill: { // when you kill this piece
+                'iron': {
+                    chance: 100,
+                    amount: 1
+                }
+            }
+        },
+    },
+
 }
 
 const LOCALSTORAGE_NAMES = {

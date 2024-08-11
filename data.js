@@ -1,7 +1,7 @@
 const setupData = {
     votingUrl: 'https://www.reddit.com/r/AnarchyChess/comments/1ej1bh2/7added_a_tech_tree_to_my_totally_accurate_chess/',
     githubRepo: 'https://github.com/oldmartijntje/Totally-Normal-Chess-Simulator',
-    version: 6 // This is the X amount of vote added / in development.
+    version: 7 // This is the X amount of vote added / in development.
 }
 
 const editableRulebook = [
@@ -38,6 +38,18 @@ const editableRulebook = [
 ]
 
 const addedFeatures = [
+    {
+        length: 0.5,
+        content: `<h2>7.Added more Pawn varients.</h2>
+                    <img src="https://i.imgur.com/J3U2w7q.png" alt="Tech Tree"  class="imageDisplay">
+                    <img src="https://i.imgur.com/0FcLveU.png" alt="Tech Tree"  class="imageDisplay">
+        </div>
+                    <p>They are unlocked via the tech tree, but are quite cheap unlocks.</p>
+                    `,
+
+
+        commentLink: "https://www.reddit.com/r/AnarchyChess/comments/1ej1bh2/comment/lgargcy/?utm_source=share&utm_medium=web3x&utm_name=web3xcss&utm_term=1&utm_content=share_button"
+    },
     {
         length: 1,
         content: `<h2>6.Added a Tech Tree.</h2>

@@ -96,7 +96,6 @@ function generateCoordinates() {
             const priorityB = b.priority !== undefined ? b.priority : 0;
             return priorityB - priorityA;
         });
-        console.log(children);
         const numChildren = children.length;
 
         // Determine the increment angle for the first child
