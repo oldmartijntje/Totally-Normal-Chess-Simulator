@@ -1,12 +1,12 @@
 const techTree = [
-    { id: 0, cost: 0, name: "The Beginning", connections: [1, 4, 7, 15, 20], description: "This is the beginning of the tech tree.", image: "https://i.imgur.com/xgsFaaa.png" },
-    { id: 1, cost: 250, name: "Tiny Bonus", connections: [2, 8], description: "Bonus credits on purchase is 5%.", image: "" },
+    { id: 0, cost: 0, name: "The Beginning", connections: [1, 4, 7, 15, 20, 35], description: "This is the beginning of the tech tree.", image: "https://i.imgur.com/xgsFaaa.png" },
+    { id: 1, cost: 250, name: "Tiny Bonus", connections: [2, 8], priority: 3, description: "Bonus credits on purchase is 5%.", image: "" },
     { id: 2, cost: 500, name: "Small Bonus", connections: [3, 6], description: "Bonus credits on purchase is 10%.", image: "", x: 613, y: 200 },
     { id: 3, cost: 1500, name: "Medium Bonus", connections: [], description: "Bonus credits on purchase is 15%.", image: "" },
     { id: 4, cost: 1000, name: "Pawntection", connections: [12, 14, 16], description: "When someone attacks your pawn / pawned, have a 5% chance of escaping it by moving backwards. (if possible)", image: "" },
     { id: 5, cost: 2500, name: "Orb", connections: [28], description: "Have a 1% chance of spawning an Orb after your turn.", image: "" },
     { id: 6, cost: 1500, name: "Auto-box", connections: [11, 25], description: "Automatically refill your lootboxes when you reach 0 and have enough credits.", image: "" },
-    { id: 7, cost: 2222, name: "Midas", connections: [], description: "When capturing a piece, 10% chance of getting 1 gold.", image: "" },
+    { id: 7, cost: 2222, name: "Midas", priority: 1, connections: [], description: "When capturing a piece, 10% chance of getting 1 gold.", image: "" },
     { id: 8, cost: 1250, name: "Xtra Knowledge", connections: [9, 5], description: "Set bonus XP to 5%.", image: "" },
     { id: 9, cost: 2500, name: "More Skill", connections: [10, 21, 29], description: "Set bonus XP to 10%.", image: "" },
     { id: 10, cost: 3750, name: "Some Expertise", connections: [25], description: "Set bonus XP to 15%.", image: "" },
@@ -14,7 +14,7 @@ const techTree = [
     { id: 12, cost: 4500, name: "Prick wall", connections: [13], description: "Merging 2 pawns has a chance of leaving behind a Brick.", image: "" },
     { id: 13, cost: 23456, name: "Spy", connections: [], description: "If a pawn gets 5 kills, It'll alert the government.", image: "" },
     { id: 14, cost: 5000, name: "Pawnvenge", connections: [], description: "If your pawn gets captured, it will give you 1 stone.", image: "" },
-    { id: 15, cost: 10101, name: "Getting an upgrade", connections: [19], description: "You start the game with 1 Iron ingot.", image: "" },
+    { id: 15, cost: 10101, name: "Getting an upgrade", priority: 1, connections: [19], description: "You start the game with 1 Iron ingot.", image: "" },
     { id: 16, cost: 6900, name: "Procket Science", connections: [17, 18, 33], description: "Instead of 2 pawns merging into 1 Pawned, they merge into Procket.", image: "" },
     { id: 17, cost: 3500, name: "Procket Launcher", connections: [31], description: "Prockets move forwards more often.", image: "" },
     { id: 18, cost: 42000, name: "Big Boom", connections: [27], description: "Prockets have a chance to explode if they can't move forwards.", hiddenDescription: true, hiddenTitle: true, image: "" },
@@ -34,6 +34,8 @@ const techTree = [
     { id: 32, cost: 27500, name: "Ooooooorb", connections: [], description: "Double the chance of getting a Orb spawn.", image: "" },
     { id: 33, cost: 5000, name: "Prawned", connections: [34], description: "If you merge a pawn with a procket, it will leave behind a pawned on it's old position. Procket stays a procket.", image: "" },
     { id: 34, cost: 5500, name: "Pawnification", connections: [], description: "On merging of 2 pawns, Leave behind Pini on the old location.", image: "" },
+    { id: 35, cost: 7500, name: "Swordfight", connections: [36], priority: 2, description: "By attacking your own pawns with your king, they turn into Swordsman.", image: "" },
+    { id: 36, cost: 6500, name: "Chivalry", connections: [], description: "Merging a Swordsman and knight will become Chivalry.", image: "" },
 
 
 ];

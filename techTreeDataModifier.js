@@ -155,6 +155,18 @@ if (loadedSetting['techTree'] == "2") {
     if (includes(34)) {
         pieces['pawn'].mergability.pawn.leaveBehind = 'pini';
     }
+    if (includes(35)) {
+        pieces['king'].mergability.pawn = {
+            type: 'swordsman',
+            leaveBehind: 'king'
+        }
+    }
+    if (includes(36)) {
+        pieces['swordsman'].mergability.knight = {
+            type: 'chivalry',
+            leaveBehind: 'horseshoe'
+        }
+    }
 
     // Latest changes
     if (includes(28)) {

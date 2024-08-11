@@ -213,7 +213,10 @@ const pieces = {
             white: '<img src="https://i.imgur.com/wfis9bD.png">',
             black: '<img src="https://i.imgur.com/YAdx7Sr.png">'
         },
-        description: "<p>Once captured, you lose.</p><p><a href=\"https://en.wikipedia.org/wiki/Castling\" target=\"_blank\">Castling</a> is not a thing.</p>"
+        description: "<p>Once captured, you lose.</p><p><a href=\"https://en.wikipedia.org/wiki/Castling\" target=\"_blank\">Castling</a> is not a thing.</p>",
+        mergability: {
+
+        },
     },
     'pawn': {
         lootbox: {
@@ -613,7 +616,7 @@ const pieces = {
     },
     'pini': {
         lootbox: {
-            weight: 0.5,
+            weight: 0.05,
         },
         patterns: {
             movement: [
@@ -638,11 +641,12 @@ const pieces = {
                 }
             ],
         },
+        needsDiscovery: true,
         display: {
             white: '<img src="https://i.imgur.com/wJM6aPc.png" style="width: 50%; height: 50%">',
             black: '<img src="https://i.imgur.com/1TN3hWU.png" style="width: 50%; height: 50%">',
         },
-        description: "<p>Can be merged into a pawn.</p>",
+        description: "<p>Can be merged into a pawn. Can be spawned by merging a pawn with a pawn. (if unlocked)</p>",
         convertion: {
             rows: [0],
             collumns: [0, 1, 2, 3, 4, 5, 6, 7],
@@ -652,6 +656,142 @@ const pieces = {
             'pini': 'pawn',
         },
         parentType: 'pawn',
+    },
+    'swordsman': {
+        lootbox: {
+            weight: 1.5,
+        },
+        patterns: {
+            movement: [
+                { direction: 'vertical', distance: 1, jump: false },
+                { direction: 'horizontal', distance: 1, jump: false },
+                { direction: 'diagonal/', distance: 1, jump: false },
+                { direction: 'diagonal\\', distance: 1, jump: false },
+            ],
+            capture: [
+                { direction: 'vertical', distance: 1, jump: false },
+                { direction: 'horizontal', distance: 1, jump: false },
+                { direction: 'diagonal/', distance: 1, jump: false },
+                { direction: 'diagonal\\', distance: 1, jump: false }
+            ],
+        },
+        display: {
+            white: '<img src="https://i.imgur.com/J3U2w7q.png">',
+            black: '<img src="https://i.imgur.com/N4ONLZ2.png">',
+        },
+        description: "<p>Created by merging a king and pawn.</p>",
+        convertion: {
+            rows: [0],
+            collumns: [0, 1, 2, 3, 4, 5, 6, 7],
+            convertsTo: 'queen',
+        },
+        parentType: 'pawn',
+        mergability: {
+
+        },
+        needsDiscovery: true,
+    },
+    'chivalry': {
+        lootbox: {
+            weight: 1,
+        },
+        patterns: {
+            movement: [
+                { direction: 'vertical', distance: 1, jump: false },
+                { direction: 'horizontal', distance: 1, jump: false },
+                {
+                    area: [
+                        [null, 1, null, 1, null],
+                        [1, null, null, null, 1],
+                        [null, null, 0, null, null],
+                        [1, null, null, null, 1],
+                        [null, 1, null, 1, null],
+                    ],
+                }
+            ],
+            capture: [
+                { direction: 'vertical', distance: 1, jump: false },
+                { direction: 'horizontal', distance: 1, jump: false },
+                {
+                    area: [
+                        [null, 1, null, 1, null],
+                        [1, null, null, null, 1],
+                        [null, null, 0, null, null],
+                        [1, null, null, null, 1],
+                        [null, 1, null, 1, null],
+                    ],
+                }
+            ],
+        },
+        display: {
+            white: '<img src="https://i.imgur.com/gxOG0VO.png">',
+            black: '<img src="https://i.imgur.com/v6lnfoo.png">',
+        },
+        description: "<p>Created by merging a swordsman and knight.</p>",
+        convertion: {
+            rows: [0],
+            collumns: [0, 1, 2, 3, 4, 5, 6, 7],
+            convertsTo: 'quorse',
+        },
+        needsDiscovery: true,
+    },
+    'horseshoe': {
+        lootbox: {
+            weight: 0,
+        },
+        patterns: {
+            movement: [
+
+            ],
+            capture: [
+
+            ],
+        },
+        display: {
+            neutral: '<img src="https://i.imgur.com/Mvlu77H.png">'
+        },
+        description: "<p>Created by merging a swordsman and knight.</p>",
+        needsDiscovery: true,
+        neutralObject: true,
+    },
+    'quorse': {
+        lootbox: {
+            weight: 0.5,
+        },
+        patterns: {
+            movement: [
+                { direction: 'vertical', distance: INFINITE, jump: true },
+                { direction: 'horizontal', distance: INFINITE, jump: true },
+                {
+                    area: [
+                        [null, 1, null, 1, null],
+                        [1, null, null, null, 1],
+                        [null, null, 0, null, null],
+                        [1, null, null, null, 1],
+                        [null, 1, null, 1, null],
+                    ],
+                }
+            ],
+            capture: [
+                { direction: 'vertical', distance: INFINITE, jump: false },
+                { direction: 'horizontal', distance: INFINITE, jump: false },
+                {
+                    area: [
+                        [null, 1, null, 1, null],
+                        [1, null, null, null, 1],
+                        [null, null, 0, null, null],
+                        [1, null, null, null, 1],
+                        [null, 1, null, 1, null],
+                    ],
+                }
+            ],
+        },
+        display: {
+            white: '<img src="https://i.imgur.com/aBfCtcZ.png">',
+            black: '<img src="https://i.imgur.com/Ephu1KQ.png">',
+        },
+        description: "<p>Promoted Chivalry, can jump over pieces like a royal-queen</p>",
+        needsDiscovery: true,
     },
 }
 

@@ -56,6 +56,7 @@ class Chessboard {
             this.modifiedGameData = gameState.modifiedGameData ? gameState.modifiedGameData : {};
             this.WIN_CONDITIONS = gameState.WIN_CONDITIONS ? gameState.WIN_CONDITIONS : WIN_CONDITIONS;
             WIN_CONDITIONS = this.WIN_CONDITIONS;
+            this.checkForWinCondition({ color: 'black' });
             this.inventory = gameState.inventory ? gameState.inventory : {
                 black: JSON.parse(JSON.stringify(STARTING_INVENTORY)),
                 white: JSON.parse(JSON.stringify(STARTING_INVENTORY))
@@ -469,7 +470,6 @@ class Chessboard {
         for (let i = 0; i < Object.keys(inventory).length; i++) {
             inventoryJSON.push({ name: Object.keys(inventory)[i], amount: inventory[Object.keys(inventory)[i]], image: this.getInventoryItemImage(Object.keys(inventory)[i]) })
         }
-        console.log(inventoryJSON);
         return inventoryJSON;
     }
 

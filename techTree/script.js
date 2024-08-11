@@ -91,7 +91,12 @@ function generateCoordinates() {
         if (!parentClusters[node.id]) {
             return;
         }
-        const children = parentClusters[node.id];
+        const children = parentClusters[node.id].sort((a, b) => {
+            const priorityA = a.priority !== undefined ? a.priority : 0;
+            const priorityB = b.priority !== undefined ? b.priority : 0;
+            return priorityB - priorityA;
+        });
+        console.log(children);
         const numChildren = children.length;
 
         // Determine the increment angle for the first child
