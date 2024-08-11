@@ -4,8 +4,9 @@ const friendlyFire = false;
 const UNLOCK_MOVEMENT = false;
 const INVERTED_LOGIC = false;
 const LOOTBOX_CAPTURING_PIECE_WEIGHT = 5
-const DEBUG_MODE = false;
-const FORCE_PLAYER_TURNS = true;
+const DEBUG_MODE = true;
+const FORCE_PLAYER_TURNS_ON_DEBUG_MODE = false;
+const FORCE_PLAYER_TURNS = DEBUG_MODE ? FORCE_PLAYER_TURNS_ON_DEBUG_MODE : true;
 const STARTING_PLAYER = 'white';
 const LOOTBOX_RARITY_MODIFIER = 10;
 let AMOUNT_OF_TWISTS = 3;
@@ -47,7 +48,7 @@ let EXPERIENCE_POINTS_MODIFIER = 1;
 
 let CREDIT_PURCHASE_BONUS_MULTIPLIER = 1;
 
-const WIN_CONDITIONS = {
+let WIN_CONDITIONS = {
     slainTroops: {
         'king': 1,
         // 'pawn': 8 // funy
@@ -276,7 +277,10 @@ const pieces = {
             convertsTo: 'queen',
         },
         mergability: {
-            'pawn': 'pawned',
+            'pawn': {
+                type: 'pawned',
+                leaveBehind: null
+            }
         },
         captureFlee: {
             percentageChance: 0
@@ -326,6 +330,7 @@ const pieces = {
         needsDiscovery: true,
         description: "<p>Unlocked by merging 2 rooks.<br>It can carry other pieces.</p>",
         carrying: true,
+        parentType: 'rook',
 
     },
     'winged-knight': {
@@ -370,6 +375,7 @@ const pieces = {
         },
         description: "<p>Unlocked by merging 2 Knights and can do 2 jumps in a row.</p>",
         needsDiscovery: true,
+        parentType: 'knight',
 
     },
     'double-bishop': {
@@ -392,6 +398,7 @@ const pieces = {
         },
         description: "<p>Unlocked by merging 2 Bishops. Moves like 3 Bishops next to each other, Attacks like a normal bishop.</p>",
         needsDiscovery: true,
+        parentType: 'bishop',
     },
     'royal-queen': {
         lootbox: {
@@ -417,6 +424,7 @@ const pieces = {
         },
         needsDiscovery: true,
         description: "<p>Unlocked by merging 2 Queens. Attacks like a normal queen, but whilst moving to an empty piece it can jump over pieces.</p>",
+        parentType: 'queen',
     },
     'pawned': {
         lootbox: {
@@ -467,7 +475,8 @@ const pieces = {
         summonOnBeingMerged: {
             'type': 'brick',
             'chance': 0,
-        }
+        },
+        parentType: 'pawn',
     },
     'queened': {
         lootbox: {
@@ -499,6 +508,7 @@ const pieces = {
         },
         needsDiscovery: true,
         description: "<p>Moves as an inversed Queen, attacks as a Knight. Unlocked by promoting a Pawned.<br>It can carry other pieces.</p>",
+        parentType: 'queen',
     },
     'brick': {
         lootbox: {
@@ -598,7 +608,50 @@ const pieces = {
         summonOnBeingMerged: {
             'type': 'brick',
             'chance': 0,
-        }
+        },
+        parentType: 'pawn',
+    },
+    'pini': {
+        lootbox: {
+            weight: 0.5,
+        },
+        patterns: {
+            movement: [
+                { direction: 'vertical', distance: 1, jump: false },
+                {
+                    area: [
+                        [null, 0, null],
+                        [null, 1, null],
+                    ],
+                    exclude: true,
+                    flipForBlack: true,
+                }
+            ],
+            capture: [
+                {
+                    area: [
+                        [1, null, 1],
+                        [null, 0, null],
+                        [null, null, null],
+                    ],
+                    flipForBlack: true,
+                }
+            ],
+        },
+        display: {
+            white: '<img src="https://i.imgur.com/wJM6aPc.png" style="width: 50%; height: 50%">',
+            black: '<img src="https://i.imgur.com/1TN3hWU.png" style="width: 50%; height: 50%">',
+        },
+        description: "<p>Can be merged into a pawn.</p>",
+        convertion: {
+            rows: [0],
+            collumns: [0, 1, 2, 3, 4, 5, 6, 7],
+            convertsTo: 'queen',
+        },
+        mergability: {
+            'pini': 'pawn',
+        },
+        parentType: 'pawn',
     },
 }
 

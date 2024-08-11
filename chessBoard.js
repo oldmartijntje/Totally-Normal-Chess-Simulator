@@ -54,6 +54,8 @@ class Chessboard {
             this.activePlayer = gameState.activePlayer ? gameState.activePlayer : STARTING_PLAYER;
             this.lastPlayedMove = gameState.lastPlayedMove ? gameState.lastPlayedMove : [];
             this.modifiedGameData = gameState.modifiedGameData ? gameState.modifiedGameData : {};
+            this.WIN_CONDITIONS = gameState.WIN_CONDITIONS ? gameState.WIN_CONDITIONS : WIN_CONDITIONS;
+            WIN_CONDITIONS = this.WIN_CONDITIONS;
             this.inventory = gameState.inventory ? gameState.inventory : {
                 black: JSON.parse(JSON.stringify(STARTING_INVENTORY)),
                 white: JSON.parse(JSON.stringify(STARTING_INVENTORY))
@@ -226,6 +228,10 @@ class Chessboard {
             setPlayerIndicator(this.activePlayer, this.playerIndicators);
         }
         this.renderInfoBox()
+        if (this.lastInventoryCachePlayer != this.activePlayer) {
+            this.lastInventoryCachePlayer = this.activePlayer;
+            this.updateInventories()
+        }
     }
 
     getGameState() {
@@ -237,7 +243,8 @@ class Chessboard {
             cachedPieceData: this.cachedPieceData,
             lastPlayedMove: this.lastPlayedMove,
             modifiedGameData: this.modifiedGameData,
-            inventory: this.inventory
+            inventory: this.inventory,
+            WIN_CONDITIONS: this.WIN_CONDITIONS
         }
     }
 
@@ -443,12 +450,20 @@ class Chessboard {
 
     updateInventories() {
         if (this.playerIndicators && this.playerIndicators.inventoryWhite && this.playerIndicators.inventoryBlack) {
-            this.createInventory(this.playerIndicators.inventoryWhite, 3, 9, this.getInventoryJSON('white'))
-            this.createInventory(this.playerIndicators.inventoryBlack, 3, 9, this.getInventoryJSON('black'))
+            if ((this.playerSettings.boardOrientation == "2" || this.playerSettings.boardOrientation == "4") && this.activePlayer == 'black') {
+                this.createInventory(this.playerIndicators.inventoryWhite, 3, 9, this.getInventoryJSON('black'), false)
+                this.createInventory(this.playerIndicators.inventoryBlack, 3, 9, this.getInventoryJSON('white'), true)
+            } else {
+                this.createInventory(this.playerIndicators.inventoryWhite, 3, 9, this.getInventoryJSON('white'), true)
+                this.createInventory(this.playerIndicators.inventoryBlack, 3, 9, this.getInventoryJSON('black'), false)
+            }
         }
     }
 
     getInventoryJSON(player) {
+        if (!this.inventory) {
+            return [];
+        }
         let inventory = this.inventory[player];
         let inventoryJSON = []
         for (let i = 0; i < Object.keys(inventory).length; i++) {
@@ -499,6 +514,12 @@ class Chessboard {
                 }
                 if (this.boardState[location[0]][location[1]].color == this.activePlayer && this.isPieceMergable(this.cachedPieceData.boardData, this.boardState[location[0]][location[1]])) {
                     let pieceType = this.mergePieces(this.cachedPieceData.boardData, this.boardState[location[0]][location[1]].type)
+                    if (pieceType.type) {
+                        if (pieceType.leaveBehind) {
+                            placeOnOldLocation = { color: this.activePlayer, type: pieceType.leaveBehind, moved: false }
+                        }
+                        pieceType = pieceType.type;
+                    }
                     this.gainExperiencePoints('merging');
                     this.boardState[this.cachedPieceData.location[0]][this.cachedPieceData.location[1]].type = pieceType;
                     if (pieces[pieceType].summonOnBeingMerged) {
@@ -536,7 +557,7 @@ class Chessboard {
                     let saved = false;
                     if (pieces[this.boardState[location[0]][location[1]].type].captureFlee != undefined) {
                         let yDirection = this.boardState[location[0]][location[1]].color == 'black' ? -1 : 1;
-                        if (this.boardState[location[0] + yDirection][location[1]] == null) {
+                        if (this.boardState[location[0] + yDirection] && this.boardState[location[0] + yDirection][location[1]] == null) {
                             if (percentageRandomiser(pieces[this.boardState[location[0]][location[1]].type].captureFlee.percentageChance)) {
                                 saved = true;
                                 this.boardState[location[0] + yDirection][location[1]] = this.boardState[location[0]][location[1]];
@@ -561,6 +582,9 @@ class Chessboard {
                             this.cachedPieceData.pieceData.killSpree[kills].function()
                         }
                         this.lostPieces[this.boardState[location[0]][location[1]].color].push(this.boardState[location[0]][location[1]].type);
+                        if (pieces[this.boardState[location[0]][location[1]].type].parentType) {
+                            this.lostPieces[this.boardState[location[0]][location[1]].color].push(pieces[this.boardState[location[0]][location[1]].type].parentType);
+                        }
                         if (this.boardState[location[0]][location[1]].carrying) {
                             this.lostPieces[this.boardState[location[0]][location[1]].color].push(this.boardState[location[0]][location[1]].carrying.type);
                         }
@@ -709,7 +733,6 @@ class Chessboard {
                 if (this.boardState[x][y] && this.boardState[x][y].type && this.boardState[x][y].color == this.activePlayer) {
                     if (pieces[this.boardState[x][y].type].autoMove) {
                         let direction = pieces[this.boardState[x][y].type].autoMove.direction * (this.boardState[x][y].color == 'black' ? -1 : 1);
-                        console.log(direction, pieces[this.boardState[x][y].type].autoMove.direction);
                         if (x + direction < 0 || x + direction >= BOARDSIZE) {
                             continue;
                         }
@@ -751,7 +774,7 @@ class Chessboard {
     checkForWinCondition(locationData) {
         if (!this.boardDataSettings.sandboxChessBoard) {
             for (let i = 0; i < Object.keys(WIN_CONDITIONS['slainTroops']).length; i++) {
-                if (this.reachedWinConditionCheck(locationData)) {
+                if (!this.boardDataSettings.sandboxChessBoard && this.reachedWinConditionCheck(locationData)) {
                     this.render();
                     let loser = locationData.color;
                     alert(`${loser} has been slain!`);
@@ -845,7 +868,8 @@ class Chessboard {
         console.log(`Gained ${amount} experience points for:`, action);
     }
 
-    createInventory(boxId, rows, columns, items) {
+    createInventory(boxId, rows, columns, items, whitePlayer = true) {
+        if (!items || !boxId) { return; }
         for (let index = 0; index < items.length; index++) {
             if (items[index].amount == 0) {
                 items.splice(index, 1);
@@ -853,6 +877,14 @@ class Chessboard {
             }
         }
         const fullBox = document.getElementById(boxId);
+        if (!whitePlayer && this.playerSettings.boardOrientation == "5") {
+            fullBox.classList.add('flipped-inventory');
+        } else if ((this.playerSettings.boardOrientation == "2" || this.playerSettings.boardOrientation == "3") && this.activePlayer == 'black') {
+            fullBox.classList.add('flipped-inventory');
+        } else {
+            fullBox.classList.remove('flipped-inventory');
+        }
+
         if (items.length == 0) {
             fullBox.style.display = 'none';
             return;

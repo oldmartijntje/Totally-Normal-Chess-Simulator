@@ -193,6 +193,9 @@ function editChessBoard(activeGameState) {
                     let randomFoundLocation = foundLocations[Math.floor(Math.random() * foundLocations.length)];
                     let allUpgradesPossible = Object.values(pieces[twist.options.X].mergability);
                     let randomChosenUpgrade = allUpgradesPossible[Math.floor(Math.random() * allUpgradesPossible.length)];
+                    if (randomChosenUpgrade.type) {
+                        randomChosenUpgrade = randomChosenUpgrade.type;
+                    }
                     activeGameState.boardState[randomFoundLocation[0]][randomFoundLocation[1]] = neutralizePiece({ type: randomChosenUpgrade, color: colors[i] });
                     break;
                 case 4:
@@ -278,6 +281,7 @@ function selectOption(player, option) {
             gameState.modifiedGameData = {};
         }
         gameState.modifiedGameData.didTwistSelecting = true;
+        gameState.winConditions = WIN_CONDITIONS
         gameState = editChessBoard(gameState);
         createChessboard(gameState);
         updateWinConditionBox();

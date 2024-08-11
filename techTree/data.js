@@ -15,7 +15,7 @@ const techTree = [
     { id: 13, cost: 23456, name: "Spy", connections: [], description: "If a pawn gets 5 kills, It'll alert the government.", image: "" },
     { id: 14, cost: 5000, name: "Pawnvenge", connections: [], description: "If your pawn gets captured, it will give you 1 stone.", image: "" },
     { id: 15, cost: 10101, name: "Getting an upgrade", connections: [19], description: "You start the game with 1 Iron ingot.", image: "" },
-    { id: 16, cost: 6900, name: "Procket Science", connections: [17, 18], description: "Instead of 2 pawns merging into 1 Pawned, they merge into Procket.", image: "" },
+    { id: 16, cost: 6900, name: "Procket Science", connections: [17, 18, 33], description: "Instead of 2 pawns merging into 1 Pawned, they merge into Procket.", image: "" },
     { id: 17, cost: 3500, name: "Procket Launcher", connections: [31], description: "Prockets move forwards more often.", image: "" },
     { id: 18, cost: 42000, name: "Big Boom", connections: [27], description: "Prockets have a chance to explode if they can't move forwards.", hiddenDescription: true, hiddenTitle: true, image: "" },
     { id: 19, cost: 123456, name: "Crafter", connections: [], description: "Unlock crafting.", hiddenDescription: true, hiddenTitle: true, image: "" },
@@ -32,6 +32,8 @@ const techTree = [
     { id: 30, cost: 3500, name: "Boxing", connections: [], description: "Have a 10% chance of not consuming a lootbox when spawning a lootbox.", image: "" },
     { id: 31, cost: 30000, name: "Procket Engineer", connections: [], description: "Prockets ALWAYS move forwards.", hiddenDescription: true, image: "" },
     { id: 32, cost: 27500, name: "Ooooooorb", connections: [], description: "Double the chance of getting a Orb spawn.", image: "" },
+    { id: 33, cost: 5000, name: "Prawned", connections: [34], description: "If you merge a pawn with a procket, it will leave behind a pawned on it's old position. Procket stays a procket.", image: "" },
+    { id: 34, cost: 5500, name: "Pawnification", connections: [], description: "On merging of 2 pawns, Leave behind Pini on the old location.", image: "" },
 
 
 ];

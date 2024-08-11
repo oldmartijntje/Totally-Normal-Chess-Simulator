@@ -22,6 +22,7 @@
     cursor: pointer;
 }
 
+.flipped-inventory,
 .square.flipped-tile {
     transform: rotate(180deg);
 }

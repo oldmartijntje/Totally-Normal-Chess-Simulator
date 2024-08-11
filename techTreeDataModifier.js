@@ -105,7 +105,7 @@ if (loadedSetting['techTree'] == "2") {
         STARTING_INVENTORY['iron'] = 1; // 1 iron ingot
     }
     if (includes(16)) {
-        pieces['pawn'].mergability.pawn = 'procket';
+        pieces['pawn'].mergability.pawn.type = 'procket';
     }
     if (includes(17)) {
         pieces['procket'].autoMove.chance = 50; // chance to move forward
@@ -143,10 +143,17 @@ if (loadedSetting['techTree'] == "2") {
     if (includes(30)) {
         FREE_LOOTBOX_CHANCE = 10;
     }
-
-
     if (includes(31)) {
         pieces['procket'].autoMove.chance = 100;
+    }
+    if (includes(33)) {
+        pieces['pawn'].mergability.procket = {
+            'type': 'procket',
+            'leaveBehind': 'pawned',
+        };
+    }
+    if (includes(34)) {
+        pieces['pawn'].mergability.pawn.leaveBehind = 'pini';
     }
 
     // Latest changes

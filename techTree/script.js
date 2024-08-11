@@ -66,6 +66,7 @@ function generateCoordinates() {
     const parentClusters = {}; // Store nodes by parent
     const floaterNodes = []; // Store nodes that have no parents
     const radius = 150; // Distance from the parent
+    const radiusIncrement = 5;
     const maxAngleIncrement = 45; // Maximum angle increment
     const maxRootAngleIncrement = 180; // Maximum angle increment for the root node
 
@@ -109,8 +110,8 @@ function generateCoordinates() {
                 angle = parentAngle - maxRootAngleIncrement + (incrementPerKid * idx) + incrementPerKid / 2;
             }
             const angleRad = angle * Math.PI / 180;
-            childNode.x = node.x + radius * Math.cos(angleRad);
-            childNode.y = node.y + radius * Math.sin(angleRad);
+            childNode.x = node.x + (radius + radiusIncrement * index) * Math.cos(angleRad);
+            childNode.y = node.y + (radius + radiusIncrement * index) * Math.sin(angleRad);
 
             // Recursively compute coordinates for children
             computeCoordinatesForNode(childNode, angle, index + 1);
