@@ -1,5 +1,5 @@
 const setupData = {
-    votingUrl: 'https://www.reddit.com/r/AnarchyChess/comments/1ej1bh2/7added_a_tech_tree_to_my_totally_accurate_chess/',
+    votingUrl: 'https://www.reddit.com/r/AnarchyChess/comments/1er5d88/8added_more_pawn_varients_to_my_totally_accurate/',
     githubRepo: 'https://github.com/oldmartijntje/Totally-Normal-Chess-Simulator',
     version: 7 // This is the X amount of vote added / in development.
 }
