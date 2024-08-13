@@ -889,7 +889,7 @@ const pieces = {
         description: "<p>Doesn't move on kill.</p>",
         spawnOnKill: {
             type: 'shuriken',
-            chance: 75,
+            chance: 57,
         },
         mergability: {
 
@@ -934,7 +934,7 @@ const pieces = {
         itemGain: {
             lootForKiller: { // when you kill this piece
                 'iron': {
-                    chance: 100,
+                    chance: 55,
                     amount: 1
                 }
             }
