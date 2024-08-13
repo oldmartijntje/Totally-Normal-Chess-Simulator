@@ -173,6 +173,16 @@ if (loadedSetting['techTree'] == "2") {
             leaveBehind: 'iron-ingot'
         }
     }
+    if (includes(38)) {
+        pieces['pawninja'].mergability.pawninja = {
+            type: 'pawn-sensei',
+            leaveBehind: 'pawninja'
+        }
+        pieces['king'].mergability.pawninja = {
+            type: 'pawn-sensei',
+            leaveBehind: 'king'
+        }
+    }
 
     // Latest changes
     if (includes(28)) {

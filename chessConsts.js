@@ -4,7 +4,7 @@ const friendlyFire = false;
 const UNLOCK_MOVEMENT = false;
 const INVERTED_LOGIC = false;
 const LOOTBOX_CAPTURING_PIECE_WEIGHT = 5
-const DEBUG_MODE = false;
+const DEBUG_MODE = true;
 const FORCE_PLAYER_TURNS_ON_DEBUG_MODE = false;
 const FORCE_PLAYER_TURNS = DEBUG_MODE ? FORCE_PLAYER_TURNS_ON_DEBUG_MODE : true;
 const STARTING_PLAYER = 'white';
@@ -844,10 +844,56 @@ const pieces = {
             ],
         },
         display: {
+            white: '<img src="https://i.imgur.com/hIqSpe4.png">',
+            black: '<img src="https://i.imgur.com/pfHTNv9.png">',
+        },
+        mergability: {
+
+        },
+        description: "<p>Unlocked by merging 2 swordsman.</p>",
+        needsDiscovery: true,
+    },
+    'pawn-sensei': {
+        lootbox: {
+            weight: 0.1,
+        },
+        patterns: {
+            movement: [
+                { direction: 'vertical', distance: 3, jump: false },
+                { direction: 'horizontal', distance: 3, jump: false },
+                { direction: 'diagonal/', distance: 3, jump: false },
+                { direction: 'diagonal\\', distance: 3, jump: false },
+                {
+                    area: [
+                        [null, 1, 1, 1, null],
+                        [1, 1, null, 1, 1],
+                        [1, null, 0, null, 1],
+                        [1, 1, null, 1, 1],
+                        [null, 1, 1, 1, null],
+                    ],
+                    exclude: true,
+                }
+            ],
+            capture: [
+                { direction: 'vertical', distance: 2, jump: false },
+                { direction: 'horizontal', distance: 2, jump: false },
+                { direction: 'diagonal/', distance: 2, jump: false },
+                { direction: 'diagonal\\', distance: 2, jump: false },
+            ],
+        },
+        attackWitoutMove: true,
+        display: {
             white: '<img src="https://i.imgur.com/Fn6l8LH.png">',
             black: '<img src="https://i.imgur.com/0FcLveU.png">',
         },
-        description: "<p>Unlocked by merging 2 swordsman.</p>",
+        description: "<p>Doesn't move on kill.</p>",
+        spawnOnKill: {
+            type: 'shuriken',
+            chance: 75,
+        },
+        mergability: {
+
+        },
         needsDiscovery: true,
     },
     'iron-ingot': {
@@ -864,7 +910,29 @@ const pieces = {
         needsDiscovery: true,
         neutralObject: true,
         itemGain: {
-            onKill: { // when you kill this piece
+            lootForKiller: { // when you kill this piece
+                'iron': {
+                    chance: 100,
+                    amount: 1
+                }
+            }
+        },
+    },
+    'shuriken': {
+        lootbox: {
+            weight: 0,
+        },
+        patterns: {
+
+        },
+        display: {
+            neutral: '<img src="https://i.imgur.com/m3Zmt7N.png">',
+        },
+        description: "<p>Dropped by a pawn-sensei, might turn into iron on collect.</p>",
+        needsDiscovery: true,
+        neutralObject: true,
+        itemGain: {
+            lootForKiller: { // when you kill this piece
                 'iron': {
                     chance: 100,
                     amount: 1

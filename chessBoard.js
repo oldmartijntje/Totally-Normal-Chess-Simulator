@@ -25,8 +25,8 @@ class Chessboard {
         this.playerIndicators = playerIndicators // the 2 elements that will be used to indicate the active player
 
         this.pieces = {
-            white: ['pawn', 'pawn', 'pawn', 'pawn', 'pawn', 'pawn', 'pawn', 'pawn', 'rook', 'knight', 'bishop', 'queen', 'king', 'bishop', 'knight', 'rook'],
-            black: ['rook', 'knight', 'bishop', 'queen', 'king', 'bishop', 'knight', 'rook', 'pawn', 'pawn', 'pawn', 'pawn', 'pawn', 'pawn', 'pawn', 'pawn']
+            white: ['pawn', 'pawn', 'pawn', 'pawn', 'pawn', 'pawn-sensei', 'pawninja', 'pawn', 'rook', 'knight', 'bishop', 'queen', 'king', 'bishop', 'knight', 'rook'],
+            black: ['rook', 'knight', 'bishop', 'queen', 'king', 'bishop', 'knight', 'rook', 'pawn-sensei', 'pawninja', 'pawn', 'pawn', 'pawn', 'pawn', 'pawn', 'pawn']
         };
         this.letters = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h']; // unused, for notation
         this.board = document.getElementById(boardElementId);
@@ -547,10 +547,13 @@ class Chessboard {
                 if (pieces[this.boardState[location[0]][location[1]].type].experiencePointsGainType) {
                     this.gainExperiencePoints(pieces[this.boardState[location[0]][location[1]].type].experiencePointsGainType);
                 }
-                if (this.boardState[location[0]][location[1]].color == 'neutral') {
-                    if (this.boardState[location[0]][location[1]].type == 'lootbox') {
-                        runLootBoxUnboxing(getLootboxPiece(this.cachedPieceData.boardData.type), this.cachedPieceData.boardData.color, this.boardState, JSON.parse(JSON.stringify(this.cachedPieceData)), this.boardDataSettings.lootBoxAnimation);
+                if (this.boardState[location[0]][location[1]].color == 'neutral' && this.boardState[location[0]][location[1]].type == 'lootbox') {
+                    let pieceDataCache = JSON.parse(JSON.stringify(this.cachedPieceData))
+                    if (this.cachedPieceData.pieceData.attackWitoutMove) {
+                        pieceDataCache.location = location;
                     }
+                    runLootBoxUnboxing(getLootboxPiece(this.cachedPieceData.boardData.type), this.cachedPieceData.boardData.color, this.boardState, pieceDataCache, this.boardDataSettings.lootBoxAnimation);
+
                 } else {
                     this.gainExperiencePoints('capturing');
                     this.gainItem(ON_CAPTURE_GAIN_MATERIALS, this.activePlayer);
@@ -567,11 +570,19 @@ class Chessboard {
                         }
                     }
                     if (!saved) {
+                        if (this.cachedPieceData.pieceData.spawnOnKill) {
+                            if (percentageRandomiser(this.cachedPieceData.pieceData.spawnOnKill.chance)) {
+                                placeOnOldLocation = { color: this.activePlayer, type: this.cachedPieceData.pieceData.spawnOnKill.type, moved: false }
+                            }
+                        }
                         if (pieces[this.boardState[location[0]][location[1]].type].itemGain && pieces[this.boardState[location[0]][location[1]].type].itemGain.onDeath) {
                             this.gainItem(pieces[this.boardState[location[0]][location[1]].type].itemGain.onDeath, this.boardState[location[0]][location[1]].color);
                         }
-                        if (this.cachedPieceData.pieceData.itemGain && this.cachedPieceData.pieceData.itemGain.onDeath) {
+                        if (this.cachedPieceData.pieceData.itemGain && this.cachedPieceData.pieceData.itemGain.onKill) {
                             this.gainItem(this.cachedPieceData.pieceData.itemGain.onKill, this.activePlayer);
+                        }
+                        if (pieces[this.boardState[location[0]][location[1]].type].itemGain && pieces[this.boardState[location[0]][location[1]].type].itemGain.lootForKiller) {
+                            this.gainItem(pieces[this.boardState[location[0]][location[1]].type].itemGain.lootForKiller, this.activePlayer);
                         }
                         if (!this.boardState[this.cachedPieceData.location[0]][this.cachedPieceData.location[1]].kills) {
                             this.boardState[this.cachedPieceData.location[0]][this.cachedPieceData.location[1]].kills = 0;
@@ -581,14 +592,16 @@ class Chessboard {
                         if (this.cachedPieceData.pieceData.killSpree && this.cachedPieceData.pieceData.killSpree[kills]) {
                             this.cachedPieceData.pieceData.killSpree[kills].function()
                         }
-                        this.lostPieces[this.boardState[location[0]][location[1]].color].push(this.boardState[location[0]][location[1]].type);
-                        if (pieces[this.boardState[location[0]][location[1]].type].parentType) {
-                            this.lostPieces[this.boardState[location[0]][location[1]].color].push(pieces[this.boardState[location[0]][location[1]].type].parentType);
+                        if (this.boardState[location[0]][location[1]].color != 'neutral') {
+                            this.lostPieces[this.boardState[location[0]][location[1]].color].push(this.boardState[location[0]][location[1]].type);
+                            if (pieces[this.boardState[location[0]][location[1]].type].parentType) {
+                                this.lostPieces[this.boardState[location[0]][location[1]].color].push(pieces[this.boardState[location[0]][location[1]].type].parentType);
+                            }
+                            if (this.boardState[location[0]][location[1]].carrying) {
+                                this.lostPieces[this.boardState[location[0]][location[1]].color].push(this.boardState[location[0]][location[1]].carrying.type);
+                            }
+                            this.checkForWinCondition(this.boardState[location[0]][location[1]])
                         }
-                        if (this.boardState[location[0]][location[1]].carrying) {
-                            this.lostPieces[this.boardState[location[0]][location[1]].color].push(this.boardState[location[0]][location[1]].carrying.type);
-                        }
-                        this.checkForWinCondition(this.boardState[location[0]][location[1]])
 
                     }
                 }
@@ -599,10 +612,13 @@ class Chessboard {
                     localStorage.setItem('discoveredPieces', JSON.stringify(discoveredPieces))
                 }
             }
-
             this.lastPlayedMove = [this.cachedPieceData.location, location];
-            this.boardState[location[0]][location[1]] = this.boardState[this.cachedPieceData.location[0]][this.cachedPieceData.location[1]];
-            this.boardState[location[0]][location[1]].moved = true;
+            if (capture && this.cachedPieceData.pieceData.attackWitoutMove) {
+                this.boardState[location[0]][location[1]] = null
+            } else {
+                this.boardState[location[0]][location[1]] = this.boardState[this.cachedPieceData.location[0]][this.cachedPieceData.location[1]];
+                this.boardState[location[0]][location[1]].moved = true;
+            }
 
 
             if (this.cachedPieceData.pieceData.convertion) {
@@ -627,9 +643,17 @@ class Chessboard {
                     this.gainExperiencePoints('discovering');
                     localStorage.setItem('discoveredPieces', JSON.stringify(discoveredPieces))
                 }
-                this.boardState[this.cachedPieceData.location[0]][this.cachedPieceData.location[1]] = placeOnOldLocation;
+                if (capture && this.cachedPieceData.pieceData.attackWitoutMove) {
+                    this.boardState[location[0]][location[1]] = placeOnOldLocation;
+                } else {
+                    this.boardState[this.cachedPieceData.location[0]][this.cachedPieceData.location[1]] = placeOnOldLocation;
+                }
             } else {
-                this.boardState[this.cachedPieceData.location[0]][this.cachedPieceData.location[1]] = null;
+                if (capture && this.cachedPieceData.pieceData.attackWitoutMove) {
+                    this.boardState[location[0]][location[1]] = null;
+                } else {
+                    this.boardState[this.cachedPieceData.location[0]][this.cachedPieceData.location[1]] = null;
+                }
             }
             this.selectedPiece = null;
             this.cachedPieceData = {

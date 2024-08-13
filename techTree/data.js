@@ -36,7 +36,8 @@ const techTree = [
     { id: 34, cost: 5500, name: "Pawnification", connections: [], description: "On merging of 2 pawns, Leave behind Pini on the old location.", image: "" },
     { id: 35, cost: 1673, name: "Swordfight", connections: [36, 37], priority: 2, description: "By attacking your own pawns with your king, they turn into Swordsman.", image: "" },
     { id: 36, cost: 7500, name: "Chivalry", connections: [], description: "Merging a Swordsman and knight will become Chivalry.", image: "" },
-    { id: 37, cost: 2739, name: "Tai-chi", connections: [], description: "Unlock a pawn varient that moves in funky patterns.", image: "" },
+    { id: 37, cost: 2739, name: "Tai-chi", connections: [38], description: "Unlock a pawn varient that moves in funky patterns.", image: "" },
+    { id: 38, cost: 4356, name: "Sensei", connections: [], description: "Being able to upgrade a pawninja. (by merging with a king or other pawninja.)", image: "", hiddenDescription: true, hiddenTitle: true, },
 
 
 ];
