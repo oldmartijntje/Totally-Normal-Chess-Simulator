@@ -25,8 +25,8 @@ class Chessboard {
         this.playerIndicators = playerIndicators // the 2 elements that will be used to indicate the active player
 
         this.pieces = {
-            white: ['pawn', 'pawn', 'pawn', 'pawn', 'pawn', 'pawn-sensei', 'pawninja', 'pawn', 'rook', 'knight', 'bishop', 'queen', 'king', 'bishop', 'knight', 'rook'],
-            black: ['rook', 'knight', 'bishop', 'queen', 'king', 'bishop', 'knight', 'rook', 'pawn-sensei', 'pawninja', 'pawn', 'pawn', 'pawn', 'pawn', 'pawn', 'pawn']
+            white: ['pawn', 'pawn', 'pawn', 'pawn', 'pawn', 'pawn', 'pawn', 'pawn', 'rook', 'knight', 'bishop', 'queen', 'king', 'bishop', 'knight', 'rook'],
+            black: ['rook', 'knight', 'bishop', 'queen', 'king', 'bishop', 'knight', 'rook', 'pawn', 'pawn', 'pawn', 'pawn', 'pawn', 'pawn', 'pawn', 'pawn']
         };
         this.letters = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h']; // unused, for notation
         this.board = document.getElementById(boardElementId);
