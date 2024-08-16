@@ -146,10 +146,6 @@ function displayMergablesInfo(key) {
         mergablesRow.style.padding = '10px'
         mergablesRow.style.borderRadius = '5px'
 
-        const mergablesTitle = document.createElement('h4')
-        mergablesTitle.textContent = 'Mergable Combinations:'
-        mergablesRow.appendChild(mergablesTitle)
-
         for (let merge of mergablesListDict[key]) {
             const combination = document.createElement('div')
             combination.style.fontSize = '2.2em'
@@ -211,6 +207,7 @@ function createPieceDisplay(pieceName) {
     } else {
         pieceDiv.innerHTML = pieces[pieceName] ? pieces[pieceName].display.white : '???'
     }
+    pieceDiv.onclick = () => alert('This piece is a ' + pieceName)
     return pieceDiv
 }
 
