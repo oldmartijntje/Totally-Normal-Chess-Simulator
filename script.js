@@ -157,6 +157,7 @@ window.onload = () => {
                     lootboxes = 1
                     tokens -= AUTO_BUY_BOXES
                     localStorage.setItem('tokens', tokens)
+                    tokenAmount.innerHTML = tokens
                 } else {
                     console.warn('No lootboxes left');
                     showPopup();
